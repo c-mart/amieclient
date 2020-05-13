@@ -13,17 +13,15 @@ class Packet(ABC):
     """
     Generic AMIE packet abstract base class
 
-    For now, we just accept any old data. Model it more properly later.
-    probably want a hidden parameter that contains a list of valid data keys
-
     Class parameters required:
     _packet_type: the type of the packet (string)
     _expected_reply: expected reply types (list[string] or list[Packet type])
-    _valid_data_keys: Data keys that are valid for this packet type
+    _data_keys_required: Data keys that are required for this packet type
+    _data_keys_allowed: Data keys that are allowed for this packet type
     """
     def __init__(self, packet_id, packet_data, date=None):
-        self._id = packet_id
-        self._data = packet_data
+        self.packet_id = packet_id
+        self.data = packet_data
         if not date:
             self.date = datetime.now()
 
@@ -40,7 +38,7 @@ class Packet(ABC):
         The JSON representation of this AMIE packet
         """
         header = {
-            'packet_id': self.id,
+            'packet_id': self.packet_id,
             'date': self.date.isoformat(),
             'type': self.packet_type,
             'expected_reply_list': self._expected_reply
@@ -58,12 +56,14 @@ class Packet(ABC):
 
     @data.setter
     def data(self, input_data):
-        # Validate and make sure all keys are members of the valid_keys object
+        # Make sure all keys are members of the valid_keys object
         for x in input_data.keys():
-            if x not in self._valid_data_keys:
-                raise PacketInvalidData(
-                    f'Invalid data key "{x}" for packet type {self.packet_type}'
-                )
+            if x not in (self._data_keys_allowed + self._data_keys_required):
+                raise PacketInvalidData(f'Invalid data key "{x}" for packet type {self.packet_type}')
+        for x in self._data_keys_required:
+            if x not in input_data.keys():
+                raise PacketInvalidData(f'Missing required data field: {x}')
+
         self._data = input_data
 
     @property
