@@ -3,6 +3,8 @@ import json
 from abc import ABC
 from datetime import datetime
 
+from dateutil.parser import parse as dtparse
+
 
 class PacketInvalidData(Exception):
     """Raised when we try to build a packet with invalid data"""
@@ -30,7 +32,21 @@ class Packet(ABC):
         """
         Generates an instance of an AMIE packet of this type from provided JSON
         """
-        raise NotImplementedError()
+        data = json.loads(json_string)
+        pkt_type = data['header']['type']
+        # Get the subclass that matches this json input
+        for subclass in cls.__subclasses__():
+            if subclass.packet_type == pkt_type:
+                pkt_cls = subclass
+                break
+        # Raise a NotImplementedError if we can't find a subclass
+        else:
+            raise NotImplementedError(f"No packet type matches provided '{pkt_type}'")
+
+        # Return an instance of the proper subclass
+        return pkt_cls(packet_id=data['header']['packet_id'],
+                       packet_data=data['body'],
+                       date=dtparse(data['header']['date']))
 
     @property
     def json(self):
@@ -69,4 +85,3 @@ class Packet(ABC):
     @property
     def packet_type(self):
         return self._packet_type
-
