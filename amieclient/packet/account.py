@@ -69,7 +69,7 @@ class NotifyAccountReactivate(Packet):
 
 class RequestAccountCreate(Packet):
     _packet_type = 'request_account_create'
-    _expected_reply = ['notify_account_reactivate']
+    _expected_reply = ['notify_account_create']
     _data_keys_required = [
         'GrantNumber',
         'ResourceList',
