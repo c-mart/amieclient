@@ -87,3 +87,9 @@ class Packet(ABC):
     @property
     def packet_type(self):
         return self._packet_type
+
+class InformTransactionComplete(Packet):
+    _packet_type = 'inform_transaction_complete'
+    _expected_reply = []
+    _data_keys_required = ['DetailCode', 'Message', 'StatusCode']
+    _data_keys_allowed = []
