@@ -19,16 +19,21 @@ class Transaction(object):
             self.packets = []
 
     @classmethod
-    def from_json(cls, json_in):
-        tx_in = json.loads(json_in)
+    def from_dict(cls, dict_in):
         tx = cls(
-                 transaction_id=tx_in['transaction_id'],
-                 state=tx_in['state'],
-                 originating_site=tx_in['originating_site_name'],
-                 local_site=tx_in['local_site_name'],
-                 packets=[Packet.from_json(p) for p in tx_in['DATA']]
+                 transaction_id=dict_in['transaction_id'],
+                 state=dict_in['state'],
+                 originating_site=dict_in['originating_site_name'],
+                 local_site=dict_in['local_site_name'],
+                 remote_site=dict_in['remote_site_name'],
+                 packets=[Packet.from_dict(p) for p in dict_in['DATA']]
         )
         return tx
+
+    @classmethod
+    def from_json(cls, json_in):
+        tx_in = json.loads(json_in)
+        return cls.from_dict(tx_in)
 
     @property
     def json(self):
@@ -43,3 +48,34 @@ class Transaction(object):
         }
 
         return json.dumps(data_dict)
+
+class TransactionList(object):
+    """
+    List of transactions.
+    """
+
+    def __init__(self, length, limit, offset, total, transactions=None):
+        self._length = length
+        self._limit = limit
+        self._offset = offset
+        self._total = total
+        if transactions is not None:
+            self.transactions = transactions
+        else:
+            self.transactions = []
+
+    @classmethod
+    def from_dict(cls, dict_in):
+        tx_list = cls(
+            length=dict_in['length'],
+            limit=dict_in['limit'],
+            offset=dict_in['offset'],
+            total=dict_in['total'],
+            transactions=[Transaction.from_dict(d) for d in dict_in['DATA']]
+        )
+        return tx_list
+
+    @classmethod
+    def from_json(cls, json_in):
+        txlist_in = json.loads(json_in)
+        return cls.from_dict(txlist_in)

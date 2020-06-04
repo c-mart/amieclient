@@ -28,11 +28,7 @@ class Packet(ABC):
             self.date = datetime.now()
 
     @classmethod
-    def from_json(cls, json_string):
-        """
-        Generates an instance of an AMIE packet of this type from provided JSON
-        """
-        data = json.loads(json_string)
+    def from_dict(cls, data):
         pkt_type = data['header']['type']
         # Get the subclass that matches this json input
         for subclass in cls.__subclasses__():
@@ -47,6 +43,15 @@ class Packet(ABC):
         return pkt_cls(packet_id=data['header']['packet_id'],
                        packet_data=data['body'],
                        date=dtparse(data['header']['date']))
+
+    @classmethod
+    def from_json(cls, json_string):
+        """
+        Generates an instance of an AMIE packet of this type from provided JSON
+        """
+        data = json.loads(json_string)
+        return cls.from_dict(data)
+
 
     @property
     def json(self):
