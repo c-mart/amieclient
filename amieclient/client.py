@@ -1,6 +1,21 @@
+from urllib.parse import urljoin
+
 import requests
 import dateutil
-from urlparse import urljoin
+
+
+from .packet import Packet, PacketList
+from .packet.account import *
+from .packet.person import *
+from .packet.project import *
+from .packet.user import *
+from .transaction import Transaction, TransactionList
+
+from .demo_json_str import (DEMO_JSON_PKT_LIST, DEMO_JSON_PKT_1,
+                            DEMO_JSON_PKT_2, DEMO_JSON_TXN_LIST,
+                            DEMO_JSON_TXN)
+
+
 """AMIE client class"""
 
 
@@ -32,6 +47,12 @@ class Client(object):
         self.full_url = urljoin(self.base_url, self.site_name)
         self._session = ServerSession(self.full_url)
 
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *args):
+        self._session.close()
+
     @staticmethod
     def _join_list(things):
         if things is not None and things != []:
@@ -58,8 +79,11 @@ class Client(object):
     def get_transaction(self, *, transaction_id):
         """
         Given a single transaction id, fetches the related transaction.
+
+        Currently a dummy demo
         """
-        pass
+        return Transaction.from_json(DEMO_JSON_TXN)
+
 
     def list_packets(self, *, transaction_ids=None, outgoing=None,
                      update_time_start=None, update_time_until=None,
@@ -84,10 +108,9 @@ class Client(object):
         }
 
         # Get the list of packets
-        response = self._session.get('/packet_list', params=params)
-
-
-
+        # response = self._session.get('/packet_list', params=params)
+        # DEMO TIME
+        return PacketList.from_json(DEMO_JSON_PKT_LIST)
 
 
 
@@ -105,5 +128,13 @@ class Client(object):
         local_sites_str = self._join_list(local_sites)
         time_str = self._dt_range(update_time_start, update_time_until)
 
-    def send_packet(self, *, packet, transaction_id):
-        pass
+        # DEMO TIME
+        return TransactionList.from_json(DEMO_JSON_TXN_LIST)
+
+    def send_packet(self, *, packet):
+        """
+        Send a packet
+        """
+        print("Here's what I would send...")
+        print(packet.json)
+
