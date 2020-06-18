@@ -131,10 +131,13 @@ class Client(object):
         # DEMO TIME
         return TransactionList.from_json(DEMO_JSON_TXN_LIST)
 
-    def send_packet(self, *, packet):
+    def send_packet(self, *, packet, skip_validation=False):
         """
         Send a packet
         """
+        if not skip_validation:
+            packet.validate_data()
+
         print("Here's what I would send...")
         print(packet.json)
 
