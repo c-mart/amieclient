@@ -76,7 +76,7 @@ class Packet(ABC):
         data_dict = self.as_dict
         return json.dumps(data_dict)
 
-    def _validate_data(self, input_data):
+    def validate_data(self, input_data):
         for x in input_data.keys():
             if x not in (self._data_keys_allowed + self._data_keys_required):
                 raise PacketInvalidData(f'Invalid data key "{x}" for packet type {self.packet_type}')
@@ -84,15 +84,6 @@ class Packet(ABC):
             if x not in input_data.keys():
                 raise PacketInvalidData(f'Missing required data field: {x}')
         return input_data
-
-    @property
-    def data(self):
-        return self._data
-
-    @data.setter
-    def data(self, input_data):
-        # Make sure all keys are members of the valid_keys object
-        self._data = self._validate_data(input_data)
 
     @property
     def packet_type(self):
