@@ -79,6 +79,9 @@ class RequestAccountCreate(Packet):
         'UserOrgCode',
     ]
     _data_keys_allowed = [
+        'RoleList',
+        'UserGlobalID',
+        'AllocatedResource',
         'NsfStatusCode',
         'ProjectID',
         'SitePersonId',

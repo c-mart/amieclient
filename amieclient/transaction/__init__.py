@@ -36,7 +36,7 @@ class Transaction(object):
         return cls.from_dict(tx_in)
 
     @property
-    def json(self):
+    def as_dict(self):
         data_dict = {
             'DATA_TYPE': 'transaction',
             'transaction_ID': self.id,
@@ -44,9 +44,14 @@ class Transaction(object):
             'local_site_name': self.local_site,
             'remote_site_name': self.remote_site,
             'state': self.state,
-            'DATA': [pkt.json for pkt in self.packets]
+            'DATA': [pkt.as_dict for pkt in self.packets]
         }
 
+        return data_dict
+
+    @property
+    def json(self):
+        data_dict = self.as_dict
         return json.dumps(data_dict)
 
 class TransactionList(object):
@@ -55,10 +60,10 @@ class TransactionList(object):
     """
 
     def __init__(self, length, limit, offset, total, transactions=None):
-        self._length = length
-        self._limit = limit
-        self._offset = offset
-        self._total = total
+        self.length = length
+        self.limit = limit
+        self.offset = offset
+        self.total = total
         if transactions is not None:
             self.transactions = transactions
         else:
@@ -79,3 +84,21 @@ class TransactionList(object):
     def from_json(cls, json_in):
         txlist_in = json.loads(json_in)
         return cls.from_dict(txlist_in)
+
+    @property
+    def as_dict(self):
+        data_dict = {
+            'DATA_TYPE': 'transaction_list',
+            'length':  self.legth,
+            'limit': self.limit,
+            'offset': self.offset,
+            'total': self.total,
+            'DATA': [txn.as_dict for txn in self.transactions]
+        }
+        return data_dict
+
+    @property
+    def json(self):
+        data_dict = self.as_dict
+        return json.dumps(data_dict)
+

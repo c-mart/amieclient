@@ -29,10 +29,10 @@ class Packet(ABC):
 
     @classmethod
     def from_dict(cls, data):
-        pkt_type = data['header']['type']
+        pkt_type = data['type']
         # Get the subclass that matches this json input
         for subclass in cls.__subclasses__():
-            if subclass.packet_type == pkt_type:
+            if subclass._packet_type == pkt_type:
                 pkt_cls = subclass
                 break
         # Raise a NotImplementedError if we can't find a subclass
@@ -41,8 +41,9 @@ class Packet(ABC):
 
         # Return an instance of the proper subclass
         return pkt_cls(packet_id=data['header']['packet_id'],
-                       packet_data=data['body'],
-                       date=dtparse(data['header']['date']))
+                       packet_data=data['body'],)
+                       #date=dtparse(data['header']['date'])) TODO date not present in demo data?
+
 
     @classmethod
     def from_json(cls, json_string):
@@ -52,12 +53,8 @@ class Packet(ABC):
         data = json.loads(json_string)
         return cls.from_dict(data)
 
-
     @property
-    def json(self):
-        """
-        The JSON representation of this AMIE packet
-        """
+    def as_dict(self):
         header = {
             'packet_id': self.packet_id,
             'date': self.date.isoformat(),
@@ -69,6 +66,14 @@ class Packet(ABC):
             'body': self.data,
             'header': header
         }
+        return data_dict
+
+    @property
+    def json(self):
+        """
+        The JSON representation of this AMIE packet
+        """
+        data_dict = self.as_dict
         return json.dumps(data_dict)
 
     def _validate_data(self, input_data):
@@ -92,6 +97,56 @@ class Packet(ABC):
     @property
     def packet_type(self):
         return self._packet_type
+
+
+class PacketList(object):
+    """
+    A list of packets.
+    """
+    def __init__(self, length, limit, offset, total, packets=None):
+        self.length = length
+        self.limit = limit
+        self.offset = offset
+        self.total = total
+        if packets is not None:
+            self.packets = packets
+        else:
+            self.packets = []
+
+    @classmethod
+    def from_dict(cls, dict_in):
+        pkt_list = cls(
+            length=dict_in['length'],
+            limit=dict_in['limit'],
+            offset=dict_in['offset'],
+            total=dict_in['total'],
+            packets=[Packet.from_dict(d) for d in dict_in['DATA']]
+        )
+        return pkt_list
+
+    @classmethod
+    def from_json(cls, json_in):
+        pkt_list_in = json.loads(json_in)
+        return cls.from_dict(pkt_list_in)
+
+    @property
+    def as_dict(self):
+        data_dict = {
+            'DATA_TYPE': 'packet_list',
+            'length':  self.legth,
+            'limit': self.limit,
+            'offset': self.offset,
+            'total': self.total,
+            'DATA': [pkt.as_dict for pkt in self.packets]
+        }
+        return data_dict
+
+    @property
+    def json(self):
+        data_dict = self.as_dict
+        return json.dumps(data_dict)
+
+
 
 class InformTransactionComplete(Packet):
     _packet_type = 'inform_transaction_complete'
