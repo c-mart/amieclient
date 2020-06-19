@@ -6,7 +6,7 @@ setup(
     packages=['amieclient'],
     install_requires=[
         'requests>=2.23.0',
-        'dateutil>=2.8.1'
+        'python-dateutil>=2.8.1'
     ],
     author='G. Ryan Sablosky',
     author_email='sablosky@psc.edu',
