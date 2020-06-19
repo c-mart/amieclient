@@ -151,7 +151,7 @@ DEMO_JSON_PKT_2 = """
 }
 """
 
-DEMO_JSON_TXN = f"""
+DEMO_JSON_TXN = """
 {{
 "DATA_TYPE": "transaction",
 "transaction_id": "12",
@@ -161,13 +161,13 @@ DEMO_JSON_TXN = f"""
 "state": "in_progress",
 "timestamp": "2020-06-05T09:25:37",
 "DATA": [
-{DEMO_JSON_PKT_1},
-{DEMO_JSON_PKT_2}
+{0},
+{1}
 ]
 }}
-"""
+""".format(DEMO_JSON_PKT_1, DEMO_JSON_PKT_2)
 
-DEMO_JSON_TXN_LIST = f"""
+DEMO_JSON_TXN_LIST = """
 {{
 "DATA_TYPE": "transaction_list",
 "length": 1,
@@ -175,12 +175,12 @@ DEMO_JSON_TXN_LIST = f"""
 "limit": 10,
 "offset": 0,
 "DATA": [
-{DEMO_JSON_TXN}
+{0}
 ]
 }}
-"""
+""".format(DEMO_JSON_TXN)
 
-DEMO_JSON_PKT_LIST = f"""
+DEMO_JSON_PKT_LIST = """
 {{
 "DATA_TYPE": "packet_list",
 "length": 2,
@@ -188,9 +188,8 @@ DEMO_JSON_PKT_LIST = f"""
 "limit": 10,
 "offset": 0,
 "DATA": [
-{DEMO_JSON_PKT_1},
-{DEMO_JSON_PKT_2}
+{0},
+{1}
 ]
 }}
-"""
-
+""".format(DEMO_JSON_PKT_1, DEMO_JSON_PKT_2)

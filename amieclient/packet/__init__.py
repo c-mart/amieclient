@@ -37,7 +37,8 @@ class Packet(ABC):
                 break
         # Raise a NotImplementedError if we can't find a subclass
         else:
-            raise NotImplementedError(f"No packet type matches provided '{pkt_type}'")
+            error_str = "No packet type matches provided '{}'".format(pkt_type)
+            raise NotImplementedError(error_str)
 
         # Return an instance of the proper subclass
         return pkt_cls(packet_id=data['header']['packet_id'],

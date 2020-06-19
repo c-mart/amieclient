@@ -37,7 +37,8 @@ class NotifyUserModify(Packet):
     def validate_data(self, input_data):
         validated_data = super().validate_data(input_data)
         if validated_data['ActionType'] not in ['add', 'delete', 'replace']:
-            raise PacketInvalidData(f"Invalid action type for notify_user_modify: {validated_data['ActionType']}")
+            error_str = "Invalid action type for notify_user_modify: {}".format(validated_data['ActionType'])
+            raise PacketInvalidData(error_str)
         return validated_data
 
 
@@ -80,5 +81,7 @@ class RequestUserModify(Packet):
     def validate_data(self, input_data):
         validated_data = super().validate_data(input_data)
         if validated_data['ActionType'] not in ['add', 'delete', 'replace']:
-            raise PacketInvalidData(f"Invalid action type for request_user_modify: {validated_data['ActionType']}")
+            error_str = "Invalid action type for request_user_modify: {}".format(validated_data['ActionType'])
+            raise PacketInvalidData(error_str)
+
         return validated_data
