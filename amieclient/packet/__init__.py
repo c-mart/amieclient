@@ -63,10 +63,11 @@ class Packet(object, metaclass=MetaPacket):
     _expected_reply: expected reply types (list[string] or list[Packet type])
     _data_keys_required: Data keys that are required for this packet type
     _data_keys_allowed: Data keys that are allowed for this packet type
+
     """
-    def __init__(self, packet_id, packet_data, date=None):
+    def __init__(self, packet_id, date=None, additional_data={}):
         self.packet_id = packet_id
-        self.data = packet_data
+        self.additional_data = additional_data
         if not date:
             self.date = datetime.now()
 
@@ -83,11 +84,16 @@ class Packet(object, metaclass=MetaPacket):
             error_str = "No packet type matches provided '{}'".format(pkt_type)
             raise NotImplementedError(error_str)
 
-        # Return an instance of the proper subclass
-        return pkt_cls(packet_id=data['header']['packet_id'],
-                       packet_data=data['body'],)
-                       #date=dtparse(data['header']['date'])) TODO date not present in demo data?
+        obj = pkt_class(packet_id=data['header']['packet_id'])
 
+        for k, v in data['body']:
+            if k in obj._required_data or k in obj._allowed_data:
+                obj.setattr(k, v)
+            else:
+                obj.additional_data[k] = v
+
+        # Return an instance of the proper subclass
+        return obj
 
     @classmethod
     def from_json(cls, json_string):
@@ -99,6 +105,13 @@ class Packet(object, metaclass=MetaPacket):
 
     @property
     def as_dict(self):
+        data_body = {}
+        # Filter out non-defined items from our data collections
+        for d in [self._required_data, self._allowed_data, self.additional_data]:
+            for k, v in d.items():
+                if v is not None:
+                    data_body[k] = v
+
         header = {
             'packet_id': self.packet_id,
             'date': self.date.isoformat(),
@@ -107,9 +120,10 @@ class Packet(object, metaclass=MetaPacket):
         }
         data_dict = {
             'DATA_TYPE': 'packet',
-            'body': self.data,
+            'body': data_body,
             'header': header
         }
+
         return data_dict
 
     @property
@@ -120,14 +134,15 @@ class Packet(object, metaclass=MetaPacket):
         data_dict = self.as_dict
         return json.dumps(data_dict)
 
-    def validate_data(self, input_data):
-        for x in input_data.keys():
-            if x not in (self._data_keys_allowed + self._data_keys_required):
-                raise PacketInvalidData(f'Invalid data key "{x}" for packet type {self.packet_type}')
-        for x in self._data_keys_required:
-            if x not in input_data.keys():
-                raise PacketInvalidData(f'Missing required data field: {x}')
-        return input_data
+    def validate_data(self):
+        """
+        By default, checks to see that all required data items have a
+        defined value
+        """
+        for k, v in self._required_data.items():
+            if v is None:
+                raise PacketInvalidData('Missing required data field: "{}"'.format(k))
+        return True
 
     @property
     def packet_type(self):
