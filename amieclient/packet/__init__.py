@@ -11,9 +11,52 @@ class PacketInvalidData(Exception):
     pass
 
 
-class Packet(ABC):
+class MetaPacket(type):
+    """Metaclass for packets.
+
+    Looks at the _data_keys_allowed and _data_keys_required attributes
+    when a subclass is declared, then adds class properties that
+    stores the information in two separate dictionaries on the object.
     """
-    Generic AMIE packet abstract base class
+    def __new__(cls, name, base, attrs):
+        required_data = {}
+        allowed_data = {}
+        required_fields = attrs.pop('_data_keys_required', [])
+        allowed_fields = attrs.pop('_data_keys_allowed', [])
+        for k in required_fields:
+            required_data[k] = None
+
+            def get_req(obj):
+                return obj._required_data[k]
+
+            def set_req(obj, val):
+                obj._required_data[k] = val
+
+            def del_req(obj):
+                obj._required_data[k] = None
+            attrs[k] = property(get_req, set_req, del_req)
+
+        for k in allowed_fields:
+            allowed_data[k] = None
+
+            def get_allowed(obj):
+                return obj._allowed_data[k]
+
+            def set_allowed(obj, val):
+                obj._allowed_data[k] = val
+
+            def del_allowed(obj):
+                obj._allowed_data[k] = None
+            attrs[k] = property(get_allowed, set_allowed, del_allowed)
+
+        attrs['_required_data'] = required_data
+        attrs['_allowed_data'] = allowed_data
+        return type.__new__(cls, name, base, attrs)
+
+
+class Packet(object, metaclass=MetaPacket):
+    """
+    Generic AMIE packet base class
 
     Class parameters required:
     _packet_type: the type of the packet (string)
