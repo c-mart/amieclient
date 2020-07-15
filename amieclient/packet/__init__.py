@@ -131,6 +131,8 @@ class Packet(object, metaclass=MetaPacket):
             'type': self.packet_type,
             'expected_reply_list': self._expected_reply
         }
+        if self.in_reply_to_id:
+            header['in_reply_to'] = self.in_reply_to_id
         data_dict = {
             'DATA_TYPE': 'packet',
             'body': data_body,
