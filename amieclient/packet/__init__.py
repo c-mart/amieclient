@@ -150,8 +150,12 @@ class Packet(object, metaclass=MetaPacket):
     def validate_data(self):
         """
         By default, checks to see that all required data items have a
-        defined value
+        defined value, unless in_reply_to is not None (in which case,
+        we assume the missing data will be filled in based on the referenced
+        packet ID
         """
+        if self.in_reply_to_id:
+            return True
         for k, v in self._required_data.items():
             if v is None:
                 raise PacketInvalidData('Missing required data field: "{}"'.format(k))
