@@ -9,6 +9,9 @@ class PacketInvalidData(Exception):
     """Raised when we try to build a packet with invalid data"""
     pass
 
+class PacketInvalidType(Exception):
+    """Raised when we try to create a packet with an invalid type"""
+
 
 class MetaPacket(type):
     """Metaclass for packets.
@@ -73,7 +76,7 @@ class Packet(object, metaclass=MetaPacket):
     int, string, or None.
     """
 
-    def __init__(self, packet_id, date=None,
+    def __init__(self, packet_id=None, date=None,
                  additional_data={}, in_reply_to=None):
         self.packet_id = packet_id
         self.additional_data = additional_data
@@ -108,7 +111,7 @@ class Packet(object, metaclass=MetaPacket):
         else:
             # Raise a NotImplementedError if we can't find a subclass
             error_str = "No packet type matches provided '{}'".format(packet_or_packet_type)
-            raise NotImplementedError(error_str)
+            raise PacketInvalidType(error_str)
         return pkt_cls
 
     @classmethod
@@ -135,6 +138,46 @@ class Packet(object, metaclass=MetaPacket):
         """
         data = json.loads(json_string)
         return cls.from_dict(data)
+
+    def reply_packet(self, packet_id=None, packet_type=None, force=False):
+        """
+        Returns a packet that the current packet would expect as a response,
+        with the in_reply_to attribute set to the current packet's ID.
+
+        Generally, most packets only have one kind of expected reply,
+        so you should be fine to use reply_packet with just the desired packet_id
+
+        Parameters:
+        packet_id: The ID of the reply packet, if needed
+        packet_type: Optionally, the type of the reply packet
+        force: will create a reply packet whether or not packet_type is in _expected_reply
+
+        Example:
+        my_npc = received_rpc.reply_packet()
+        """
+
+        if packet_type and force:
+            # Just do it
+            pkt_class = self._find_packet_type(packet_type)
+        elif len(self._expected_reply) == 0:
+            # This is a packet that does not expect a response
+            raise PacketInvalidType("Packet type '{}' does not expect a reply"
+                                    .format(self._packet_type))
+        elif len(self._expected_reply) > 1 and packet_type is None:
+            # We have more than one expected reply, but no spec'd type
+            # to disambiguate
+            raise PacketInvalidType("Packet type '{}' has more than one"
+                                    " expected response. Specify a packet type"
+                                    " for the reply".format(self._packet_type))
+        elif packet_type is not None and packet_type not in self._expected_reply:
+            raise PacketInvalidType("'{}' is not an expected reply for packet type '{}'"
+                                    .format(packet_type, self._packet_type))
+        else:
+            # We have one packet type, or a specified packet type, and it is valid
+            if packet_type is None:
+                packet_type = self._expected_reply[0]
+            pkt_class = self._find_packet_type(packet_type)
+        return pkt_class(packet_id=packet_id, in_reply_to=self.packet_id)
 
     @property
     def as_dict(self):
