@@ -65,11 +65,24 @@ class Packet(object, metaclass=MetaPacket):
     _data_keys_allowed: Data keys that are allowed for this packet type
 
     """
-    def __init__(self, packet_id, date=None, additional_data={}):
+    def __init__(self, packet_id, date=None, additional_data={}, in_reply_to=None):
         self.packet_id = packet_id
         self.additional_data = additional_data
         if not date:
             self.date = datetime.now()
+
+        if hasattr(in_reply_to, 'packet_id'):
+            # If we're given a packet object, get the ID
+            self.in_reply_to_id = in_reply_to.packet_id
+        elif in_reply_to.get('header', {}).get('packet_id'):
+            # If we're given a dict-like object, get the ID from the header
+            self.in_reply_to_id = in_reply_to['header']['packet_id']
+        elif type(in_reply_to) == int:
+            # If it's a int, make it a string
+            self.in_reply_to_id = "{}".format(in_reply_to)
+        else:
+            # String or None, at this point
+            self.in_reply_to_id = in_reply_to
 
     @classmethod
     def from_dict(cls, data):
