@@ -64,6 +64,15 @@ class Packet(object, metaclass=MetaPacket):
     _data_keys_required: Data keys that are required for this packet type
     _data_keys_allowed: Data keys that are allowed for this packet type
 
+    Object parameters required:
+    packet_id: The ID for this packet
+
+    Optional object parameters:
+    date: A datetime object representing this packet's date attribute
+    additional_data: Body data that is outsite the AMIE spec.
+    in_reply_to: The packet this packet is in response to. Can take a packet, int, string,
+    or None.
+
     """
     def __init__(self, packet_id, date=None, additional_data={}, in_reply_to=None):
         self.packet_id = packet_id
