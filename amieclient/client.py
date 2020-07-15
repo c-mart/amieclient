@@ -4,11 +4,8 @@ import requests
 import dateutil
 
 
-from .packet import Packet, PacketList
-from .packet.account import *
-from .packet.person import *
-from .packet.project import *
-from .packet.user import *
+from .packet import PacketList
+from .packet.base import Packet
 from .transaction import Transaction, TransactionList
 
 from .demo_json_str import (DEMO_JSON_PKT_LIST, DEMO_JSON_PKT_1,

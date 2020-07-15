@@ -1,7 +1,7 @@
 import json
 from datetime import datetime
 
-from ..packet import Packet
+from ..packet.base import Packet
 
 
 class Transaction(object):
