@@ -69,11 +69,12 @@ class Packet(object, metaclass=MetaPacket):
     Optional object parameters:
     date: A datetime object representing this packet's date attribute
     additional_data: Body data that is outsite the AMIE spec.
-    in_reply_to: The packet this packet is in response to. Can take a packet, int, string,
-    or None.
-
+    in_reply_to: The packet this packet is in response to. Can take a packet,
+    int, string, or None.
     """
-    def __init__(self, packet_id, date=None, additional_data={}, in_reply_to=None):
+
+    def __init__(self, packet_id, date=None,
+                 additional_data={}, in_reply_to=None):
         self.packet_id = packet_id
         self.additional_data = additional_data
         if not date:
@@ -93,17 +94,27 @@ class Packet(object, metaclass=MetaPacket):
             self.in_reply_to_id = in_reply_to
 
     @classmethod
-    def from_dict(cls, data):
-        pkt_type = data['type']
-        # Get the subclass that matches this json input
-        for subclass in cls.__subclasses__():
-            if subclass._packet_type == pkt_type:
-                pkt_cls = subclass
-                break
-        # Raise a NotImplementedError if we can't find a subclass
+    def _find_packet_type(cls, packet_or_packet_type):
+        if type(packet_or_packet_type) == str:
+            # We're given a string, search in
+            # subclasses
+            for subclass in cls.__subclasses__():
+                if subclass._packet_type == packet_or_packet_type:
+                    pkt_cls = subclass
+                    break
+        elif packet_or_packet_type.__class__ in cls.__subclasses__():
+            # We've been given a packet, just get its class attribute
+            pkt_cls = packet_or_packet_type.__class__
         else:
-            error_str = "No packet type matches provided '{}'".format(pkt_type)
+            # Raise a NotImplementedError if we can't find a subclass
+            error_str = "No packet type matches provided '{}'".format(packet_or_packet_type)
             raise NotImplementedError(error_str)
+        return pkt_cls
+
+    @classmethod
+    def from_dict(cls, data):
+        # Get the subclass that matches this json input
+        pkt_class = cls._find_packet_type(data['type'])
 
         obj = pkt_class(packet_id=data['header']['packet_id'],
                         in_reply_to=data['header'].get('in_reply_to'))
