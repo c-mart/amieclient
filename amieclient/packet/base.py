@@ -83,18 +83,18 @@ class Packet(object, metaclass=MetaPacket):
         if not date:
             self.date = datetime.now()
 
-        if hasattr(in_reply_to, 'packet_id'):
+        if in_reply_to is None or type(in_reply_to) == str:
+            # If we're given a string, or None, just use that.
+            self.in_reply_to_id = in_reply_to
+        elif type(in_reply_to) == int:
+            # If it's a int, make it a string
+            self.in_reply_to_id = "{}".format(in_reply_to)
+        elif hasattr(in_reply_to, 'packet_id'):
             # If we're given a packet object, get the ID
             self.in_reply_to_id = in_reply_to.packet_id
         elif in_reply_to.get('header', {}).get('packet_id'):
             # If we're given a dict-like object, get the ID from the header
             self.in_reply_to_id = in_reply_to['header']['packet_id']
-        elif type(in_reply_to) == int:
-            # If it's a int, make it a string
-            self.in_reply_to_id = "{}".format(in_reply_to)
-        else:
-            # String or None, at this point
-            self.in_reply_to_id = in_reply_to
 
     @classmethod
     def _find_packet_type(cls, packet_or_packet_type):
@@ -122,9 +122,9 @@ class Packet(object, metaclass=MetaPacket):
         obj = pkt_class(packet_id=data['header']['packet_id'],
                         in_reply_to=data['header'].get('in_reply_to'))
 
-        for k, v in data['body']:
+        for k, v in data['body'].items():
             if k in obj._required_data or k in obj._allowed_data:
-                obj.setattr(k, v)
+                setattr(obj, k, v)
             else:
                 obj.additional_data[k] = v
 
