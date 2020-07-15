@@ -2,7 +2,7 @@
 AMIE packets relating to projects
 """
 
-from . import Packet
+from .base import Packet
 
 
 class DataProjectCreate(Packet):

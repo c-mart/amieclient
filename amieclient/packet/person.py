@@ -2,7 +2,7 @@
 AMIE packets relating to persons
 """
 
-from . import Packet, PacketInvalidData
+from .base import Packet, PacketInvalidData
 
 
 class NotifyPersonDuplicate(Packet):

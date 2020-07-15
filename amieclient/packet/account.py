@@ -2,7 +2,7 @@
 AMIE packets relating to accounts
 """
 
-from . import Packet
+from .base import Packet
 
 
 class DataAccountCreate(Packet):

@@ -2,7 +2,7 @@
 AMIE packets relating to users
 """
 
-from . import Packet, PacketInvalidData
+from .base import Packet, PacketInvalidData
 
 
 class NotifyUserModify(Packet):

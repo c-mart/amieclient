@@ -1,3 +1,8 @@
+import json
+
+from .base import Packet
+
+
 class PacketList(object):
     """
     A list of packets.
