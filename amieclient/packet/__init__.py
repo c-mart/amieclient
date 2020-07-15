@@ -97,7 +97,8 @@ class Packet(object, metaclass=MetaPacket):
             error_str = "No packet type matches provided '{}'".format(pkt_type)
             raise NotImplementedError(error_str)
 
-        obj = pkt_class(packet_id=data['header']['packet_id'])
+        obj = pkt_class(packet_id=data['header']['packet_id'],
+                        in_reply_to=data['header'].get('in_reply_to'))
 
         for k, v in data['body']:
             if k in obj._required_data or k in obj._allowed_data:
