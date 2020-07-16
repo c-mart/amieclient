@@ -98,17 +98,19 @@ class Packet(object, metaclass=MetaPacket):
 
     @classmethod
     def _find_packet_type(cls, packet_or_packet_type):
+        pkt_cls = None
         if type(packet_or_packet_type) == str:
             # We're given a string, search in
             # subclasses
-            for subclass in cls.__subclasses__():
+            for subclass in Packet.__subclasses__():
                 if subclass._packet_type == packet_or_packet_type:
                     pkt_cls = subclass
                     break
-        elif packet_or_packet_type.__class__ in cls.__subclasses__():
+        elif packet_or_packet_type.__class__ in Packet.__subclasses__():
             # We've been given a packet, just get its class attribute
             pkt_cls = packet_or_packet_type.__class__
-        else:
+
+        if pkt_cls is None:
             # Raise a NotImplementedError if we can't find a subclass
             error_str = "No packet type matches provided '{}'".format(packet_or_packet_type)
             raise PacketInvalidType(error_str)
