@@ -31,11 +31,14 @@ class ServerSession(requests.Session):
 
 class Client(object):
     """
-    AMIE Client
+    AMIE Client.
 
+    Args:
+        site_name (str): Name of the client site.
+        base_url (str): Base URL for the XSEDE api
     Example:
-    psc_client = amieclient.Client(site_name='PSC')
-    psc_alt_base_client = amieclient.Client(site_name='PSC', base_url='https://amieclient.xsede.org/v0.20_beta/)
+        psc_client = amieclient.Client(site_name='PSC')
+        psc_alt_base_client = amieclient.Client(site_name='PSC', base_url='https://amieclient.xsede.org/v0.20_beta/)
 
     """
     def __init__(self, site_name, base_url='https://amieclient.xsede.org/v0.10/'):
@@ -128,7 +131,7 @@ class Client(object):
         # DEMO TIME
         return TransactionList.from_json(DEMO_JSON_TXN_LIST)
 
-    def send_packet(self, *, packet, skip_validation=False):
+    def send_packet(self, packet, skip_validation=False):
         """
         Send a packet
         """
