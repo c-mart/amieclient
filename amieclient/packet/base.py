@@ -13,6 +13,31 @@ class PacketInvalidType(Exception):
     """Raised when we try to create a packet with an invalid type"""
 
 
+# Closures, for properly handling properties
+# in the metaclass
+def _make_get_required(key):
+    def get_required(self):
+        return self._required_data[key]
+    return get_required
+
+
+def _make_set_required(key):
+    def set_required(self, value):
+        self._required_data[key] = value
+    return set_required
+
+
+def _make_get_allowed(key):
+    def get_allowed(self):
+        return self._allowed_data[key]
+    return get_allowed
+
+
+def _make_set_allowed(key):
+    def set_allowed(self, value):
+        self._allowed_data[key] = value
+    return set_allowed
+
 class MetaPacket(type):
     """Metaclass for packets.
 
@@ -21,32 +46,12 @@ class MetaPacket(type):
     stores the information in two separate dictionaries on the object.
     """
     def __new__(cls, name, base, attrs):
-        required_data = defaultdict(None)
-        allowed_data = defaultdict(None)
         required_fields = attrs.pop('_data_keys_required', [])
         allowed_fields = attrs.pop('_data_keys_allowed', [])
         for k in required_fields:
-
-            def get_required(obj):
-                return obj._required_data[k]
-
-            def set_required(obj, val):
-                obj._required_data[k] = val
-
-            attrs[k] = property(get_required, set_required)
-
+            attrs[k] = property(_make_get_required(k), _make_set_required(k))
         for k in allowed_fields:
-
-            def get_allowed(obj):
-                return obj._allowed_data[k]
-
-            def set_allowed(obj, val):
-                obj._allowed_data[k] = val
-
-            attrs[k] = property(get_allowed, set_allowed)
-
-        attrs['_required_data'] = required_data
-        attrs['_allowed_data'] = allowed_data
+            attrs[k] = property(_make_get_allowed(k), _make_set_allowed(k))
         return type.__new__(cls, name, base, attrs)
 
 
@@ -72,6 +77,8 @@ class Packet(object, metaclass=MetaPacket):
 
     def __init__(self, packet_id=None, date=None,
                  additional_data={}, in_reply_to=None):
+        self._required_data = defaultdict(None)
+        self._allowed_data = defaultdict(None)
         self.packet_id = packet_id
         self.additional_data = additional_data
         if not date:
