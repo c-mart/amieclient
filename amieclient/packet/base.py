@@ -4,6 +4,7 @@ from datetime import datetime
 from collections import defaultdict
 from dateutil.parser import parse as dtparse
 
+
 class PacketInvalidData(Exception):
     """Raised when we try to build a packet with invalid data"""
     pass
@@ -32,11 +33,17 @@ def _make_get_allowed(key):
         return self._allowed_data[key]
     return get_allowed
 
+def _make_del_required(key):
+    def del_required(self, value):
+        self._required_data[key] = None
+    return del_required
+
 
 def _make_set_allowed(key):
     def set_allowed(self, value):
         self._allowed_data[key] = value
     return set_allowed
+
 
 class MetaPacket(type):
     """Metaclass for packets.
@@ -46,10 +53,14 @@ class MetaPacket(type):
     stores the information in two separate dictionaries on the object.
     """
     def __new__(cls, name, base, attrs):
+        attrs['_required_data'] = {}
+        attrs['_allowed_data'] = {}
         required_fields = attrs.pop('_data_keys_required', [])
         allowed_fields = attrs.pop('_data_keys_allowed', [])
         for k in required_fields:
-            attrs[k] = property(_make_get_required(k), _make_set_required(k))
+            attrs[k] = property(_make_get_required(k),
+                                _make_set_required(k),
+                                _make_del_required(k))
         for k in allowed_fields:
             attrs[k] = property(_make_get_allowed(k), _make_set_allowed(k))
         return type.__new__(cls, name, base, attrs)
@@ -77,8 +88,6 @@ class Packet(object, metaclass=MetaPacket):
 
     def __init__(self, packet_id=None, date=None,
                  additional_data={}, in_reply_to=None):
-        self._required_data = defaultdict(None)
-        self._allowed_data = defaultdict(None)
         self.packet_id = packet_id
         self.additional_data = additional_data
         if not date:
@@ -127,7 +136,11 @@ class Packet(object, metaclass=MetaPacket):
 
         for k, v in data['body'].items():
             if k in obj._required_data or k in obj._allowed_data:
-                setattr(obj, k, v)
+                if 'Date' in k:
+                    # TODO check if this is a valid assumption
+                    setattr(obj, k, dtparse(v))
+                else:
+                    setattr(obj, k, v)
             else:
                 obj.additional_data[k] = v
 
@@ -185,10 +198,13 @@ class Packet(object, metaclass=MetaPacket):
     @property
     def as_dict(self):
         data_body = {}
-        # Filter out non-defined items from our data collections
+        # Filter out non-defined items from our data collections, converting
+        # if neccessary
         for d in [self._required_data, self._allowed_data, self.additional_data]:
             for k, v in d.items():
-                if v is not None:
+                if type(v) == datetime:
+                    data_body[k] = v.isoformat()
+                elif v is not None:
                     data_body[k] = v
 
         header = {

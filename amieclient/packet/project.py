@@ -88,10 +88,10 @@ class RequestProjectCreate(Packet):
         'GrantNumber',
         'PfosNumber',
         'PiFirstName',
-        'PiLastName'
+        'PiLastName',
         'PiOrganization',
         'PiOrgCode',
-        'StartDate'
+        'StartDate',
         'ResourceList',
         'ServiceUnitsAllocated',
     ]
