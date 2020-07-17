@@ -1,7 +1,7 @@
 import json
 
 from datetime import datetime
-
+from collections import defaultdict
 from dateutil.parser import parse as dtparse
 
 class PacketInvalidData(Exception):
@@ -21,25 +21,21 @@ class MetaPacket(type):
     stores the information in two separate dictionaries on the object.
     """
     def __new__(cls, name, base, attrs):
-        required_data = {}
-        allowed_data = {}
+        required_data = defaultdict(None)
+        allowed_data = defaultdict(None)
         required_fields = attrs.pop('_data_keys_required', [])
         allowed_fields = attrs.pop('_data_keys_allowed', [])
         for k in required_fields:
-            required_data[k] = None
 
-            def get_req(obj):
+            def get_required(obj):
                 return obj._required_data[k]
 
-            def set_req(obj, val):
+            def set_required(obj, val):
                 obj._required_data[k] = val
 
-            def del_req(obj):
-                obj._required_data[k] = None
-            attrs[k] = property(get_req, set_req, del_req)
+            attrs[k] = property(get_required, set_required)
 
         for k in allowed_fields:
-            allowed_data[k] = None
 
             def get_allowed(obj):
                 return obj._allowed_data[k]
@@ -47,9 +43,7 @@ class MetaPacket(type):
             def set_allowed(obj, val):
                 obj._allowed_data[k] = val
 
-            def del_allowed(obj):
-                obj._allowed_data[k] = None
-            attrs[k] = property(get_allowed, set_allowed, del_allowed)
+            attrs[k] = property(get_allowed, set_allowed)
 
         attrs['_required_data'] = required_data
         attrs['_allowed_data'] = allowed_data
