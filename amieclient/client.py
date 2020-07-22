@@ -35,17 +35,25 @@ class Client(object):
 
     Args:
         site_name (str): Name of the client site.
+        api_key (str): API key secret
         base_url (str): Base URL for the XSEDE api
     Example:
-        psc_client = amieclient.Client(site_name='PSC')
-        psc_alt_base_client = amieclient.Client(site_name='PSC', base_url='https://amieclient.xsede.org/v0.20_beta/)
+        psc_client = amieclient.Client(site_name='PSC', api_key=some_secrets_store['amie_api_key'])
+        psc_alt_base_client = amieclient.Client(site_name='PSC',
+                                                api_key='test_api_key',
+                                                base_url='https://amieclient.xsede.org/v0.20_beta/)
 
     """
-    def __init__(self, site_name, base_url='https://amieclient.xsede.org/v0.10/'):
+    def __init__(self, site_name, api_key, base_url='https://amieclient.xsede.org/v0.10/'):
         self.base_url = base_url
         self.site_name = site_name
         self.full_url = urljoin(self.base_url, self.site_name)
-        self._session = ServerSession(self.full_url)
+
+        amie_headers = {
+            'XA-API-KEY': api_key,
+            'XA-SITE': site_name
+        }
+        self._session = ServerSession(self.full_url, headers=amie_headers)
 
     def __enter__(self):
         return self
