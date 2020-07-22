@@ -33,13 +33,15 @@ local_dev_config = config['NCSA_LOCAL_DEV']
 
 # These clients all use the default value for the base URL, which is
 # https://amieclient.xsede.org/v0.10/
-psc_client = Client(site_name=psc_config['site_name'])
+psc_client = Client(site_name=psc_config['site_name'], api_key=psc_config['api_key'])
 
 # These clients use (made-up) different base URLs.
 psc_test_client = Client(site_name=psc_test_config['site_name'],
-                         base_url=psc_test_config['base_url'])
+                         base_url=psc_test_config['base_url'],
+                         api_key=psc_test_config['api_key'])
 local_dev_client = Client(site_name=local_dev_config['site_name'],
-                          base_url=local_dev_config['base_url'])
+                          base_url=local_dev_config['base_url'],
+                          api_key=local_dev_config['api_key'])
 
 # If you're into being mysterious and obscure, you could also use dictionary
 # expansion to pass your configuration variables based on the configuration

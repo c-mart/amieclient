@@ -22,5 +22,5 @@ rpc.ResourceList = ['IDK, somthing pretty fast', 'maybe with a gpu in it']
 rpc.ServiceUnitsAllocated = '3'
 
 # Send the packet
-with Client('psc') as c:
+with Client('psc', 'some_secret_key') as c:
     c.send_packet(rpc)

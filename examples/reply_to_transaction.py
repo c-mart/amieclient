@@ -8,7 +8,7 @@ packet, which we will respond to with a NotifyProjectCreate.
 from amieclient import Client
 
 # Create the client
-psc_client = Client(site_name='PSC')
+psc_client = Client(site_name='PSC', api_key='some_secret_key')
 
 # Get the transaction you want
 transaction = psc_client.get_transaction(transaction_id='12345')
@@ -34,7 +34,7 @@ psc_client.send_packet(project_created)
 
 # You can also create a client as a context manager, if you want.
 # This complete example would look like
-with Client('psc') as client_too:
+with Client('psc', 'some_secret_key') as client_too:
     transaction = client_too.get_transaction(transaction_id='12345')
     project_creation_request = transaction.packets[-1]
     # Do something...
