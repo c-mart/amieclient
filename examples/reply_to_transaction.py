@@ -11,7 +11,7 @@ from amieclient import Client
 psc_client = Client(site_name='PSC', api_key='some_secret_key')
 
 # Get the transaction you want
-transaction = psc_client.get_transaction(transaction_id='12345')
+transaction = psc_client.get_transaction(trans_rec_id='12345')
 
 # Get the most recent packet (? this may need a more robust method)
 project_creation_request = transaction.packets[-1]

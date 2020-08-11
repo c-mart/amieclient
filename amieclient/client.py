@@ -84,7 +84,7 @@ class Client(object):
             time_str = "{},{}".format(start_str, end_str)
         return time_str
 
-    def get_transaction(self, *, transaction_id):
+    def get_transaction(self, *, trans_rec_id):
         """
         Given a single transaction id, fetches the related transaction.
 
