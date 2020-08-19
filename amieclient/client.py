@@ -87,19 +87,23 @@ class Client(object):
     def get_transaction(self, *, trans_rec_id):
         """
         Given a single transaction id, fetches the related transaction.
+        """
+        return Transaction.from_json(DEMO_JSON_TXN)
 
-        Currently a dummy demo
+    def get_packet(self, *, packet_rec_id):
+        """
+        Given a single packet record id, fetches the packet.
         """
         return Transaction.from_json(DEMO_JSON_TXN)
 
 
-    def list_packets(self, *, transaction_ids=None, outgoing=None,
+    def list_packets(self, *, trans_rec_ids=None, outgoing=None,
                      update_time_start=None, update_time_until=None,
                      states=None, client_states=None, incoming=None):
         """
         Fetches a list of transactions based on the provided search parameters
         """
-        transaction_ids_str = self._join_list(transaction_ids)
+        trans_rec_ids_str = self._join_list(trans_rec_ids)
         states_str = self._join_list(states)
         client_states_str = self._join_list(client_states)
         time_str = self._dt_range(update_time_start, update_time_until)
@@ -107,7 +111,7 @@ class Client(object):
         # Build a dict of parameters. Requests skips any with a None value,
         # so no need to weed them out
         params = {
-            'transaction_id': transaction_ids_str,
+            'trans_rec_id': trans_rec_ids_str,
             'outgoing': outgoing,
             'update_time': time_str,
             'states': states_str,
@@ -119,8 +123,6 @@ class Client(object):
         # response = self._session.get('/packet_list', params=params)
         # DEMO TIME
         return PacketList.from_json(DEMO_JSON_PKT_LIST)
-
-
 
     def list_transactions(self, *,
                           transaction_ids=None, remote_sites=None,
@@ -148,4 +150,3 @@ class Client(object):
 
         print("Here's what I would send...")
         print(packet.json)
-
