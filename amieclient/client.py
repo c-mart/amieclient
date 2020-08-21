@@ -16,19 +16,6 @@ from .demo_json_str import (DEMO_JSON_PKT_LIST, DEMO_JSON_PKT_1,
 """AMIE client class"""
 
 
-class ServerSession(requests.Session):
-    """
-    Recipe from https://github.com/psf/requests/issues/2554#issuecomment-109341010
-    """
-    def __init__(self, prefix_url):
-        self.prefix_url = prefix_url
-        super().__init__()
-
-    def request(self, method, url, *args, **kwargs):
-        url = urljoin(self.prefix_url, url)
-        return super().request(method, url, *args, **kwargs)
-
-
 class Client(object):
     """
     AMIE Client.
@@ -53,7 +40,9 @@ class Client(object):
             'XA-API-KEY': api_key,
             'XA-SITE': site_name
         }
-        self._session = ServerSession(self.full_url, headers=amie_headers)
+        s = requests.Session()
+        s.headers.update(amie_headers)
+        self._session = s
 
     def __enter__(self):
         return self
