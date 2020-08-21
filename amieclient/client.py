@@ -6,7 +6,7 @@ import dateutil
 
 from .packet import PacketList
 from .packet.base import Packet
-from .transaction import Transaction, TransactionList
+from .transaction import Transaction
 
 from .demo_json_str import (DEMO_JSON_PKT_LIST, DEMO_JSON_PKT_1,
                             DEMO_JSON_PKT_2, DEMO_JSON_TXN_LIST,
@@ -117,22 +117,6 @@ class Client(object):
         # DEMO TIME
         return PacketList.from_json(DEMO_JSON_PKT_LIST)
 
-    def list_transactions(self, *,
-                          transaction_ids=None, remote_sites=None,
-                          originating_sites=None, local_sites=None,
-                          update_time_start=None, update_time_until=None,
-                          transaction_state=None, incoming=None):
-        """
-        Fetches a list of transactions based on the provided search parameters
-        """
-        transaction_ids_str = self._join_list(transaction_ids)
-        remote_sites_str = self._join_list(remote_sites)
-        originating_sites_str = self._join_list(originating_sites)
-        local_sites_str = self._join_list(local_sites)
-        time_str = self._dt_range(update_time_start, update_time_until)
-
-        # DEMO TIME
-        return TransactionList.from_json(DEMO_JSON_TXN_LIST)
 
     def send_packet(self, packet, skip_validation=False):
         """
