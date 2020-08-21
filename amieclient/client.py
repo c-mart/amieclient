@@ -25,13 +25,16 @@ class Client(object):
         api_key (str): API key secret
         base_url (str): Base URL for the XSEDE api
     Example:
-        psc_client = amieclient.Client(site_name='PSC', api_key=some_secrets_store['amie_api_key'])
+        psc_client = amieclient.Client(site_name='PSC',
+                                       api_key=some_secrets_store['amie_api_key'])
+
         psc_alt_base_client = amieclient.Client(site_name='PSC',
                                                 api_key='test_api_key',
                                                 base_url='https://amieclient.xsede.org/v0.20_beta/)
 
     """
-    def __init__(self, site_name, api_key, base_url='https://amieclient.xsede.org/v0.10/'):
+    def __init__(self, site_name, api_key,
+                 base_url='https://amieclient.xsede.org/v0.10/'):
         self.base_url = base_url
         self.site_name = site_name
 
@@ -58,8 +61,8 @@ class Client(object):
             # if we're given an empty list, return None
             return None
         else:
-            # If we're given anything else, i.e. None or some other single thing,
-            # give it back
+            # If we're given anything else, i.e. None or some other single
+            # thing, give it back
             return things
 
     @staticmethod
