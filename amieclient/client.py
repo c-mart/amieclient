@@ -77,7 +77,11 @@ class Client(object):
         """
         Given a single transaction id, fetches the related transaction.
         """
-        return Transaction.from_json(DEMO_JSON_TXN)
+        url = urljoin(self.base_url,
+                      f'/transactions/{self.site_name}/{trans_rec_id}/packets')
+        r = self._session.get(url)
+        r.raise_for_status()
+        return Transaction.from_dict(r.json())
 
     def get_packet(self, *, packet_rec_id):
         """
