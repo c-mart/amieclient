@@ -34,7 +34,6 @@ class Client(object):
     def __init__(self, site_name, api_key, base_url='https://amieclient.xsede.org/v0.10/'):
         self.base_url = base_url
         self.site_name = site_name
-        self.full_url = urljoin(self.base_url, self.site_name)
 
         amie_headers = {
             'XA-API-KEY': api_key,
@@ -116,10 +115,13 @@ class Client(object):
         }
 
         # Get the list of packets
+        url = urljoin(self.base_url,
+                      f'/packets/{self.site_name}')
+        r = self._session.get(url, params=params)
+        r.raise_for_status()
         # response = self._session.get('/packet_list', params=params)
         # DEMO TIME
-        return PacketList.from_json(DEMO_JSON_PKT_LIST)
-
+        return PacketList.from_dict(r.json())
 
     def send_packet(self, packet, skip_validation=False):
         """
