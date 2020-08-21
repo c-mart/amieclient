@@ -122,8 +122,6 @@ class Client(object):
                       f'/packets/{self.site_name}')
         r = self._session.get(url, params=params)
         r.raise_for_status()
-        # response = self._session.get('/packet_list', params=params)
-        # DEMO TIME
         return PacketList.from_dict(r.json())
 
     def send_packet(self, packet, skip_validation=False):
@@ -133,5 +131,8 @@ class Client(object):
         if not skip_validation:
             packet.validate_data()
 
-        print("Here's what I would send...")
-        print(packet.json)
+        url = urljoin(self.base_url,
+                      f'/packets/{self.site_name}')
+        r = self._session.post(url, json=packet.as_dict)
+        r.raise_for_response()
+        return r
