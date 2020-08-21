@@ -87,8 +87,11 @@ class Client(object):
         """
         Given a single packet record id, fetches the packet.
         """
-        return Transaction.from_json(DEMO_JSON_TXN)
-
+        url = urljoin(self.base_url,
+                      f'/packets/{self.site_name}/{packet_rec_id}')
+        r = self._session.get(url)
+        r.raise_for_status()
+        return Packet.from_dict(r.json())
 
     def list_packets(self, *, trans_rec_ids=None, outgoing=None,
                      update_time_start=None, update_time_until=None,
