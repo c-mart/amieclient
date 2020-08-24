@@ -1,0 +1,263 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Examples &#8212; amieclient  documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="amieclient API" href="client.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="examples">
+<h1>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h1>
+<p>These examples demonstrate a few common usage scenarios.</p>
+<div class="section" id="replying-to-a-packet-from-a-transaction">
+<h2>Replying to a packet from a transaction<a class="headerlink" href="#replying-to-a-packet-from-a-transaction" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python3</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">This example demonstrates how to respond to a transaction in progress</span>
+<span class="sd">For this example, Transaction 12345 has an incoming RequestProjectCreate</span>
+<span class="sd">packet, which we will respond to with a NotifyProjectCreate.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">amieclient</span> <span class="kn">import</span> <span class="n">Client</span>
+
+<span class="c1"># Create the client</span>
+<span class="n">psc_client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="n">site_name</span><span class="o">=</span><span class="s1">&#39;PSC&#39;</span><span class="p">,</span> <span class="n">api_key</span><span class="o">=</span><span class="s1">&#39;some_secret_key&#39;</span><span class="p">)</span>
+
+<span class="c1"># Get the transaction you want</span>
+<span class="n">transaction</span> <span class="o">=</span> <span class="n">psc_client</span><span class="o">.</span><span class="n">get_transaction</span><span class="p">(</span><span class="n">trans_rec_id</span><span class="o">=</span><span class="s1">&#39;12345&#39;</span><span class="p">)</span>
+
+<span class="c1"># Get the most recent packet (? this may need a more robust method)</span>
+<span class="n">project_creation_request</span> <span class="o">=</span> <span class="n">transaction</span><span class="o">.</span><span class="n">packets</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+<span class="c1"># The assumption here is that rpc is a RequestProjectCreate.</span>
+<span class="c1"># Here, you&#39;d go ahead and do what you need to create the project.</span>
+
+<span class="c1"># SomeInternalSystem.create_project()</span>
+
+<span class="c1"># Once that&#39;s done, send a NotifyProjectCreate packet.</span>
+<span class="c1"># If nothing needs to be changed from the RequestProjectCreate packet,</span>
+<span class="c1"># you can use the packet&#39;s reply_to() method. This will create a packet that</span>
+<span class="c1"># automatically has the proper type and a reference to the preceeding packet.</span>
+<span class="c1"># The AMIE service will extrapolate the needed information from the</span>
+<span class="c1"># RequestProjectCreate packet.</span>
+
+<span class="n">project_created</span> <span class="o">=</span> <span class="n">project_creation_request</span><span class="o">.</span><span class="n">reply_to</span><span class="p">()</span>
+
+<span class="n">psc_client</span><span class="o">.</span><span class="n">send_packet</span><span class="p">(</span><span class="n">project_created</span><span class="p">)</span>
+
+<span class="c1"># You can also create a client as a context manager, if you want.</span>
+<span class="c1"># This complete example would look like</span>
+<span class="k">with</span> <span class="n">Client</span><span class="p">(</span><span class="s1">&#39;psc&#39;</span><span class="p">,</span> <span class="s1">&#39;some_secret_key&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">client_too</span><span class="p">:</span>
+    <span class="n">transaction</span> <span class="o">=</span> <span class="n">client_too</span><span class="o">.</span><span class="n">get_transaction</span><span class="p">(</span><span class="n">transaction_id</span><span class="o">=</span><span class="s1">&#39;12345&#39;</span><span class="p">)</span>
+    <span class="n">project_creation_request</span> <span class="o">=</span> <span class="n">transaction</span><span class="o">.</span><span class="n">packets</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="c1"># Do something...</span>
+    <span class="n">project_created</span> <span class="o">=</span> <span class="n">project_creation_request</span><span class="o">.</span><span class="n">reply_to</span><span class="p">()</span>
+    <span class="n">client_too</span><span class="o">.</span><span class="n">send_packet</span><span class="p">(</span><span class="n">project_created</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="creating-a-new-packet-from-scratch">
+<h2>Creating a new packet from scratch<a class="headerlink" href="#creating-a-new-packet-from-scratch" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python3</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">This example demonstrates how to create and send along a new packet.&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">amieclient</span> <span class="kn">import</span> <span class="n">Client</span>
+<span class="kn">from</span> <span class="nn">amieclient.packet</span> <span class="kn">import</span> <span class="n">RequestProjectCreate</span>
+
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
+
+<span class="c1"># Create the packet</span>
+<span class="n">rpc</span> <span class="o">=</span> <span class="n">RequestProjectCreate</span><span class="p">()</span>
+<span class="n">rpc</span><span class="o">.</span><span class="n">AllocationType</span> <span class="o">=</span> <span class="s1">&#39;extremely hihg most important&#39;</span>
+<span class="n">rpc</span><span class="o">.</span><span class="n">GrantNumber</span> <span class="o">=</span> <span class="s1">&#39;3&#39;</span>
+<span class="n">rpc</span><span class="o">.</span><span class="n">PfosNumber</span> <span class="o">=</span> <span class="s1">&#39;3&#39;</span>
+<span class="n">rpc</span><span class="o">.</span><span class="n">PiFirstName</span> <span class="o">=</span> <span class="s1">&#39;Jessica&#39;</span>
+<span class="n">rpc</span><span class="o">.</span><span class="n">PiLastName</span> <span class="o">=</span> <span class="s1">&#39;Scienceperson&#39;</span>
+<span class="n">rpc</span><span class="o">.</span><span class="n">PiOrganization</span> <span class="o">=</span> <span class="s1">&#39;PSC&#39;</span>
+<span class="n">rpc</span><span class="o">.</span><span class="n">PiOrgCode</span> <span class="o">=</span> <span class="s1">&#39;12345&#39;</span>
+<span class="n">rpc</span><span class="o">.</span><span class="n">EndDate</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">90</span><span class="p">)</span>
+<span class="n">rpc</span><span class="o">.</span><span class="n">StartDate</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+<span class="n">rpc</span><span class="o">.</span><span class="n">ResourceList</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;IDK, somthing pretty fast&#39;</span><span class="p">,</span> <span class="s1">&#39;maybe with a gpu in it&#39;</span><span class="p">]</span>
+<span class="n">rpc</span><span class="o">.</span><span class="n">ServiceUnitsAllocated</span> <span class="o">=</span> <span class="s1">&#39;3&#39;</span>
+
+<span class="c1"># Send the packet</span>
+<span class="k">with</span> <span class="n">Client</span><span class="p">(</span><span class="s1">&#39;psc&#39;</span><span class="p">,</span> <span class="s1">&#39;some_secret_key&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">c</span><span class="p">:</span>
+    <span class="n">c</span><span class="o">.</span><span class="n">send_packet</span><span class="p">(</span><span class="n">rpc</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="reading-configuration-information-from-a-file">
+<h2>Reading configuration information from a file<a class="headerlink" href="#reading-configuration-information-from-a-file" title="Permalink to this headline">¶</a></h2>
+<p>Here’s the configuration file:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">PSC</span><span class="p">]</span>
+<span class="n">site_name</span> <span class="o">=</span> <span class="s2">&quot;PSC&quot;</span>
+<span class="n">api_key</span> <span class="o">=</span> <span class="s2">&quot;some_secret_key&quot;</span>
+
+<span class="p">[</span><span class="n">PSC_TEST</span><span class="p">]</span>
+<span class="n">site_name</span> <span class="o">=</span> <span class="s2">&quot;PSC&quot;</span>
+<span class="n">base_url</span> <span class="o">=</span> <span class="s2">&quot;https://amieclient.xsede.org/v0.20/&quot;</span>
+<span class="n">api_key</span> <span class="o">=</span> <span class="s2">&quot;some_beta_key&quot;</span>
+
+<span class="p">[</span><span class="n">NCSA_LOCAL_DEV</span><span class="p">]</span>
+<span class="n">site_name</span> <span class="o">=</span> <span class="s2">&quot;NCSA&quot;</span>
+<span class="n">base_url</span> <span class="o">=</span> <span class="s2">&quot;http://localhost:12345&quot;</span>
+<span class="n">api_key</span> <span class="o">=</span> <span class="s2">&quot;some_dev_key&quot;</span>
+</pre></div>
+</div>
+<p>And here’s how you read from the configuration file and use it to create clients:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python3</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">This example demonstrates one way to store neccessary connection information</span>
+<span class="sd">for amieclient. Take a look at ./config.ini for an example of the format that</span>
+<span class="sd">Python&#39;s configparser expects. Three different sections are defined there --</span>
+<span class="sd">PSC, PSC_TEST, and NCSA_LOCAL_DEV -- containing three different configurations.</span>
+
+<span class="sd">PSC: Site name is PSC; points to the production URL endpoint</span>
+<span class="sd">PSC_TEST: Site name is also PSC, but the base URL is for a hypothetical version 0.2</span>
+<span class="sd">NSCA_LOCAL_TEST: Site name is NSCA. It points to a AMIE REST API running on localhost:12345</span>
+
+<span class="sd">We load and parse that configuration file, then use that to create client</span>
+<span class="sd">objects for each of the provided configurations.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">configparser</span> <span class="kn">import</span> <span class="n">ConfigParser</span>
+
+<span class="kn">from</span> <span class="nn">amieclient</span> <span class="kn">import</span> <span class="n">Client</span>
+
+<span class="c1"># For more information on the configparser library, please see the python docs:</span>
+<span class="c1"># https://docs.python.org/3.5/library/configparser.html</span>
+<span class="n">config</span> <span class="o">=</span> <span class="n">ConfigParser</span><span class="p">()</span>
+<span class="n">config</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s1">&#39;config.ini&#39;</span><span class="p">)</span>
+
+<span class="c1"># Get each section of the config file and give it a friendly name.</span>
+<span class="n">psc_config</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;PSC&#39;</span><span class="p">]</span>
+<span class="n">psc_test_config</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;PSC_TEST&#39;</span><span class="p">]</span>
+<span class="n">local_dev_config</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;NCSA_LOCAL_DEV&#39;</span><span class="p">]</span>
+
+<span class="c1"># Create the various clients. In real life, you&#39;d almost certainly only have</span>
+<span class="c1"># one client.</span>
+
+<span class="c1"># These clients all use the default value for the base URL, which is</span>
+<span class="c1"># https://amieclient.xsede.org/v0.10/</span>
+<span class="n">psc_client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="n">site_name</span><span class="o">=</span><span class="n">psc_config</span><span class="p">[</span><span class="s1">&#39;site_name&#39;</span><span class="p">],</span> <span class="n">api_key</span><span class="o">=</span><span class="n">psc_config</span><span class="p">[</span><span class="s1">&#39;api_key&#39;</span><span class="p">])</span>
+
+<span class="c1"># These clients use (made-up) different base URLs.</span>
+<span class="n">psc_test_client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="n">site_name</span><span class="o">=</span><span class="n">psc_test_config</span><span class="p">[</span><span class="s1">&#39;site_name&#39;</span><span class="p">],</span>
+                         <span class="n">base_url</span><span class="o">=</span><span class="n">psc_test_config</span><span class="p">[</span><span class="s1">&#39;base_url&#39;</span><span class="p">],</span>
+                         <span class="n">api_key</span><span class="o">=</span><span class="n">psc_test_config</span><span class="p">[</span><span class="s1">&#39;api_key&#39;</span><span class="p">])</span>
+<span class="n">local_dev_client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="n">site_name</span><span class="o">=</span><span class="n">local_dev_config</span><span class="p">[</span><span class="s1">&#39;site_name&#39;</span><span class="p">],</span>
+                          <span class="n">base_url</span><span class="o">=</span><span class="n">local_dev_config</span><span class="p">[</span><span class="s1">&#39;base_url&#39;</span><span class="p">],</span>
+                          <span class="n">api_key</span><span class="o">=</span><span class="n">local_dev_config</span><span class="p">[</span><span class="s1">&#39;api_key&#39;</span><span class="p">])</span>
+
+<span class="c1"># If you&#39;re into being mysterious and obscure, you could also use dictionary</span>
+<span class="c1"># expansion to pass your configuration variables based on the configuration</span>
+<span class="c1"># section of your choice. This will save yourself like 10 keystrokes.</span>
+<span class="n">psc_test_client_2</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="o">**</span><span class="n">psc_test_config</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">amieclient</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="client.html">amieclient API</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#replying-to-a-packet-from-a-transaction">Replying to a packet from a transaction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#creating-a-new-packet-from-scratch">Creating a new packet from scratch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#reading-configuration-information-from-a-file">Reading configuration information from a file</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="client.html" title="previous chapter">amieclient API</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;XSEDE.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.1.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/examples.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

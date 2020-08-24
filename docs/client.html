@@ -1,0 +1,465 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>amieclient API &#8212; amieclient  documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Examples" href="examples.html" />
+    <link rel="prev" title="Welcome to amieclient’s documentation!" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="amieclient-api">
+<h1>amieclient API<a class="headerlink" href="#amieclient-api" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="the-client-itself">
+<h2>The client itself<a class="headerlink" href="#the-client-itself" title="Permalink to this headline">¶</a></h2>
+<p>To communicate with the AMIE REST API, create a client object. You’ll need to provide your
+site name and your API key.</p>
+<span class="target" id="module-amieclient.client"></span><dl class="py class">
+<dt id="amieclient.client.Client">
+<em class="property">class </em><code class="sig-prename descclassname">amieclient.client.</code><code class="sig-name descname">Client</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">site_name</span></em>, <em class="sig-param"><span class="n">api_key</span></em>, <em class="sig-param"><span class="n">base_url</span><span class="o">=</span><span class="default_value">'https://amieclient.xsede.org/v0.10/'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#amieclient.client.Client" title="Permalink to this definition">¶</a></dt>
+<dd><p>AMIE Client.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>site_name</strong> (<em>str</em>) – Name of the client site.</p></li>
+<li><p><strong>api_key</strong> (<em>str</em>) – API key secret</p></li>
+<li><p><strong>base_url</strong> (<em>str</em>) – Base URL for the XSEDE api</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">psc_client</span> <span class="o">=</span> <span class="n">amieclient</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">site_name</span><span class="o">=</span><span class="s1">&#39;PSC&#39;</span><span class="p">,</span> <span class="n">api_key</span><span class="o">=</span><span class="n">some_secrets_store</span><span class="p">[</span><span class="s1">&#39;amie_api_key&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>You can also override the base_url parameter, if you’re doing local development
+or testing out a new version</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">psc_alt_base_client</span> <span class="o">=</span> <span class="n">amieclient</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">site_name</span><span class="o">=</span><span class="s1">&#39;PSC&#39;</span><span class="p">,</span> <span class="n">api_key</span><span class="o">=</span><span class="s1">&#39;test_api_key&#39;</span><span class="p">,</span> <span class="n">base_url</span><span class="o">=</span><span class="s1">&#39;https://amieclient.xsede.org/v0.20_beta/)</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt id="amieclient.client.Client.get_packet">
+<code class="sig-name descname">get_packet</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">packet_rec_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#amieclient.client.Client.get_packet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a single packet record id, fetches the packet.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>packet_rec_id</strong> – The transaction record ID.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>amieclient.Packet</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="amieclient.client.Client.get_transaction">
+<code class="sig-name descname">get_transaction</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">trans_rec_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#amieclient.client.Client.get_transaction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a single transaction record id, fetches the related transaction.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>trans_rec_id</strong> – The transaction record ID.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>amieclient.Transaction</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="amieclient.client.Client.list_packets">
+<code class="sig-name descname">list_packets</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">trans_rec_ids</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">outgoing</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">update_time_start</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">update_time_until</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">states</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">client_states</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">incoming</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#amieclient.client.Client.list_packets" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fetches a list of transactions based on the provided search parameters</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>trans_rec_ids</strong> (<em>list</em>) – Searches for packets with these transaction record  IDs.</p></li>
+<li><p><strong>states</strong> (<em>list</em>) – Searches for packets with the provided states.</p></li>
+<li><p><strong>update_time_start</strong> (<em>datetime.Datetime</em>) – Searches for packets updated since this time.</p></li>
+<li><p><strong>update_time_until</strong> (<em>datetime.Datetime</em>) – Searches for packets updated before this time.</p></li>
+<li><p><strong>states</strong> – Searches for packets in the provided states.</p></li>
+<li><p><strong>client_states</strong> (<em>list</em>) – Searches for packets in the provided client states.</p></li>
+<li><p><strong>incoming</strong> (<em>bool</em>) – If true, search is limited to incoming packets.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a list of packets matching the provided parameters.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>amieclient.PacketList</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="amieclient.client.Client.send_packet">
+<code class="sig-name descname">send_packet</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">packet</span></em>, <em class="sig-param"><span class="n">skip_validation</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#amieclient.client.Client.send_packet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send a packet</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>packet</strong> (<em>amieclient.Packet</em>) – The packet to send.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The response from the AMIE API.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>requests.Response</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="packets">
+<h2>Packets<a class="headerlink" href="#packets" title="Permalink to this headline">¶</a></h2>
+<p>The REST version of AMIE focuses more on individual packets more than transactions.
+The amieclient library has a generic Packet class, but in general, as a user of the
+library, you’ll be using the specific child classes for creating and handling packets.</p>
+<p>If you need it, the parent Packet class has an internal classmethod, <cite>_find_packet_type</cite>,
+that takes the AMIE name of a packet and returns the corresponding amieclient packet
+class.</p>
+<dl class="py class">
+<dt id="amieclient.packet.base.Packet">
+<em class="property">class </em><code class="sig-prename descclassname">amieclient.packet.base.</code><code class="sig-name descname">Packet</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">packet_id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">date</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">additional_data</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="n">in_reply_to</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#amieclient.packet.base.Packet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generic AMIE packet base class</p>
+<dl class="simple">
+<dt>Class parameters:</dt><dd><p>_packet_type: the type of the packet (string)
+_expected_reply: expected reply types (list[string] or list[Packet type])
+_data_keys_required: Data keys that are required for this packet type
+_data_keys_allowed: Data keys that are allowed for this packet type</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>packet_id</strong> (<em>str</em>) – The ID for this packet</p></li>
+<li><p><strong>date</strong> (<em>datetime.Datetime</em>) – A datetime object representing this packet’s date attribute</p></li>
+<li><p><strong>additional_data</strong> (<em>dict</em>) – Body data that is outsite the AMIE spec.</p></li>
+<li><p><strong>in_reply_to</strong> (<em>str</em><em>, </em><em>int</em><em>, </em><em>amieclient.Packet</em>) – The packet this packet is in response to. Can take a packet, int, string, or None.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="amieclient.packet.base.Packet.as_dict">
+<em class="property">property </em><code class="sig-name descname">as_dict</code><a class="headerlink" href="#amieclient.packet.base.Packet.as_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>This packet, as a dictionary.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="amieclient.packet.base.Packet.from_dict">
+<em class="property">classmethod </em><code class="sig-name descname">from_dict</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="headerlink" href="#amieclient.packet.base.Packet.from_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates an instance of an AMIE packet of this type from provided dictionary</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>dict</em>) – Packet data</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="amieclient.packet.base.Packet.from_json">
+<em class="property">classmethod </em><code class="sig-name descname">from_json</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">json_string</span></em><span class="sig-paren">)</span><a class="headerlink" href="#amieclient.packet.base.Packet.from_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates an instance of an AMIE packet of this type from provided JSON.
+Basically just a wrapper around from_dict.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>json_string</strong> (<em>string</em>) – JSON data</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="amieclient.packet.base.Packet.json">
+<em class="property">property </em><code class="sig-name descname">json</code><a class="headerlink" href="#amieclient.packet.base.Packet.json" title="Permalink to this definition">¶</a></dt>
+<dd><p>The JSON representation of this AMIE packet</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="amieclient.packet.base.Packet.packet_type">
+<em class="property">property </em><code class="sig-name descname">packet_type</code><a class="headerlink" href="#amieclient.packet.base.Packet.packet_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>The AMIE name for this packet type.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="amieclient.packet.base.Packet.reply_packet">
+<code class="sig-name descname">reply_packet</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">packet_id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">packet_type</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">force</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#amieclient.packet.base.Packet.reply_packet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a packet that the current packet would expect as a response,
+with the in_reply_to attribute set to the current packet’s ID.</p>
+<p>Generally, most packets only have one kind of expected reply,
+so you should be fine to use reply_packet with just the desired packet_id</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>packet_id</strong> – The ID of the reply packet, if needed</p></li>
+<li><p><strong>packet_type</strong> – Optionally, the type of the reply packet</p></li>
+<li><p><strong>force</strong> – will create a reply packet whether or not packet_type is in _expected_reply</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">my_npc</span> <span class="o">=</span> <span class="n">received_rpc</span><span class="o">.</span><span class="n">reply_packet</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="amieclient.packet.base.Packet.validate_data">
+<code class="sig-name descname">validate_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#amieclient.packet.base.Packet.validate_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>By default, checks to see that all required data items have a
+defined value, unless in_reply_to is not None (in which case,
+we assume the missing data will be filled in based on the referenced
+packet ID.</p>
+<p>Some packet types will override this function, or add additional checks.</p>
+</dd></dl>
+
+</dd></dl>
+
+<div class="section" id="module-amieclient.packet.account">
+<span id="account-packets"></span><h3>Account packets<a class="headerlink" href="#module-amieclient.packet.account" title="Permalink to this headline">¶</a></h3>
+<p>AMIE packets relating to accounts</p>
+<dl class="py class">
+<dt id="amieclient.packet.account.DataAccountCreate">
+<em class="property">class </em><code class="sig-prename descclassname">amieclient.packet.account.</code><code class="sig-name descname">DataAccountCreate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">packet_id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">date</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">additional_data</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="n">in_reply_to</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#amieclient.packet.account.DataAccountCreate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt id="amieclient.packet.account.NotifyAccountCreate">
+<em class="property">class </em><code class="sig-prename descclassname">amieclient.packet.account.</code><code class="sig-name descname">NotifyAccountCreate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">packet_id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">date</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">additional_data</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="n">in_reply_to</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#amieclient.packet.account.NotifyAccountCreate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt id="amieclient.packet.account.NotifyAccountInactivate">
+<em class="property">class </em><code class="sig-prename descclassname">amieclient.packet.account.</code><code class="sig-name descname">NotifyAccountInactivate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">packet_id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">date</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">additional_data</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="n">in_reply_to</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#amieclient.packet.account.NotifyAccountInactivate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt id="amieclient.packet.account.NotifyAccountReactivate">
+<em class="property">class </em><code class="sig-prename descclassname">amieclient.packet.account.</code><code class="sig-name descname">NotifyAccountReactivate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">packet_id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">date</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">additional_data</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="n">in_reply_to</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#amieclient.packet.account.NotifyAccountReactivate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt id="amieclient.packet.account.RequestAccountCreate">
+<em class="property">class </em><code class="sig-prename descclassname">amieclient.packet.account.</code><code class="sig-name descname">RequestAccountCreate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">packet_id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">date</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">additional_data</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="n">in_reply_to</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#amieclient.packet.account.RequestAccountCreate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt id="amieclient.packet.account.RequestAccountInactivate">
+<em class="property">class </em><code class="sig-prename descclassname">amieclient.packet.account.</code><code class="sig-name descname">RequestAccountInactivate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">packet_id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">date</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">additional_data</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="n">in_reply_to</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#amieclient.packet.account.RequestAccountInactivate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt id="amieclient.packet.account.RequestAccountReactivate">
+<em class="property">class </em><code class="sig-prename descclassname">amieclient.packet.account.</code><code class="sig-name descname">RequestAccountReactivate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">packet_id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">date</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">additional_data</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="n">in_reply_to</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#amieclient.packet.account.RequestAccountReactivate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-amieclient.packet.project">
+<span id="project-packets"></span><h3>Project packets<a class="headerlink" href="#module-amieclient.packet.project" title="Permalink to this headline">¶</a></h3>
+<p>AMIE packets relating to projects</p>
+<dl class="py class">
+<dt id="amieclient.packet.project.DataProjectCreate">
+<em class="property">class </em><code class="sig-prename descclassname">amieclient.packet.project.</code><code class="sig-name descname">DataProjectCreate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">packet_id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">date</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">additional_data</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="n">in_reply_to</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#amieclient.packet.project.DataProjectCreate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt id="amieclient.packet.project.NotifyProjectCreate">
+<em class="property">class </em><code class="sig-prename descclassname">amieclient.packet.project.</code><code class="sig-name descname">NotifyProjectCreate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">packet_id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">date</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">additional_data</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="n">in_reply_to</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#amieclient.packet.project.NotifyProjectCreate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt id="amieclient.packet.project.NotifyProjectInactivate">
+<em class="property">class </em><code class="sig-prename descclassname">amieclient.packet.project.</code><code class="sig-name descname">NotifyProjectInactivate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">packet_id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">date</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">additional_data</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="n">in_reply_to</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#amieclient.packet.project.NotifyProjectInactivate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt id="amieclient.packet.project.NotifyProjectReactivate">
+<em class="property">class </em><code class="sig-prename descclassname">amieclient.packet.project.</code><code class="sig-name descname">NotifyProjectReactivate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">packet_id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">date</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">additional_data</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="n">in_reply_to</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#amieclient.packet.project.NotifyProjectReactivate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt id="amieclient.packet.project.RequestProjectCreate">
+<em class="property">class </em><code class="sig-prename descclassname">amieclient.packet.project.</code><code class="sig-name descname">RequestProjectCreate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">packet_id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">date</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">additional_data</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="n">in_reply_to</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#amieclient.packet.project.RequestProjectCreate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt id="amieclient.packet.project.RequestProjectInactivate">
+<em class="property">class </em><code class="sig-prename descclassname">amieclient.packet.project.</code><code class="sig-name descname">RequestProjectInactivate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">packet_id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">date</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">additional_data</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="n">in_reply_to</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#amieclient.packet.project.RequestProjectInactivate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt id="amieclient.packet.project.RequestProjectReactivate">
+<em class="property">class </em><code class="sig-prename descclassname">amieclient.packet.project.</code><code class="sig-name descname">RequestProjectReactivate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">packet_id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">date</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">additional_data</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="n">in_reply_to</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#amieclient.packet.project.RequestProjectReactivate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-amieclient.packet.person">
+<span id="person-packets"></span><h3>Person packets<a class="headerlink" href="#module-amieclient.packet.person" title="Permalink to this headline">¶</a></h3>
+<p>AMIE packets relating to persons</p>
+<dl class="py class">
+<dt id="amieclient.packet.person.NotifyPersonDuplicate">
+<em class="property">class </em><code class="sig-prename descclassname">amieclient.packet.person.</code><code class="sig-name descname">NotifyPersonDuplicate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">packet_id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">date</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">additional_data</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="n">in_reply_to</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#amieclient.packet.person.NotifyPersonDuplicate" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py method">
+<dt id="amieclient.packet.person.NotifyPersonDuplicate.validate_data">
+<code class="sig-name descname">validate_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#amieclient.packet.person.NotifyPersonDuplicate.validate_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validates that there are no unallowed tags, and additionally checks to
+make sure that either a global ID or person ID is provided for
+the two duplicate people</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="amieclient.packet.person.NotifyPersonIDs">
+<em class="property">class </em><code class="sig-prename descclassname">amieclient.packet.person.</code><code class="sig-name descname">NotifyPersonIDs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">packet_id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">date</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">additional_data</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="n">in_reply_to</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#amieclient.packet.person.NotifyPersonIDs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt id="amieclient.packet.person.RequestPersonMerge">
+<em class="property">class </em><code class="sig-prename descclassname">amieclient.packet.person.</code><code class="sig-name descname">RequestPersonMerge</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">packet_id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">date</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">additional_data</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="n">in_reply_to</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#amieclient.packet.person.RequestPersonMerge" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-amieclient.packet.user">
+<span id="user-packets"></span><h3>User packets<a class="headerlink" href="#module-amieclient.packet.user" title="Permalink to this headline">¶</a></h3>
+<p>AMIE packets relating to users</p>
+<dl class="py class">
+<dt id="amieclient.packet.user.NotifyUserModify">
+<em class="property">class </em><code class="sig-prename descclassname">amieclient.packet.user.</code><code class="sig-name descname">NotifyUserModify</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">packet_id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">date</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">additional_data</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="n">in_reply_to</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#amieclient.packet.user.NotifyUserModify" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py method">
+<dt id="amieclient.packet.user.NotifyUserModify.validate_data">
+<code class="sig-name descname">validate_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#amieclient.packet.user.NotifyUserModify.validate_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>By default, checks to see that all required data items have a
+defined value, unless in_reply_to is not None (in which case,
+we assume the missing data will be filled in based on the referenced
+packet ID.</p>
+<p>Some packet types will override this function, or add additional checks.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="amieclient.packet.user.RequestUserModify">
+<em class="property">class </em><code class="sig-prename descclassname">amieclient.packet.user.</code><code class="sig-name descname">RequestUserModify</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">packet_id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">date</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">additional_data</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="n">in_reply_to</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#amieclient.packet.user.RequestUserModify" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py method">
+<dt id="amieclient.packet.user.RequestUserModify.validate_data">
+<code class="sig-name descname">validate_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_data</span></em><span class="sig-paren">)</span><a class="headerlink" href="#amieclient.packet.user.RequestUserModify.validate_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>By default, checks to see that all required data items have a
+defined value, unless in_reply_to is not None (in which case,
+we assume the missing data will be filled in based on the referenced
+packet ID.</p>
+<p>Some packet types will override this function, or add additional checks.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-amieclient.packet.inform">
+<span id="informational-packets"></span><h3>Informational packets<a class="headerlink" href="#module-amieclient.packet.inform" title="Permalink to this headline">¶</a></h3>
+<dl class="py class">
+<dt id="amieclient.packet.inform.InformTransactionComplete">
+<em class="property">class </em><code class="sig-prename descclassname">amieclient.packet.inform.</code><code class="sig-name descname">InformTransactionComplete</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">packet_id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">date</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">additional_data</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="n">in_reply_to</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#amieclient.packet.inform.InformTransactionComplete" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">amieclient</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">amieclient API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#the-client-itself">The client itself</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#packets">Packets</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">Welcome to amieclient’s documentation!</a></li>
+      <li>Next: <a href="examples.html" title="next chapter">Examples</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;XSEDE.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.1.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/client.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
