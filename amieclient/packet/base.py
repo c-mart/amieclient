@@ -70,20 +70,18 @@ class Packet(object, metaclass=MetaPacket):
     """
     Generic AMIE packet base class
 
-    Class parameters required:
-    _packet_type: the type of the packet (string)
-    _expected_reply: expected reply types (list[string] or list[Packet type])
-    _data_keys_required: Data keys that are required for this packet type
-    _data_keys_allowed: Data keys that are allowed for this packet type
+    Class parameters:
+        _packet_type: the type of the packet (string)
+        _expected_reply: expected reply types (list[string] or list[Packet type])
+        _data_keys_required: Data keys that are required for this packet type
+        _data_keys_allowed: Data keys that are allowed for this packet type
 
-    Object parameters required:
-    packet_id: The ID for this packet
 
-    Optional object parameters:
-    date: A datetime object representing this packet's date attribute
-    additional_data: Body data that is outsite the AMIE spec.
-    in_reply_to: The packet this packet is in response to. Can take a packet,
-    int, string, or None.
+    Args:
+        packet_id (str): The ID for this packet
+        date (datetime.Datetime): A datetime object representing this packet's date attribute
+        additional_data (dict): Body data that is outsite the AMIE spec.
+        in_reply_to (str, int, amieclient.Packet): The packet this packet is in response to. Can take a packet, int, string, or None.
     """
 
     def __init__(self, packet_id=None, date=None,
@@ -108,6 +106,9 @@ class Packet(object, metaclass=MetaPacket):
 
     @classmethod
     def _find_packet_type(cls, packet_or_packet_type):
+        """
+        Finds the class for the given packet or packet type
+        """
         pkt_cls = None
         if type(packet_or_packet_type) == str:
             # We're given a string, search in
@@ -128,6 +129,12 @@ class Packet(object, metaclass=MetaPacket):
 
     @classmethod
     def from_dict(cls, data):
+        """
+        Generates an instance of an AMIE packet of this type from provided dictionary
+
+        Args:
+            data (dict): Packet data
+        """
         # Get the subclass that matches this json input
         pkt_class = cls._find_packet_type(data['type'])
 
@@ -150,7 +157,11 @@ class Packet(object, metaclass=MetaPacket):
     @classmethod
     def from_json(cls, json_string):
         """
-        Generates an instance of an AMIE packet of this type from provided JSON
+        Generates an instance of an AMIE packet of this type from provided JSON.
+        Basically just a wrapper around from_dict.
+
+        Args:
+            json_string (string): JSON data
         """
         data = json.loads(json_string)
         return cls.from_dict(data)
@@ -163,13 +174,13 @@ class Packet(object, metaclass=MetaPacket):
         Generally, most packets only have one kind of expected reply,
         so you should be fine to use reply_packet with just the desired packet_id
 
-        Parameters:
-        packet_id: The ID of the reply packet, if needed
-        packet_type: Optionally, the type of the reply packet
-        force: will create a reply packet whether or not packet_type is in _expected_reply
+        Args:
+            packet_id: The ID of the reply packet, if needed
+            packet_type: Optionally, the type of the reply packet
+            force: will create a reply packet whether or not packet_type is in _expected_reply
 
         Example:
-        my_npc = received_rpc.reply_packet()
+            >>> my_npc = received_rpc.reply_packet()
         """
 
         if packet_type and force:
@@ -197,6 +208,9 @@ class Packet(object, metaclass=MetaPacket):
 
     @property
     def as_dict(self):
+        """
+        This packet, as a dictionary.
+        """
         data_body = {}
         # Filter out non-defined items from our data collections, converting
         # if neccessary
@@ -236,7 +250,9 @@ class Packet(object, metaclass=MetaPacket):
         By default, checks to see that all required data items have a
         defined value, unless in_reply_to is not None (in which case,
         we assume the missing data will be filled in based on the referenced
-        packet ID
+        packet ID.
+
+        Some packet types will override this function, or add additional checks.
         """
         if self.in_reply_to_id:
             return True
@@ -247,4 +263,7 @@ class Packet(object, metaclass=MetaPacket):
 
     @property
     def packet_type(self):
+        """
+        The AMIE name for this packet type.
+        """
         return self._packet_type

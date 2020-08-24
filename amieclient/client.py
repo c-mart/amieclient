@@ -1,16 +1,10 @@
 from urllib.parse import urljoin
 
 import requests
-import dateutil
-
 
 from .packet import PacketList
 from .packet.base import Packet
 from .transaction import Transaction
-
-from .demo_json_str import (DEMO_JSON_PKT_LIST, DEMO_JSON_PKT_1,
-                            DEMO_JSON_PKT_2, DEMO_JSON_TXN_LIST,
-                            DEMO_JSON_TXN)
 
 
 """AMIE client class"""
@@ -24,13 +18,14 @@ class Client(object):
         site_name (str): Name of the client site.
         api_key (str): API key secret
         base_url (str): Base URL for the XSEDE api
-    Example:
-        psc_client = amieclient.Client(site_name='PSC',
-                                       api_key=some_secrets_store['amie_api_key'])
 
-        psc_alt_base_client = amieclient.Client(site_name='PSC',
-                                                api_key='test_api_key',
-                                                base_url='https://amieclient.xsede.org/v0.20_beta/)
+    Examples:
+        >>> psc_client = amieclient.Client(site_name='PSC', api_key=some_secrets_store['amie_api_key'])
+
+        You can also override the base_url parameter, if you're doing local development
+        or testing out a new version
+
+        >>> psc_alt_base_client = amieclient.Client(site_name='PSC', api_key='test_api_key', base_url='https://amieclient.xsede.org/v0.20_beta/)
 
     """
     def __init__(self, site_name, api_key,
@@ -77,7 +72,14 @@ class Client(object):
 
     def get_transaction(self, *, trans_rec_id):
         """
-        Given a single transaction id, fetches the related transaction.
+        Given a single transaction record id, fetches the related transaction.
+
+        Args:
+            trans_rec_id: The transaction record ID.
+
+        Returns:
+            amieclient.Transaction
+
         """
         url = urljoin(self.base_url,
                       f'/transactions/{self.site_name}/{trans_rec_id}/packets')
@@ -88,6 +90,12 @@ class Client(object):
     def get_packet(self, *, packet_rec_id):
         """
         Given a single packet record id, fetches the packet.
+
+        Args:
+            packet_rec_id: The transaction record ID.
+
+        Returns:
+            amieclient.Packet
         """
         url = urljoin(self.base_url,
                       f'/packets/{self.site_name}/{packet_rec_id}')
@@ -100,6 +108,18 @@ class Client(object):
                      states=None, client_states=None, incoming=None):
         """
         Fetches a list of transactions based on the provided search parameters
+
+        Args:
+            trans_rec_ids (list): Searches for packets with these transaction record  IDs.
+            states (list): Searches for packets with the provided states.
+            update_time_start (datetime.Datetime): Searches for packets updated since this time.
+            update_time_until (datetime.Datetime): Searches for packets updated before this time.
+            states (list): Searches for packets in the provided states.
+            client_states (list): Searches for packets in the provided client states.
+            incoming (bool): If true, search is limited to incoming packets.
+
+        Returns:
+            amieclient.PacketList: a list of packets matching the provided parameters.
         """
         trans_rec_ids_str = self._join_list(trans_rec_ids)
         states_str = self._join_list(states)
@@ -127,6 +147,12 @@ class Client(object):
     def send_packet(self, packet, skip_validation=False):
         """
         Send a packet
+
+        Args:
+            packet (amieclient.Packet): The packet to send.
+
+        Returns:
+            requests.Response: The response from the AMIE API.
         """
         if not skip_validation:
             packet.validate_data()

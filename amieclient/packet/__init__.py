@@ -24,5 +24,5 @@ __all__ = ['DataAccountCreate', 'NotifyAccountCreate',
            'DataProjectCreate', 'NotifyProjectCreate',
            'NotifyProjectInactivate', 'NotifyProjectReactivate',
            'RequestProjectCreate', 'RequestProjectInactivate',
-           'RequestProjectReactivate', 'NotifyUserModify', 'RequestUserModify'
+           'RequestProjectReactivate', 'NotifyUserModify', 'RequestUserModify',
            'PacketList']
