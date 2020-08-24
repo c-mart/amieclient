@@ -1,13 +1,14 @@
 Welcome to amieclient's documentation!
 ======================================
-.. automodule:: amieclient.client
-   :members:
+amieclient is an example implementation of a library for communicating with the AMIE REST
+API.
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
-
+   client
+   examples
 
 Indices and tables
 ==================
