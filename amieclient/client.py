@@ -1,4 +1,3 @@
-from urllib.parse import urljoin
 
 import requests
 
@@ -30,7 +29,10 @@ class Client(object):
     """
     def __init__(self, site_name, api_key,
                  base_url='https://amieclient.xsede.org/v0.10/'):
-        self.base_url = base_url
+        if not base_url.endswith('/'):
+            self.baseurl = base_url + '/'
+        else:
+            self.base_url = base_url
         self.site_name = site_name
 
         amie_headers = {
@@ -81,8 +83,7 @@ class Client(object):
             amieclient.Transaction
 
         """
-        url = urljoin(self.base_url,
-                      f'/transactions/{self.site_name}/{trans_rec_id}/packets')
+        url = self.base_url + f'transactions/{self.site_name}/{trans_rec_id}/packets'
         r = self._session.get(url)
         r.raise_for_status()
         return Transaction.from_dict(r.json())
@@ -97,8 +98,7 @@ class Client(object):
         Returns:
             amieclient.Packet
         """
-        url = urljoin(self.base_url,
-                      f'/packets/{self.site_name}/{packet_rec_id}')
+        url = self.base_url + f'packets/{self.site_name}/{packet_rec_id}'
         r = self._session.get(url)
         r.raise_for_status()
         return Packet.from_dict(r.json())
@@ -138,8 +138,7 @@ class Client(object):
         }
 
         # Get the list of packets
-        url = urljoin(self.base_url,
-                      f'/packets/{self.site_name}')
+        url = self.base_url + f'packets/{self.site_name}'
         r = self._session.get(url, params=params)
         r.raise_for_status()
         return PacketList.from_dict(r.json())
@@ -157,8 +156,7 @@ class Client(object):
         if not skip_validation:
             packet.validate_data()
 
-        url = urljoin(self.base_url,
-                      f'/packets/{self.site_name}')
+        url = self.base_url + f'packets/{self.site_name}'
         r = self._session.post(url, json=packet.as_dict)
         r.raise_for_response()
         return r
