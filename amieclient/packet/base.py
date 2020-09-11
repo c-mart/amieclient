@@ -28,15 +28,16 @@ def _make_set_required(key):
     return set_required
 
 
-def _make_get_allowed(key):
-    def get_allowed(self):
-        return self._allowed_data[key]
-    return get_allowed
-
 def _make_del_required(key):
     def del_required(self, value):
         self._required_data[key] = None
     return del_required
+
+
+def _make_get_allowed(key):
+    def get_allowed(self):
+        return self._allowed_data[key]
+    return get_allowed
 
 
 def _make_set_allowed(key):
@@ -55,8 +56,8 @@ class MetaPacket(type):
     def __new__(cls, name, base, attrs):
         attrs['_required_data'] = {}
         attrs['_allowed_data'] = {}
-        required_fields = attrs.pop('_data_keys_required', [])
-        allowed_fields = attrs.pop('_data_keys_allowed', [])
+        required_fields = attrs.get('_data_keys_required', [])
+        allowed_fields = attrs.get('_data_keys_allowed', [])
         for k in required_fields:
             attrs[k] = property(_make_get_required(k),
                                 _make_set_required(k),
@@ -142,7 +143,7 @@ class Packet(object, metaclass=MetaPacket):
                         in_reply_to=data['header'].get('in_reply_to'))
 
         for k, v in data['body'].items():
-            if k in obj._required_data or k in obj._allowed_data:
+            if k in obj._data_keys_required or k in obj._data_keys_allowed:
                 if 'Date' in k:
                     # TODO check if this is a valid assumption
                     setattr(obj, k, dtparse(v))
