@@ -41,14 +41,15 @@
 site name and your API key.</p>
 <span class="target" id="module-amieclient.client"></span><dl class="py class">
 <dt id="amieclient.client.Client">
-<em class="property">class </em><code class="sig-prename descclassname">amieclient.client.</code><code class="sig-name descname">Client</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">site_name</span></em>, <em class="sig-param"><span class="n">api_key</span></em>, <em class="sig-param"><span class="n">base_url</span><span class="o">=</span><span class="default_value">'https://amieclient.xsede.org/v0.10/'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#amieclient.client.Client" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">amieclient.client.</code><code class="sig-name descname">Client</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">site_name</span></em>, <em class="sig-param"><span class="n">api_key</span></em>, <em class="sig-param"><span class="n">amie_url</span><span class="o">=</span><span class="default_value">'https://amieclient.xsede.org/v0.10/'</span></em>, <em class="sig-param"><span class="n">usage_url</span><span class="o">=</span><span class="default_value">'https://usage.xsede.org/api/v1'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#amieclient.client.Client" title="Permalink to this definition">¶</a></dt>
 <dd><p>AMIE Client.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>site_name</strong> (<em>str</em>) – Name of the client site.</p></li>
 <li><p><strong>api_key</strong> (<em>str</em>) – API key secret</p></li>
-<li><p><strong>base_url</strong> (<em>str</em>) – Base URL for the XSEDE api</p></li>
+<li><p><strong>amie_url</strong> (<em>str</em>) – Base URL for the XSEDE AMIE api</p></li>
+<li><p><strong>usage_url</strong> (<em>str</em>) – Base URL for the XSEDE Usage api</p></li>
 </ul>
 </dd>
 </dl>
@@ -56,9 +57,9 @@ site name and your API key.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">psc_client</span> <span class="o">=</span> <span class="n">amieclient</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">site_name</span><span class="o">=</span><span class="s1">&#39;PSC&#39;</span><span class="p">,</span> <span class="n">api_key</span><span class="o">=</span><span class="n">some_secrets_store</span><span class="p">[</span><span class="s1">&#39;amie_api_key&#39;</span><span class="p">])</span>
 </pre></div>
 </div>
-<p>You can also override the base_url parameter, if you’re doing local development
-or testing out a new version</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">psc_alt_base_client</span> <span class="o">=</span> <span class="n">amieclient</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">site_name</span><span class="o">=</span><span class="s1">&#39;PSC&#39;</span><span class="p">,</span> <span class="n">api_key</span><span class="o">=</span><span class="s1">&#39;test_api_key&#39;</span><span class="p">,</span> <span class="n">base_url</span><span class="o">=</span><span class="s1">&#39;https://amieclient.xsede.org/v0.20_beta/)</span>
+<p>You can also override the amie_url and usage_url parameters, if you’re
+doing local development or testing out a new version.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">psc_alt_base_client</span> <span class="o">=</span> <span class="n">amieclient</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">site_name</span><span class="o">=</span><span class="s1">&#39;PSC&#39;</span><span class="p">,</span> <span class="n">api_key</span><span class="o">=</span><span class="s1">&#39;test_api_key&#39;</span><span class="p">,</span> <span class="n">amie_url</span><span class="o">=</span><span class="s1">&#39;https://amieclient.xsede.org/v0.20_beta/)</span>
 </pre></div>
 </div>
 <dl class="py method">
