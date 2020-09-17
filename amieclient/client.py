@@ -16,23 +16,31 @@ class Client(object):
     Args:
         site_name (str): Name of the client site.
         api_key (str): API key secret
-        base_url (str): Base URL for the XSEDE api
+        amie_url (str): Base URL for the XSEDE AMIE api
+        usage_url (str): Base URL for the XSEDE Usage api
 
     Examples:
         >>> psc_client = amieclient.Client(site_name='PSC', api_key=some_secrets_store['amie_api_key'])
 
-        You can also override the base_url parameter, if you're doing local development
-        or testing out a new version
+        You can also override the amie_url and usage_url parameters, if you're
+        doing local development or testing out a new version.
 
-        >>> psc_alt_base_client = amieclient.Client(site_name='PSC', api_key='test_api_key', base_url='https://amieclient.xsede.org/v0.20_beta/)
+        >>> psc_alt_base_client = amieclient.Client(site_name='PSC', api_key='test_api_key', amie_url='https://amieclient.xsede.org/v0.20_beta/)
 
     """
     def __init__(self, site_name, api_key,
-                 base_url='https://amieclient.xsede.org/v0.10/'):
-        if not base_url.endswith('/'):
-            self.base_url = base_url + '/'
+                 amie_url='https://amieclient.xsede.org/v0.10/',
+                 usage_url='https://usage.xsede.org/api/v1'):
+        if not amie_url.endswith('/'):
+            self.amie_url = amie_url + '/'
         else:
-            self.base_url = base_url
+            self.amie_url = amie_url
+
+        if not usage_url.endswith('/'):
+            self.usage_url = usage_url + '/'
+        else:
+            self.usage_url = usage_url
+
         self.site_name = site_name
 
         amie_headers = {
@@ -83,7 +91,7 @@ class Client(object):
             amieclient.Transaction
 
         """
-        url = self.base_url + 'transactions/{}/{}/packets'.format(self.site_name, trans_rec_id)
+        url = self.amie_url + 'transactions/{}/{}/packets'.format(self.site_name, trans_rec_id)
         r = self._session.get(url)
         r.raise_for_status()
         return Transaction.from_dict(r.json())
@@ -98,7 +106,7 @@ class Client(object):
         Returns:
             amieclient.Packet
         """
-        url = self.base_url + 'packets/{}/{}'.format(self.site_name, packet_rec_id)
+        url = self.amie_url + 'packets/{}/{}'.format(self.site_name, packet_rec_id)
         r = self._session.get(url)
         r.raise_for_status()
         return Packet.from_dict(r.json())
@@ -138,7 +146,7 @@ class Client(object):
         }
 
         # Get the list of packets
-        url = self.base_url + 'packets/{}'.format(self.site_name)
+        url = self.amie_url + 'packets/{}'.format(self.site_name)
         r = self._session.get(url, params=params)
         r.raise_for_status()
         return PacketList.from_dict(r.json())
@@ -156,7 +164,7 @@ class Client(object):
         if not skip_validation:
             packet.validate_data()
 
-        url = self.base_url + 'packets/{}'.format(self.site_name)
+        url = self.amie_url + 'packets/{}'.format(self.site_name)
         r = self._session.post(url, json=packet.as_dict)
         r.raise_for_response()
         return r

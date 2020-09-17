@@ -37,10 +37,11 @@ psc_client = Client(site_name=psc_config['site_name'], api_key=psc_config['api_k
 
 # These clients use (made-up) different base URLs.
 psc_test_client = Client(site_name=psc_test_config['site_name'],
-                         base_url=psc_test_config['base_url'],
+                         amie_url=psc_test_config['amie_url'],
                          api_key=psc_test_config['api_key'])
 local_dev_client = Client(site_name=local_dev_config['site_name'],
-                          base_url=local_dev_config['base_url'],
+                          amie_url=local_dev_config['amie_url'],
+                          usage_url=local_dev_config['usage_url'],
                           api_key=local_dev_config['api_key'])
 
 # If you're into being mysterious and obscure, you could also use dictionary
