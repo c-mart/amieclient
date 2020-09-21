@@ -10,6 +10,14 @@ class TestClient:
         assert client._session.headers['XA-SITE'] == 'test'
         assert client._session.headers['XA-API-KEY'] == 'test'
 
+    def test_base_url(self):
+        client1 = Client(site_name='test', api_key='test',
+                         base_url='http://localhost/amie')
+        assert client1.base_url == 'http://localhost/amie/'
+        client2 = Client(site_name='test', api_key='test',
+                         base_url='http://localhost/amie/')
+        assert client2.base_url == 'http://localhost/amie/'
+
     def test_get_packet(self, requests_mock):
         client = Client(site_name='test', api_key='test')
 
