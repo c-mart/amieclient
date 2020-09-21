@@ -30,7 +30,7 @@ class Client(object):
     def __init__(self, site_name, api_key,
                  base_url='https://amieclient.xsede.org/v0.10/'):
         if not base_url.endswith('/'):
-            self.baseurl = base_url + '/'
+            self.base_url = base_url + '/'
         else:
             self.base_url = base_url
         self.site_name = site_name
