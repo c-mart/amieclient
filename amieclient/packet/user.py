@@ -35,7 +35,7 @@ class NotifyUserModify(Packet):
     ]
 
     def validate_data(self):
-        action_type = self._required_data['ActionType']
+        action_type = self.ActionType
         if action_type not in ['add', 'delete', 'replace']:
             error_str = 'Invalid action type for notify_user_modify: "{}"'.format(action_type)
             raise PacketInvalidData(error_str)
@@ -78,8 +78,8 @@ class RequestUserModify(Packet):
         'Zip',
     ]
 
-    def validate_data(self, input_data):
-        action_type = self._required_data['ActionType']
+    def validate_data(self):
+        action_type = self.ActionType
         if action_type not in ['add', 'delete', 'replace']:
             error_str = 'Invalid action type for request_user_modify: "{}"'.format(action_type)
             raise PacketInvalidData(error_str)

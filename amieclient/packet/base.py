@@ -18,7 +18,7 @@ class PacketInvalidType(Exception):
 # in the metaclass
 def _make_get_required(key):
     def get_required(self):
-        return self._required_data[key]
+        return self._required_data.get(key)
     return get_required
 
 
@@ -29,14 +29,14 @@ def _make_set_required(key):
 
 
 def _make_del_required(key):
-    def del_required(self, value):
+    def del_required(self):
         self._required_data[key] = None
     return del_required
 
 
 def _make_get_allowed(key):
     def get_allowed(self):
-        return self._allowed_data[key]
+        return self._allowed_data.get(key)
     return get_allowed
 
 
@@ -86,8 +86,9 @@ class Packet(object, metaclass=MetaPacket):
     """
 
     def __init__(self, packet_id=None, date=None,
-                 additional_data={}, in_reply_to=None):
-        self.packet_id = packet_id
+                 additional_data={}, in_reply_to=None,
+                 **kwargs):
+        self.packet_id = str(packet_id)
         self.additional_data = additional_data
         if not date:
             self.date = datetime.now()
@@ -104,6 +105,15 @@ class Packet(object, metaclass=MetaPacket):
         elif in_reply_to.get('header', {}).get('packet_id'):
             # If we're given a dict-like object, get the ID from the header
             self.in_reply_to_id = in_reply_to['header']['packet_id']
+        for key, value in kwargs.items():
+            if key in self._data_keys_required or key in self._data_keys_allowed:
+                if 'Date' in key:
+                    # TODO check if this is a valid assumption
+                    setattr(self, key, dtparse(value))
+                else:
+                    setattr(self, key, value)
+            else:
+                self.additional_data[key] = value
 
     @classmethod
     def _find_packet_type(cls, packet_or_packet_type):
@@ -140,17 +150,8 @@ class Packet(object, metaclass=MetaPacket):
         pkt_class = cls._find_packet_type(data['type'])
 
         obj = pkt_class(packet_id=data['header']['packet_id'],
-                        in_reply_to=data['header'].get('in_reply_to'))
-
-        for k, v in data['body'].items():
-            if k in obj._data_keys_required or k in obj._data_keys_allowed:
-                if 'Date' in k:
-                    # TODO check if this is a valid assumption
-                    setattr(obj, k, dtparse(v))
-                else:
-                    setattr(obj, k, v)
-            else:
-                obj.additional_data[k] = v
+                        in_reply_to=data['header'].get('in_reply_to'),
+                        **data['body'])
 
         # Return an instance of the proper subclass
         return obj
