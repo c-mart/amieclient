@@ -29,7 +29,7 @@ def _make_set_required(key):
 
 
 def _make_del_required(key):
-    def del_required(self, value):
+    def del_required(self):
         self._required_data[key] = None
     return del_required
 
