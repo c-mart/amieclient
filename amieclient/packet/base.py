@@ -18,7 +18,7 @@ class PacketInvalidType(Exception):
 # in the metaclass
 def _make_get_required(key):
     def get_required(self):
-        return self._required_data[key]
+        return self._required_data.get(key)
     return get_required
 
 
@@ -36,7 +36,7 @@ def _make_del_required(key):
 
 def _make_get_allowed(key):
     def get_allowed(self):
-        return self._allowed_data[key]
+        return self._allowed_data.get(key)
     return get_allowed
 
 
@@ -87,7 +87,7 @@ class Packet(object, metaclass=MetaPacket):
 
     def __init__(self, packet_id=None, date=None,
                  additional_data={}, in_reply_to=None):
-        self.packet_id = packet_id
+        self.packet_id = str(packet_id)
         self.additional_data = additional_data
         if not date:
             self.date = datetime.now()
