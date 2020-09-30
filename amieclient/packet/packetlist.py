@@ -7,11 +7,8 @@ class PacketList(object):
     """
     A list of packets.
     """
-    def __init__(self, length, limit, offset, total, packets=None):
-        self.length = length
-        self.limit = limit
-        self.offset = offset
-        self.total = total
+    def __init__(self, message=None, packets=None):
+        self.message = message
         if packets is not None:
             self.packets = packets
         else:
@@ -20,11 +17,8 @@ class PacketList(object):
     @classmethod
     def from_dict(cls, dict_in):
         pkt_list = cls(
-            length=dict_in['length'],
-            limit=dict_in['limit'],
-            offset=dict_in['offset'],
-            total=dict_in['total'],
-            packets=[Packet.from_dict(d) for d in dict_in['DATA']]
+            message=dict_in.get('message', ''),
+            packets=[Packet.from_dict(d) for d in dict_in['result']]
         )
         return pkt_list
 
@@ -36,12 +30,8 @@ class PacketList(object):
     @property
     def as_dict(self):
         data_dict = {
-            'DATA_TYPE': 'packet_list',
-            'length':  self.legth,
-            'limit': self.limit,
-            'offset': self.offset,
-            'total': self.total,
-            'DATA': [pkt.as_dict for pkt in self.packets]
+            'message': self.message,
+            'result': [pkt.as_dict for pkt in self.packets]
         }
         return data_dict
 
