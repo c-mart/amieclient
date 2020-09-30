@@ -43,7 +43,7 @@ class NotifyUserModify(Packet):
 
 
 class RequestUserModify(Packet):
-    _packet_type = 'request_account_inactivate'
+    _packet_type = 'request_user_modify'
     _expected_reply = ['inform_transaction_complete']
     _data_keys_required = [
         'ActionType',
