@@ -1,14 +1,15 @@
 import json
 from collections import namedtuple
 
-UsageAttributes = namedtuple('UsageAttributes',
-                             ['node_count', 'cpu_core_count', 'job_name',
-                              'memory', 'queue'],
-                             # for named tuples, defaults start with the right,
-                             # so 4 Nones here means that the last 4 fields
-                             # above have a default value of None
-                             defaults=[None] * 4
-                             )
+ComputeUsageAttributes = namedtuple('UsageAttributes',
+                                    ['node_count', 'cpu_core_count',
+                                     'job_name', 'memory', 'queue'],
+                                    # for named tuples, defaults start with the
+                                    # right, so 4 Nones here means that the
+                                    # last 4 fields above have a default value
+                                    # of None
+                                    defaults=[None] * 4
+                                    )
 
 
 class ComputeUsageRecord:
@@ -45,8 +46,8 @@ class ComputeUsageRecord:
             UsageRecord
         """
 
-        self.attributes = UsageAttributes(node_count, cpu_core_count, job_name,
-                                          memory, queue)
+        self.attributes = ComputeUsageAttributes(node_count, cpu_core_count,
+                                                 job_name, memory, queue)
 
         self.parent_record_id = parent_record_id,
         self.charge = charge
@@ -61,7 +62,7 @@ class ComputeUsageRecord:
     @classmethod
     def from_dict(cls, input_dict):
         """
-        Returns a UsageRecord from a provided dictionary
+        Returns a ComputeUsageRecord from a provided dictionary
         """
 
         return cls(
@@ -84,7 +85,7 @@ class ComputeUsageRecord:
     @classmethod
     def from_json(cls, input_json):
         """
-        Returns a UsageRecord from a provided JSON string
+        Returns a ComputeUsageRecord from a provided JSON string
         """
         input_dict = json.loads(input_json)
         return cls.from_dict(input_dict)
@@ -147,7 +148,9 @@ class UsageMessage:
         Returns a UsageMessage from a provided dictionary
         """
         ut = input_dict['UsageType']
-        records = [UsageRecord.from_dict(d) for d in input_dict['Records']]
+        if ut == 'Compute':
+            ur_class = ComputeUsageRecord
+        records = [ur_class.from_dict(d) for d in input_dict['Records']]
         return cls(ut, records)
 
     @classmethod
