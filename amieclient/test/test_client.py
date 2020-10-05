@@ -1,25 +1,25 @@
-from ..client import Client
+from ..client import AMIEClient
 from ..packet import RequestAccountCreate, PacketList
 from .fixtures import DEMO_JSON_PKT_1, DEMO_JSON_PKT_LIST
 
 
-class TestClient:
+class TestAMIEClient:
 
     def test_creation(self):
-        client = Client(site_name='test', api_key='test')
+        client = AMIEClient(site_name='test', api_key='test')
         assert client._session.headers['XA-SITE'] == 'test'
         assert client._session.headers['XA-API-KEY'] == 'test'
 
     def test_base_url(self):
-        client1 = Client(site_name='test', api_key='test',
-                         base_url='http://localhost/amie')
+        client1 = AMIEClient(site_name='test', api_key='test',
+                             base_url='http://localhost/amie')
         assert client1.base_url == 'http://localhost/amie/'
-        client2 = Client(site_name='test', api_key='test',
-                         base_url='http://localhost/amie/')
+        client2 = AMIEClient(site_name='test', api_key='test',
+                             base_url='http://localhost/amie/')
         assert client2.base_url == 'http://localhost/amie/'
 
     def test_get_packet(self, requests_mock):
-        client = Client(site_name='test', api_key='test')
+        client = AMIEClient(site_name='test', api_key='test')
 
         # Make the mock request
         packet_url = 'https://amieclient.xsede.org/v0.10/packets/test/12345'
@@ -30,7 +30,7 @@ class TestClient:
         assert isinstance(packet, RequestAccountCreate)
 
     def test_get_packet_list(self, requests_mock):
-        client = Client(site_name='test', api_key='test')
+        client = AMIEClient(site_name='test', api_key='test')
 
         # Make the mock request
         packet_url = 'https://amieclient.xsede.org/v0.10/packets/test'

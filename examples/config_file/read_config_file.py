@@ -16,7 +16,7 @@ objects for each of the provided configurations.
 
 from configparser import ConfigParser
 
-from amieclient import Client
+from amieclient import AMIEClient
 
 # For more information on the configparser library, please see the python docs:
 # https://docs.python.org/3.5/library/configparser.html
@@ -33,13 +33,13 @@ local_dev_config = config['NCSA_LOCAL_DEV']
 
 # These clients all use the default value for the base URL, which is
 # https://amieclient.xsede.org/v0.10/
-psc_client = Client(site_name=psc_config['site_name'], api_key=psc_config['api_key'])
+psc_client = AMIEClient(site_name=psc_config['site_name'], api_key=psc_config['api_key'])
 
 # These clients use (made-up) different base URLs.
-psc_test_client = Client(site_name=psc_test_config['site_name'],
+psc_test_client = AMIEClient(site_name=psc_test_config['site_name'],
                          amie_url=psc_test_config['amie_url'],
                          api_key=psc_test_config['api_key'])
-local_dev_client = Client(site_name=local_dev_config['site_name'],
+local_dev_client = AMIEClient(site_name=local_dev_config['site_name'],
                           amie_url=local_dev_config['amie_url'],
                           usage_url=local_dev_config['usage_url'],
                           api_key=local_dev_config['api_key'])
@@ -47,4 +47,4 @@ local_dev_client = Client(site_name=local_dev_config['site_name'],
 # If you're into being mysterious and obscure, you could also use dictionary
 # expansion to pass your configuration variables based on the configuration
 # section of your choice. This will save yourself like 10 keystrokes.
-psc_test_client_2 = Client(**psc_test_config)
+psc_test_client_2 = AMIEClient(**psc_test_config)

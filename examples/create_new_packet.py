@@ -2,7 +2,7 @@
 
 """
 This example demonstrates how to create and send along a new packet."""
-from amieclient import Client
+from amieclient import AMIEClient
 from amieclient.packet import RequestProjectCreate
 
 from datetime import datetime, timedelta
@@ -22,5 +22,5 @@ rpc.ResourceList = ['IDK, somthing pretty fast', 'maybe with a gpu in it']
 rpc.ServiceUnitsAllocated = '3'
 
 # Send the packet
-with Client('psc', 'some_secret_key') as c:
+with AMIEClient('psc', 'some_secret_key') as c:
     c.send_packet(rpc)

@@ -9,7 +9,7 @@ from .transaction import Transaction
 """AMIE client class"""
 
 
-class Client(object):
+class AMIEClient(object):
     """
     AMIE Client.
 
