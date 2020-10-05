@@ -17,29 +17,22 @@ class AMIEClient(object):
         site_name (str): Name of the client site.
         api_key (str): API key secret
         amie_url (str): Base URL for the XSEDE AMIE api
-        usage_url (str): Base URL for the XSEDE Usage api
 
     Examples:
-        >>> psc_client = amieclient.Client(site_name='PSC', api_key=some_secrets_store['amie_api_key'])
+        >>> psc_client = amieclient.AMIEClient(site_name='PSC', api_key=some_secrets_store['amie_api_key'])
 
         You can also override the amie_url and usage_url parameters, if you're
         doing local development or testing out a new version.
 
-        >>> psc_alt_base_client = amieclient.Client(site_name='PSC', api_key='test_api_key', amie_url='https://amieclient.xsede.org/v0.20_beta/)
+        >>> psc_alt_base_client = amieclient.AMIEClient(site_name='PSC', api_key='test_api_key', amie_url='https://amieclient.xsede.org/v0.20_beta/)
 
     """
     def __init__(self, site_name, api_key,
-                 amie_url='https://amieclient.xsede.org/v0.10/',
-                 usage_url='https://usage.xsede.org/api/v1'):
+                 amie_url='https://amieclient.xsede.org/v0.10/'):
         if not amie_url.endswith('/'):
             self.amie_url = amie_url + '/'
         else:
             self.amie_url = amie_url
-
-        if not usage_url.endswith('/'):
-            self.usage_url = usage_url + '/'
-        else:
-            self.usage_url = usage_url
 
         self.site_name = site_name
 
@@ -168,3 +161,78 @@ class AMIEClient(object):
         r = self._session.post(url, json=packet.as_dict)
         r.raise_for_response()
         return r
+
+
+class UsageClient:
+    """
+    AMIE Usage Client.
+
+    Args:
+        site_name (str): Name of the client site.
+        api_key (str): API key secret
+        usage_url (str): Base URL for the XSEDE Usage api
+
+    Examples:
+        >>> psc_client = amieclient.UsageClient(site_name='PSC', api_key=some_secrets_store['amie_api_key'])
+
+        You can also override the amie_url and usage_url parameters, if you're
+        doing local development or testing out a new version.
+
+        >>> psc_alt_base_client = amieclient.UsageClient(site_name='PSC', api_key='test_api_key', usage_url='https://amieclient.xsede.org/v0.20_beta/)
+
+    """
+    def __init__(self, site_name, api_key,
+                 usage_url='https://usage.xsede.org/api/v1'):
+
+        if not usage_url.endswith('/'):
+            self.usage_url = usage_url + '/'
+        else:
+            self.usage_url = usage_url
+
+        self.site_name = site_name
+
+        amie_headers = {
+            'XA-API-KEY': api_key,
+            'XA-SITE': site_name
+        }
+        s = requests.Session()
+        s.headers.update(amie_headers)
+        self._session = s
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *args):
+        self._session.close()
+
+    def send_usage(self, pkt_list):
+        """
+        Sends a usage update to the Usage API host.
+        Args:
+            pkt_list (UsageMessage): A UsageMessage object 
+        Returns:
+            response
+        """
+        url = self.usage_url + '/usage'
+        self._session.post(url, data=pkt_list.as_dict)
+
+
+    def usage_summary(self):
+        """
+        Gets a usage summary
+
+        Not implemented yet
+        """
+        pass
+
+    def usage_status(self, from_date, to_date):
+        """
+        Gets the status of records processed from the queue in the provided interval.
+
+
+        Args:
+            from_date (Datetime): Start date and time
+            to_date (Datetime): End date and time
+
+        """
+        pass
