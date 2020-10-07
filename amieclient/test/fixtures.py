@@ -144,12 +144,8 @@ DEMO_JSON_TXN = {
 }
 
 DEMO_JSON_PKT_LIST = {
-  "DATA_TYPE": "packet_list",
-  "length": 2,
-  "total": 2,
-  "limit": 10,
-  "offset": 0,
-  "DATA": [
+  "message": '',
+  "result": [
       DEMO_JSON_PKT_1,
       DEMO_JSON_PKT_2
   ]
