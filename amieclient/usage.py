@@ -1,7 +1,7 @@
 import json
 from collections import namedtuple
 
-ComputeUsageAttributes = namedtuple('UsageAttributes',
+ComputeUsageAttributes = namedtuple('ComputeUsageAttributes',
                                     ['node_count', 'cpu_core_count',
                                      'job_name', 'memory', 'queue'],
                                     # for named tuples, defaults start with the
@@ -9,6 +9,15 @@ ComputeUsageAttributes = namedtuple('UsageAttributes',
                                     # last 4 fields above have a default value
                                     # of None
                                     defaults=[None] * 4
+                                    )
+
+StorageUsageAttributes = namedtuple('StorageUsageAttributes',
+                                    ['BytesRead', 'BytesStored',
+                                     'BytesWritten', 'CollectionInterval',
+                                     'FileCount', 'FilesRead', 'FilesWritten',
+                                     'MediaType', 'SystemCopies',
+                                     'UserCopies'],
+                                    defaults=[None] * 10
                                     )
 
 
@@ -43,7 +52,7 @@ class ComputeUsageRecord:
             node_count (str): Number of nodes the job ran on
 
         Returns:
-            UsageRecord
+            ComputeUsageRecord
         """
 
         self.attributes = ComputeUsageAttributes(node_count, cpu_core_count,
@@ -120,7 +129,7 @@ class ComputeUsageRecord:
         return d
 
     @property
-    def as_json(self):
+    def json(self):
         """
         Returns a json version of this record
         """
@@ -128,11 +137,87 @@ class ComputeUsageRecord:
         return json.dumps(self.as_dict)
 
 
+class StorageUsageRecord:
+    """
+    A usage record for storage usage.
+    """
+    def __init__(self, charge, collection_time, local_project_id,
+                 local_record_id, resource, username,
+                 bytes_read=None, bytes_stored=None, bytes_written=None,
+                 collection_interval=None, file_count=None, files_read=None,
+                 files_written=None, media_type=None, system_copies=None,
+                 user_copies=None):
+        self.attributes = StorageUsageAttributes(bytes_read, bytes_stored,
+                                                 bytes_written, collection_interval,
+                                                 file_count, files_read,
+                                                 files_written, media_type,
+                                                 system_copies, user_copies)
+        self.charge = charge
+        self.collection_time = collection_time
+        self.local_project_id = local_project_id
+        self.local_record_id = local_record_id
+        self.resource = resource
+        self.username = username
+
+    @classmethod
+    def from_dict(cls, input_dict):
+        attributes = input_dict.get('Attributes', {})
+        return cls(
+            charge=input_dict['Charge'],
+            collection_time=input_dict['CollectionTime'],
+            local_project_id=input_dict['LocalProjectID'],
+            local_record_id=input_dict['LocalRecordID'],
+            record=input_dict['Resource'],
+            username=input_dict['Username'],
+            bytes_read=attributes.get('BytesRead'),
+            bytes_stored=attributes.get('BytesStored'),
+            bytes_writen=attributes.get('BytesWritten'),
+            collection_interval=attributes.get('CollectionInterval'),
+            file_count=attributes.get('FileCount'),
+            files_read=attributes.get('FilesRead'),
+            files_written=attributes.get('FilesWritten'),
+            media_type=attributes.get('MediaType'),
+            system_copies=attributes.get('SystemCopies'),
+            user_copies=attributes.get('UserCopies'),
+        )
+
+    @classmethod
+    def from_json(cls, input_json):
+        """
+        Returns a ComputeUsageRecord from a provided JSON string
+        """
+        input_dict = json.loads(input_json)
+        return cls.from_dict(input_dict)
+
+    def as_dict(self):
+        # Get the attributes, skip over anything not specified
+        attributes = {}
+        for k, v in self.attributes._asdict().items():
+            if v is not None:
+                attributes[k] = v
+
+        d = {
+            'Charge': self.charge,
+            'CollectionTime': self.submit_time,
+            'LocalProjectID': self.local_project_id,
+            'LocalRecordID': self.local_record_id,
+            'Resource': self.resource,
+            'Username': self.username,
+            'Attributes': attributes
+        }
+
+        return d
+
+    def json(self):
+        return json.dumps(self.as_dict())
+
+
 class UsageMessageException(Exception):
     """
     Exception for invalid data in a UsageMessage
     """
     pass
+
 
 class UsageMessage:
     def __init__(self, usage_type, records):
@@ -150,6 +235,8 @@ class UsageMessage:
         ut = input_dict['UsageType']
         if ut == 'Compute':
             ur_class = ComputeUsageRecord
+        elif ut == 'Storage':
+            ur_class = StorageUsageRecord
         records = [ur_class.from_dict(d) for d in input_dict['Records']]
         return cls(ut, records)
 
@@ -184,3 +271,4 @@ class UsageMessage:
         for i in range(0, len(self.records), chunk_size):
             r = self.records[i:i+chunk_size]
             yield self.__class__(self.usage_type, r)
+
