@@ -158,7 +158,7 @@ class AMIEClient(object):
             packet.validate_data()
 
         url = self.amie_url + 'packets/{}'.format(self.site_name)
-        r = self._session.post(url, json=packet.as_dict)
+        r = self._session.post(url, json=packet.as_dict())
         r.raise_for_response()
         return r
 
@@ -214,7 +214,7 @@ class UsageClient:
             response
         """
         url = self.usage_url + '/usage'
-        self._session.post(url, data=pkt_list.as_dict)
+        self._session.post(url, data=pkt_list.as_dict())
 
 
     def usage_summary(self):

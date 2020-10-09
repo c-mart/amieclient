@@ -27,15 +27,13 @@ class PacketList(object):
         pkt_list_in = json.loads(json_in)
         return cls.from_dict(pkt_list_in)
 
-    @property
     def as_dict(self):
         data_dict = {
             'message': self.message,
-            'result': [pkt.as_dict for pkt in self.packets]
+            'result': [pkt.as_dict()for pkt in self.packets]
         }
         return data_dict
 
-    @property
     def json(self):
-        data_dict = self.as_dict
+        data_dict = self.as_dict()
         return json.dumps(data_dict)

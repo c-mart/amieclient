@@ -208,7 +208,6 @@ class Packet(object, metaclass=MetaPacket):
             pkt_class = self._find_packet_type(packet_type)
         return pkt_class(packet_id=packet_id, in_reply_to=self.packet_id)
 
-    @property
     def as_dict(self):
         """
         This packet, as a dictionary.
@@ -239,12 +238,11 @@ class Packet(object, metaclass=MetaPacket):
 
         return data_dict
 
-    @property
     def json(self):
         """
         The JSON representation of this AMIE packet
         """
-        data_dict = self.as_dict
+        data_dict = self.as_dict()
         return json.dumps(data_dict)
 
     def validate_data(self):

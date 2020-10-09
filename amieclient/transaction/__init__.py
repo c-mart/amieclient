@@ -35,7 +35,6 @@ class Transaction(object):
         tx_in = json.loads(json_in)
         return cls.from_dict(tx_in)
 
-    @property
     def as_dict(self):
         data_dict = {
             'DATA_TYPE': 'transaction',
@@ -44,14 +43,13 @@ class Transaction(object):
             'local_site_name': self.local_site,
             'remote_site_name': self.remote_site,
             'state': self.state,
-            'DATA': [pkt.as_dict for pkt in self.packets]
+            'DATA': [pkt.as_dict() for pkt in self.packets]
         }
 
         return data_dict
 
-    @property
     def json(self):
-        data_dict = self.as_dict
+        data_dict = self.as_dict()
         return json.dumps(data_dict)
 
 class TransactionList(object):
@@ -85,7 +83,6 @@ class TransactionList(object):
         txlist_in = json.loads(json_in)
         return cls.from_dict(txlist_in)
 
-    @property
     def as_dict(self):
         data_dict = {
             'DATA_TYPE': 'transaction_list',
@@ -93,12 +90,11 @@ class TransactionList(object):
             'limit': self.limit,
             'offset': self.offset,
             'total': self.total,
-            'DATA': [txn.as_dict for txn in self.transactions]
+            'DATA': [txn.as_dict() for txn in self.transactions]
         }
         return data_dict
 
-    @property
     def json(self):
-        data_dict = self.as_dict
+        data_dict = self.as_dict()
         return json.dumps(data_dict)
 
