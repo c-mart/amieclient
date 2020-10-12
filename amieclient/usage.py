@@ -1,5 +1,6 @@
 import json
 from collections import namedtuple
+from abc import ABC, abstractmethod
 
 ComputeUsageAttributes = namedtuple('ComputeUsageAttributes',
                                     ['node_count', 'cpu_core_count',
@@ -21,7 +22,37 @@ StorageUsageAttributes = namedtuple('StorageUsageAttributes',
                                     )
 
 
-class ComputeUsageRecord:
+class UsageRecord(ABC):
+    """
+    Abstract base class for a usage record
+    """
+    @classmethod
+    @abstractmethod
+    def from_dict(cls, input_dict):
+        pass
+
+    @abstractmethod
+    def as_dict(self):
+        pass
+
+    @classmethod
+    def from_json(cls, input_json):
+        """
+        Returns an UsageRecord from a provided JSON string
+        """
+        input_dict = json.loads(input_json)
+        return cls.from_dict(input_dict)
+
+    @abstractmethod
+    def json(self):
+        """
+        Returns a json version of this record
+        """
+
+        return json.dumps(self.as_dict())
+
+
+class ComputeUsageRecord(UsageRecord):
     """
     A ComputeUsageRecord. A Record of Compute Usage.
 
@@ -91,14 +122,6 @@ class ComputeUsageRecord:
             parent_record_id=input_dict.get('ParentRecordID'),
         )
 
-    @classmethod
-    def from_json(cls, input_json):
-        """
-        Returns a ComputeUsageRecord from a provided JSON string
-        """
-        input_dict = json.loads(input_json)
-        return cls.from_dict(input_dict)
-
     @property
     def as_dict(self):
         """
@@ -128,16 +151,8 @@ class ComputeUsageRecord:
 
         return d
 
-    @property
-    def json(self):
-        """
-        Returns a json version of this record
-        """
 
-        return json.dumps(self.as_dict)
-
-
-class StorageUsageRecord:
+class StorageUsageRecord(UsageRecord):
     """
     A usage record for storage usage.
     """
@@ -181,14 +196,6 @@ class StorageUsageRecord:
             user_copies=attributes.get('UserCopies'),
         )
 
-    @classmethod
-    def from_json(cls, input_json):
-        """
-        Returns a ComputeUsageRecord from a provided JSON string
-        """
-        input_dict = json.loads(input_json)
-        return cls.from_dict(input_dict)
-
     def as_dict(self):
         # Get the attributes, skip over anything not specified
         attributes = {}
@@ -207,9 +214,6 @@ class StorageUsageRecord:
         }
 
         return d
-
-    def json(self):
-        return json.dumps(self.as_dict())
 
 
 class UsageMessageException(Exception):
