@@ -27,8 +27,8 @@ class UsageRecord(ABC):
     Abstract base class for a usage record
     """
     @classmethod
-    @abstractmethod
     def from_dict(cls, input_dict):
+
         pass
 
     @abstractmethod
@@ -48,7 +48,6 @@ class UsageRecord(ABC):
         """
         Returns a json version of this record
         """
-
         return json.dumps(self.as_dict())
 
 
@@ -58,6 +57,8 @@ class ComputeUsageRecord(UsageRecord):
 
     (TODO: a better description)
     """
+    record_type = 'compute'
+
     def __init__(self, *,
                  parent_record_id=None, queue=None, cpu_core_count=None,
                  job_name=None, memory=None, charge, end_time,
@@ -153,6 +154,7 @@ class ComputeUsageRecord(UsageRecord):
 
 
 class StorageUsageRecord(UsageRecord):
+    record_type = 'storage'
     """
     A usage record for storage usage.
     """
@@ -223,13 +225,49 @@ class UsageMessageException(Exception):
     pass
 
 
+class _UsageRecordList:
+    def __init__(self, in_list=[]):
+        self._list = in_list
+        self._record_type = None
+        if not self._check_usage_type():
+            self._list = []
+            raise UsageMessageException('Cannot create a UsageMessage with mixed types')
+
+    def _check_usage_type(self):
+        if self._record_type is None and len(self._list) > 0:
+            rt = self._list[0].record_type.lower().capitalize()
+            if rt not in ['Compute', 'Storage', 'Adjustment']:
+                raise UsageMessageException(f'Invalid usage type {rt}')
+            self._record_type = rt
+        # iterate over list records and check against stored type
+        return all([x.record_type == self._record_type for x in self._list])
+
+    def append(self, item):
+        if not isinstance(item, UsageRecord):
+            raise UsageMessageException("Can't add something that isn't a UsageRecord")
+        if (self._record_type is not None and
+                item.record_type != self._record_type):
+            raise UsageMessageException(f"Can't add a {self._record_type} record to a "
+                                        f"{self._record_type} message")
+        self._list.append(item)
+        if not self._check_usage_type():
+            self._list.pop()
+            raise UsageMessageException('Cannot create a UsageMessage with mixed types')
+
+    def extend(self, items):
+        for item in items:
+            self.append(item)
+
+    def __getitem__(self, i):
+        return self._list.__getitem__(i)
+
+    def __len__(self):
+        return len(self._list)
+
+
 class UsageMessage:
-    def __init__(self, usage_type, records):
-        # Normalize the usage type's capitalization
-        ut = usage_type.lower().capitalize()
-        if ut not in ['Compute', 'Storage', 'Adjustment']:
-            raise UsageMessageException(f'Invalid usage type {ut}')
-        self.records = records
+    def __init__(self, records):
+        self.records = _UsageRecordList(records)
 
     @classmethod
     def from_dict(cls, input_dict):
@@ -242,30 +280,28 @@ class UsageMessage:
         elif ut == 'Storage':
             ur_class = StorageUsageRecord
         records = [ur_class.from_dict(d) for d in input_dict['Records']]
-        return cls(ut, records)
+        return cls(records)
 
     @classmethod
     def from_json(cls, input_json):
         input_dict = json.loads(input_json)
         return cls.from_dict(input_dict)
 
-    @property
     def as_dict(self):
         """
         Returns a dictionary version of this record
         """
         d = {
-            'UsageType': self.usage_type,
-            'Records': [r.as_dict for r in self.records]
+            'UsageType': self.records._record_type,
+            'Records': [r.as_dict() for r in self.records]
         }
         return d
 
-    @property
     def as_json(self):
         """
         Returns a json version of this message
         """
-        return json.dumps(self.as_dict)
+        return json.dumps(self.as_dict())
 
     def _chunked(self, chunk_size=1000):
         """
@@ -274,5 +310,5 @@ class UsageMessage:
         """
         for i in range(0, len(self.records), chunk_size):
             r = self.records[i:i+chunk_size]
-            yield self.__class__(self.usage_type, r)
+            yield self.__class__(r)
 
