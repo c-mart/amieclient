@@ -1,9 +1,11 @@
+from math import ceil, floor
 
 import requests
 
 from .packet import PacketList
 from .packet.base import Packet
 from .transaction import Transaction
+from .usage import UsageMessage, UsageRecord
 
 
 """AMIE client class"""
@@ -205,17 +207,54 @@ class UsageClient:
     def __exit__(self, *args):
         self._session.close()
 
-    def send_usage(self, pkt_list):
+    def send_usage(self, usage_packets):
         """
         Sends a usage update to the Usage API host.
-        Args:
-            pkt_list (UsageMessage): A UsageMessage object 
-        Returns:
-            response
-        """
-        url = self.usage_url + '/usage'
-        self._session.post(url, data=pkt_list.as_dict())
 
+        The API currently has a request size limit of 1024KiB. We get
+        ample room for overhead that may be added by intermediate layers
+        (reverse proxies, etc) by capping the size of the request we send
+        to 768KiB. This happens automatically, no need to chunk your usage
+        packets yourself. But this potential chunking means that we may get
+        more than one response, so for the sake of consistency this method
+        will return a list of responses.
+
+        Args:
+            usage_packets (UsageMessage, [UsageRecord], UsageRecord):
+                A UsageMessage object, list of UsageRecords, or a single
+                UsageRecord to send.
+        Returns:
+            list of responses
+        """
+        if isinstance(usage_packets, UsageRecord):
+            pkt_list = UsageMessage([usage_packets])
+        elif isinstance(usage_packets, list):
+            pkt_list = UsageMessage(usage_packets)
+        elif isinstance(usage_packets, UsageMessage):
+            pkt_list = usage_packets
+        url = self.usage_url + '/usage'
+
+        # prepare the request
+        req = requests.Request('POST',  url, json=pkt_list.as_dict())
+        prepped_req = self._session.prepare_request(req)
+        # Get the size of the content
+        content_length = int(prepped_req.headers.get('Content-Length'))
+
+        # Cap content_length at 786432 bytes
+        if content_length >= 786432:
+            # Get the safe number of safe chunks:
+            number_of_chunks = ceil(content_length / 786432)
+            # Get the size of those chunks
+            chunk_size = floor(len(pkt_list) / number_of_chunks)
+            results = list()
+            for chunk in pkt_list._chunked(chunk_size=chunk_size):
+                r = self.send_usage(chunk)
+                results.extend(r)
+            return results
+
+        r = self._session.send(prepped_req)
+        r.raise_for_status()
+        return [r.json()]
 
     def usage_summary(self):
         """
