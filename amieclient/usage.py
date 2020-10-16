@@ -26,9 +26,9 @@ class UsageRecord(ABC):
     """
     Abstract base class for a usage record
     """
+    @abstractmethod
     @classmethod
     def from_dict(cls, input_dict):
-
         pass
 
     @abstractmethod
@@ -65,7 +65,7 @@ class ComputeUsageRecord(UsageRecord):
                  local_project_id, local_record_id, resource, start_time,
                  submit_time, username, node_count):
         """
-        Creates a new usage record.
+        Creates a new compute usage record.
 
         Args:
             parent_record_id (str): Job ID of parent job if this record is a sub job.  Typically a slurm job id
@@ -123,7 +123,6 @@ class ComputeUsageRecord(UsageRecord):
             parent_record_id=input_dict.get('ParentRecordID'),
         )
 
-    @property
     def as_dict(self):
         """
         Returns a dictionary version of this record
@@ -157,6 +156,33 @@ class StorageUsageRecord(UsageRecord):
     record_type = 'storage'
     """
     A usage record for storage usage.
+
+    Args:
+        charge (str): The amount of allocation units that should be deducted
+                      from the project allocation for this job.  For storage
+                      this is usually gigabytes stored
+        collection_time (str): Time the storage use was collected
+        local_project_id (str): The Site Project ID for the job.  This must
+                                match the ProjectID provided by the site for
+                                the project with AMIE
+        local_record_id (str): Site Record ID.  Use to make the record
+                               identifiable to you locally
+        resource (str): Resource the job ran on.  Must match the resource name
+                        used in AMIE
+        username (str): The local username of the user who ran the job. Must
+                        match the username used in AMIE
+        bytes_read (str): Number of bytes Read
+        bytes_stored (str): Number of bytes stored
+        bytes_written (str): Number of bytes written
+        collection_interval (str): How often the storage use will be calculated
+                                   in days
+        file_count (str): Number of files stored
+        files_read (str): Number of files read
+        files_written (str): Number of files written
+        media_type (str): Type of the storage (Tape, Disk, SSD, etc)
+        system_copies (str): Number of copies of the data the system keeps
+        user_copies (str): Number of copies of the data the user has chosen
+                           to keep
     """
     def __init__(self, charge, collection_time, local_project_id,
                  local_record_id, resource, username,
@@ -218,6 +244,81 @@ class StorageUsageRecord(UsageRecord):
         return d
 
 
+class AdjustmentUsageRecord(UsageRecord):
+    """
+    Usage record for an Adjustment
+    Args:
+        adjustment_type (str): Which type of allocation adjustment is this?
+                               Valid values are 'credit', 'refund',
+                               'storage-credit', 'debit', 'reservation',
+                               'storage-debit'
+        charge (str): The amount of allocation units that should be deducted
+                      from the project allocation for this job.  For storage
+                      this is usually gigabytes stored.
+        start_time (str): Time for which this adjustment should be applied.
+                          For example a the time for a job refund should be
+                          the same as the job submit time to ensure the correct
+                          allocation is credited.
+        local_project_id (str): The Site Project ID for the job. This must
+                                match the ProjectID provided by the site for
+                                the project with.
+        local_record_id (str): AMIE Site Record ID. Use to make this record
+                               identifiable to you locally. Must be unique
+                               for the resource.
+        resource (str): Resource the job ran on.  Must match the resource name
+                        used in AMIE
+        username (str): The local username of the user who ran the job.  Must
+                        match the username used in AMIE
+        comment (str): Comment to explain reason for adjustment
+    """
+
+    VALID_ADJUSTMENT_TYPES = ['credit', 'refund', 'storage-credit', 'debit',
+                              'reservation', 'storage-debit']
+
+    def __init__(self, adjustment_type, charge, start_time, local_project_id,
+                 local_record_id, resource, username, comment=None):
+        at = adjustment_type.lower()
+        if at not in self.VALID_ADJUSTMENT_TYPES:
+            raise ValueError('Adjustment type "{}" invalid, must be one of {}'
+                             .format(at, self.VALID_ADJUSTMENT_TYPES))
+        self.adjustment_type = at
+        self.charge = charge
+        self.start_time = start_time
+        self.local_project_id = local_project_id
+        self.local_record_id = local_record_id
+        self.resource = resource
+        self.username = username
+        self.comment = comment
+
+    @classmethod
+    def from_dict(cls, input_dict):
+        return cls(
+            adjustment_type=input_dict['AdjustmentType'],
+            charge=input_dict['Charge'],
+            start_time=input_dict['StartTime'],
+            local_project_id=input_dict['LocalProjectID'],
+            local_record_id=input_dict['LocalRecordID'],
+            resource=input_dict['Resource'],
+            username=input_dict['Username'],
+            comment=input_dict.get('Comment')
+        )
+
+    def as_dict(self):
+        d = {
+            'AdjustmentType': self.adjustment_type,
+            'Charge': self.charge,
+            'StartTime': self.start_time,
+            'LocalProjectID': self.local_project_id,
+            'LocalRecordID': self.local_record_id,
+            'Resource': self.resource,
+            'Username': self.username
+        }
+        if self.comment is not None:
+            d['Comment'] = self.comment
+
+        return d
+
+
 class UsageMessageException(Exception):
     """
     Exception for invalid data in a UsageMessage
@@ -237,7 +338,8 @@ class _UsageRecordList:
         if self._record_type is None and len(self._list) > 0:
             rt = self._list[0].record_type.lower().capitalize()
             if rt not in ['Compute', 'Storage', 'Adjustment']:
-                raise UsageMessageException(f'Invalid usage type {rt}')
+                raise UsageMessageException('Invalid usage type {}'
+                                            .format(rt))
             self._record_type = rt
         # iterate over list records and check against stored type
         return all([x.record_type == self._record_type for x in self._list])
@@ -247,8 +349,8 @@ class _UsageRecordList:
             raise UsageMessageException("Can't add something that isn't a UsageRecord")
         if (self._record_type is not None and
                 item.record_type != self._record_type):
-            raise UsageMessageException(f"Can't add a {self._record_type} record to a "
-                                        f"{self._record_type} message")
+            raise UsageMessageException("Can't add a {} record to a {} message"
+                                        .format(item._record_type, self._record_type))
         self._list.append(item)
         if not self._check_usage_type():
             self._list.pop()
@@ -279,6 +381,10 @@ class UsageMessage:
             ur_class = ComputeUsageRecord
         elif ut == 'Storage':
             ur_class = StorageUsageRecord
+        elif ut == 'Adjustment':
+            ur_class = AdjustmentUsageRecord
+        else:
+            raise UsageMessageException('Invalid usage type {}'.format(ut))
         records = [ur_class.from_dict(d) for d in input_dict['Records']]
         return cls(records)
 
