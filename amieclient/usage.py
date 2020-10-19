@@ -456,6 +456,38 @@ class UsageMessage:
             yield self.__class__(r)
 
 
+class UsageResponse:
+    def __init__(self, message, records_failed, ):
+        self.message = message
+        self.records_failed = records_failed
+
+    @classmethod
+    def from_dict(cls, input_dict):
+        records = [UsageRecordError.from_dict(d) for d in
+                   input_dict.get('ValidationFailedRecords', [])]
+        message = input_dict['Message']
+        return cls(message=message, records_failed=records)
+
+    @classmethod
+    def from_json(cls, input_json):
+        d = json.loads(input_json)
+        return cls.from_dict(d)
+
+    def as_dict(self):
+        d = {
+            'Message': self.message,
+            'ValidationFailedRecords': [r.as_dict() for r in self.records_failed]
+        }
+        return d
+
+    def json(self):
+        return json.dumps(self.as_dict())
+
+
+class UsageResponseError(Exception):
+    pass
+
+
 def _type_lookup(ut):
     if ut == 'Compute':
         ur_class = ComputeUsageRecord
