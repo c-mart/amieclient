@@ -96,17 +96,24 @@ class UsageMessage:
             yield self.__class__(r)
 
 
-class UsageResponse:
-    def __init__(self, message, records_failed, ):
+class UsageMessageError:
+    def __init__(self, error, message):
+        self._error = error
         self.message = message
-        self.records_failed = records_failed
+
+    @property
+    def error(self):
+        return self._error
+
+    @error.setter
+    def error(self, _):
+        pass
 
     @classmethod
     def from_dict(cls, input_dict):
-        records = [UsageRecordError.from_dict(d) for d in
-                   input_dict.get('ValidationFailedRecords', [])]
-        message = input_dict['Message']
-        return cls(message=message, records_failed=records)
+        error = input_dict.pop('error', None)
+        message = UsageMessage.from_dict(input_dict)
+        return cls(error, message)
 
     @classmethod
     def from_json(cls, input_json):
@@ -114,15 +121,13 @@ class UsageResponse:
         return cls.from_dict(d)
 
     def as_dict(self):
-        d = {
-            'Message': self.message,
-            'ValidationFailedRecords': [r.as_dict() for r in self.records_failed]
-        }
+        d = {'Error': self._error}
+        d.update(self.message.as_dict())
         return d
 
     def json(self):
-        return json.dumps(self.as_dict())
+        d = self.as_dict()
+        return json.dumps(d)
 
 
-class UsageResponseError(Exception):
-    pass
+
