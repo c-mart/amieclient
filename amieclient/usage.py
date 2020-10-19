@@ -1,5 +1,5 @@
 import json
-from collections import namedtuple
+from collections import namedtuple, defaultdict
 from abc import ABC, abstractmethod
 
 ComputeUsageAttributes = namedtuple('ComputeUsageAttributes',
@@ -272,6 +272,8 @@ class AdjustmentUsageRecord(UsageRecord):
         comment (str): Comment to explain reason for adjustment
     """
 
+    record_type = 'adjustment'
+
     VALID_ADJUSTMENT_TYPES = ['credit', 'refund', 'storage-credit', 'debit',
                               'reservation', 'storage-debit']
 
@@ -319,6 +321,48 @@ class AdjustmentUsageRecord(UsageRecord):
         return d
 
 
+class UsageRecordError:
+    def __init__(self, error, record):
+        self._error = error
+        self.record = record
+
+    @property
+    def error(self):
+        return self._error
+
+    @error.setter
+    def error(self, _):
+        pass
+
+    @classmethod
+    def from_dict(cls, input_dict):
+        error = input_dict.pop('error', None)
+        ut = input_dict.pop('UsageType')
+        ur_class = _type_lookup(ut)
+        record_dict = defaultdict(lambda: None)
+        record_dict.update(input_dict)
+        record = ur_class.from_dict(record_dict)
+
+        return cls(error=error, record=record)
+
+    @classmethod
+    def from_json(cls, input_json):
+        d = json.loads(input_json)
+        return cls.from_dict(d)
+
+    def as_dict(self):
+        d = {
+            'UsageType': self.record.record_type,
+            'error': self.error
+        }
+        d.update(self.record.as_dict())
+        return d
+
+    def json(self):
+        d = self.as_dict()
+        return json.dumps(d)
+
+
 class UsageMessageException(Exception):
     """
     Exception for invalid data in a UsageMessage
@@ -350,7 +394,7 @@ class _UsageRecordList:
         if (self._record_type is not None and
                 item.record_type != self._record_type):
             raise UsageMessageException("Can't add a {} record to a {} message"
-                                        .format(item._record_type, self._record_type))
+                                        .format(item.record_type, self._record_type))
         self._list.append(item)
         if not self._check_usage_type():
             self._list.pop()
@@ -377,14 +421,7 @@ class UsageMessage:
         Returns a UsageMessage from a provided dictionary
         """
         ut = input_dict['UsageType']
-        if ut == 'Compute':
-            ur_class = ComputeUsageRecord
-        elif ut == 'Storage':
-            ur_class = StorageUsageRecord
-        elif ut == 'Adjustment':
-            ur_class = AdjustmentUsageRecord
-        else:
-            raise UsageMessageException('Invalid usage type {}'.format(ut))
+        ur_class = _type_lookup(ut)
         records = [ur_class.from_dict(d) for d in input_dict['Records']]
         return cls(records)
 
@@ -403,7 +440,7 @@ class UsageMessage:
         }
         return d
 
-    def as_json(self):
+    def json(self):
         """
         Returns a json version of this message
         """
@@ -418,3 +455,15 @@ class UsageMessage:
             r = self.records[i:i+chunk_size]
             yield self.__class__(r)
 
+
+def _type_lookup(ut):
+    if ut == 'Compute':
+        ur_class = ComputeUsageRecord
+    elif ut == 'Storage':
+        ur_class = StorageUsageRecord
+    elif ut == 'Adjustment':
+        ur_class = AdjustmentUsageRecord
+    else:
+        raise UsageMessageException('Invalid usage type {}'.format(ut))
+
+    return ur_class
