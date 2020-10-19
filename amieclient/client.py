@@ -5,7 +5,7 @@ import requests
 from .packet import PacketList
 from .packet.base import Packet
 from .transaction import Transaction
-from .usage import UsageMessage, UsageRecord
+from .usage import UsageMessage, UsageRecord, UsageResponse, UsageResponseError
 
 
 """AMIE client class"""
@@ -253,8 +253,14 @@ class UsageClient:
             return results
 
         r = self._session.send(prepped_req)
-        r.raise_for_status()
-        return [r.json()]
+        if r.status_code == 200:
+            resp = UsageResponse.from_dict(r.json())
+        elif r.status_code == 400:
+            msg = r.json().get('Message', 'Unspecified error')
+            raise UsageResponseError(msg)
+        else:
+            r.raise_for_status()
+        return [resp]
 
     def usage_summary(self):
         """
