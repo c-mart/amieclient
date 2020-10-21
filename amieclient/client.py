@@ -209,7 +209,9 @@ class UsageClient:
 
     def send_usage(self, usage_packets):
         """
-        Sends a usage update to the Usage API host.
+        Sends a usage update to the Usage API host. This function accepts
+        individual UsageMessages, lists of UsageRecords, or even a single
+        UsageRecord. Returns a list of UsageResponses
 
         The API currently has a request size limit of 1024KiB. We get
         ample room for overhead that may be added by intermediate layers
@@ -248,6 +250,7 @@ class UsageClient:
             chunk_size = floor(len(pkt_list) / number_of_chunks)
             results = list()
             for chunk in pkt_list._chunked(chunk_size=chunk_size):
+                # Send each chunk
                 r = self.send_usage(chunk)
                 results.extend(r)
             return results
@@ -256,7 +259,8 @@ class UsageClient:
         if r.status_code == 200:
             resp = UsageResponse.from_dict(r.json())
         elif r.status_code == 400:
-            msg = r.json().get('Message', 'Unspecified error')
+            # Get the message if we're given one; otherwise
+            msg = r.json().get('Message', 'Bad Request, but error not specified by server')
             raise UsageResponseError(msg)
         else:
             r.raise_for_status()
