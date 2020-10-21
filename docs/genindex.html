@@ -48,19 +48,17 @@
  | <a href="#P"><strong>P</strong></a>
  | <a href="#R"><strong>R</strong></a>
  | <a href="#S"><strong>S</strong></a>
+ | <a href="#U"><strong>U</strong></a>
  | <a href="#V"><strong>V</strong></a>
  
 </div>
 <h2 id="A">A</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li>
-    amieclient.client
-
-      <ul>
-        <li><a href="client.html#module-amieclient.client">module</a>
+      <li><a href="usage.html#amieclient.usage.record.AdjustmentUsageRecord">AdjustmentUsageRecord (class in amieclient.usage.record)</a>
 </li>
-      </ul></li>
+      <li><a href="client.html#amieclient.client.AMIEClient">AMIEClient (class in amieclient.client)</a>
+</li>
       <li>
     amieclient.packet.account
 
@@ -75,8 +73,6 @@
         <li><a href="client.html#module-amieclient.packet.inform">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     amieclient.packet.person
 
@@ -84,6 +80,8 @@
         <li><a href="client.html#module-amieclient.packet.person">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     amieclient.packet.project
 
@@ -98,15 +96,21 @@
         <li><a href="client.html#module-amieclient.packet.user">module</a>
 </li>
       </ul></li>
-      <li><a href="client.html#amieclient.packet.base.Packet.as_dict">as_dict() (amieclient.packet.base.Packet property)</a>
+      <li><a href="client.html#amieclient.packet.base.Packet.as_dict">as_dict() (amieclient.packet.base.Packet method)</a>
+
+      <ul>
+        <li><a href="usage.html#amieclient.usage.message.UsageMessage.as_dict">(amieclient.usage.message.UsageMessage method)</a>
 </li>
+        <li><a href="usage.html#amieclient.usage.record.ComputeUsageRecord.as_dict">(amieclient.usage.record.ComputeUsageRecord method)</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
 <h2 id="C">C</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="client.html#amieclient.client.Client">Client (class in amieclient.client)</a>
+      <li><a href="usage.html#amieclient.usage.record.ComputeUsageRecord">ComputeUsageRecord (class in amieclient.usage.record)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -127,7 +131,13 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="client.html#amieclient.packet.base.Packet.from_dict">from_dict() (amieclient.packet.base.Packet class method)</a>
+
+      <ul>
+        <li><a href="usage.html#amieclient.usage.message.UsageMessage.from_dict">(amieclient.usage.message.UsageMessage class method)</a>
 </li>
+        <li><a href="usage.html#amieclient.usage.record.ComputeUsageRecord.from_dict">(amieclient.usage.record.ComputeUsageRecord class method)</a>
+</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="client.html#amieclient.packet.base.Packet.from_json">from_json() (amieclient.packet.base.Packet class method)</a>
@@ -138,11 +148,11 @@
 <h2 id="G">G</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="client.html#amieclient.client.Client.get_packet">get_packet() (amieclient.client.Client method)</a>
+      <li><a href="client.html#amieclient.client.AMIEClient.get_packet">get_packet() (amieclient.client.AMIEClient method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="client.html#amieclient.client.Client.get_transaction">get_transaction() (amieclient.client.Client method)</a>
+      <li><a href="client.html#amieclient.client.AMIEClient.get_transaction">get_transaction() (amieclient.client.AMIEClient method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -158,15 +168,19 @@
 <h2 id="J">J</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="client.html#amieclient.packet.base.Packet.json">json() (amieclient.packet.base.Packet property)</a>
+      <li><a href="client.html#amieclient.packet.base.Packet.json">json() (amieclient.packet.base.Packet method)</a>
+
+      <ul>
+        <li><a href="usage.html#amieclient.usage.message.UsageMessage.json">(amieclient.usage.message.UsageMessage method)</a>
 </li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
 <h2 id="L">L</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="client.html#amieclient.client.Client.list_packets">list_packets() (amieclient.client.Client method)</a>
+      <li><a href="client.html#amieclient.client.AMIEClient.list_packets">list_packets() (amieclient.client.AMIEClient method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -178,8 +192,6 @@
     module
 
       <ul>
-        <li><a href="client.html#module-amieclient.client">amieclient.client</a>
-</li>
         <li><a href="client.html#module-amieclient.packet.account">amieclient.packet.account</a>
 </li>
         <li><a href="client.html#module-amieclient.packet.inform">amieclient.packet.inform</a>
@@ -235,6 +247,8 @@
 <h2 id="R">R</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="usage.html#amieclient.usage.record.StorageUsageRecord.record_type">record_type (amieclient.usage.record.StorageUsageRecord attribute)</a>
+</li>
       <li><a href="client.html#amieclient.packet.base.Packet.reply_packet">reply_packet() (amieclient.packet.base.Packet method)</a>
 </li>
       <li><a href="client.html#amieclient.packet.account.RequestAccountCreate">RequestAccountCreate (class in amieclient.packet.account)</a>
@@ -261,7 +275,35 @@
 <h2 id="S">S</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="client.html#amieclient.client.Client.send_packet">send_packet() (amieclient.client.Client method)</a>
+      <li><a href="client.html#amieclient.client.AMIEClient.send_packet">send_packet() (amieclient.client.AMIEClient method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="usage.html#amieclient.client.UsageClient.send_usage">send_usage() (amieclient.client.UsageClient method)</a>
+</li>
+      <li><a href="usage.html#amieclient.usage.record.StorageUsageRecord">StorageUsageRecord (class in amieclient.usage.record)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="U">U</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="usage.html#amieclient.client.UsageClient.usage_status">usage_status() (amieclient.client.UsageClient method)</a>
+</li>
+      <li><a href="usage.html#amieclient.client.UsageClient.usage_summary">usage_summary() (amieclient.client.UsageClient method)</a>
+</li>
+      <li><a href="usage.html#amieclient.client.UsageClient">UsageClient (class in amieclient.client)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="usage.html#amieclient.usage.message.UsageMessage">UsageMessage (class in amieclient.usage.message)</a>
+</li>
+      <li><a href="usage.html#amieclient.usage.response.UsageResponse">UsageResponse (class in amieclient.usage.response)</a>
+</li>
+      <li><a href="usage.html#amieclient.usage.response.UsageStatus">UsageStatus (class in amieclient.usage.response)</a>
+</li>
+      <li><a href="usage.html#amieclient.usage.response.UsageStatusResource">UsageStatusResource (class in amieclient.usage.response)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -303,6 +345,7 @@
 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="client.html">amieclient API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">amieclient API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
 </ul>
 

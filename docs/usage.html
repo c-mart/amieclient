@@ -1,0 +1,356 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>amieclient API &#8212; amieclient  documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="amieclient-api">
+<h1>amieclient API<a class="headerlink" href="#amieclient-api" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="the-usage-api-client">
+<h2>The Usage API client<a class="headerlink" href="#the-usage-api-client" title="Permalink to this headline">¶</a></h2>
+<p>To communicate with the AMIE REST Usage API, create a UsageClient object.
+You’ll need to provide your site name and your API key.</p>
+<dl class="py class">
+<dt id="amieclient.client.UsageClient">
+<em class="property">class </em><code class="sig-prename descclassname">amieclient.client.</code><code class="sig-name descname">UsageClient</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">site_name</span></em>, <em class="sig-param"><span class="n">api_key</span></em>, <em class="sig-param"><span class="n">usage_url</span><span class="o">=</span><span class="default_value">'https://usage.xsede.org/api/v1'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#amieclient.client.UsageClient" title="Permalink to this definition">¶</a></dt>
+<dd><p>AMIE Usage Client.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>site_name</strong> (<em>str</em>) – Name of the client site.</p></li>
+<li><p><strong>api_key</strong> (<em>str</em>) – API key secret</p></li>
+<li><p><strong>usage_url</strong> (<em>str</em>) – Base URL for the XSEDE Usage api</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">psc_client</span> <span class="o">=</span> <span class="n">amieclient</span><span class="o">.</span><span class="n">UsageClient</span><span class="p">(</span><span class="n">site_name</span><span class="o">=</span><span class="s1">&#39;PSC&#39;</span><span class="p">,</span> <span class="n">api_key</span><span class="o">=</span><span class="n">some_secrets_store</span><span class="p">[</span><span class="s1">&#39;amie_api_key&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>You can also override the amie_url and usage_url parameters, if you’re
+doing local development or testing out a new version.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">psc_alt_base_client</span> <span class="o">=</span> <span class="n">amieclient</span><span class="o">.</span><span class="n">UsageClient</span><span class="p">(</span><span class="n">site_name</span><span class="o">=</span><span class="s1">&#39;PSC&#39;</span><span class="p">,</span> <span class="n">api_key</span><span class="o">=</span><span class="s1">&#39;test_api_key&#39;</span><span class="p">,</span> <span class="n">usage_url</span><span class="o">=</span><span class="s1">&#39;https://amieclient.xsede.org/v0.20_beta/)</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt id="amieclient.client.UsageClient.send_usage">
+<code class="sig-name descname">send_usage</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">usage_packets</span></em><span class="sig-paren">)</span><a class="headerlink" href="#amieclient.client.UsageClient.send_usage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sends a usage update to the Usage API host. This function accepts
+individual UsageMessages, lists of UsageRecords, or even a single
+UsageRecord. Returns a list of UsageResponses</p>
+<p>The API currently has a request size limit of 1024KiB. We get
+ample room for overhead that may be added by intermediate layers
+(reverse proxies, etc) by capping the size of the request we send
+to 768KiB. This happens automatically, no need to chunk your usage
+packets yourself. But this potential chunking means that we may get
+more than one response, so for the sake of consistency this method
+will return a list of responses.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>usage_packets</strong> (<a class="reference internal" href="#amieclient.usage.message.UsageMessage" title="amieclient.usage.message.UsageMessage"><em>UsageMessage</em></a><em>, </em><em>[</em><em>UsageRecord</em><em>]</em><em>, </em><em>UsageRecord</em>) – A UsageMessage object, list of UsageRecords, or a single
+UsageRecord to send.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>list of responses</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="amieclient.client.UsageClient.usage_status">
+<code class="sig-name descname">usage_status</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">from_date</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_date</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#amieclient.client.UsageClient.usage_status" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the status of records processed from the queue in the provided interval.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>from_date</strong> (<em>Datetime</em>) – Start date and time</p></li>
+<li><p><strong>to_date</strong> (<em>Datetime</em>) – End date and time</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="amieclient.client.UsageClient.usage_summary">
+<code class="sig-name descname">usage_summary</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#amieclient.client.UsageClient.usage_summary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets a usage summary</p>
+<p>Not implemented yet</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="usage-records">
+<h2>Usage Records<a class="headerlink" href="#usage-records" title="Permalink to this headline">¶</a></h2>
+<p>The Usage API currently handles three kinds of resources:
+Compute, Storage, and Adjustment. Each resource has a corresponding
+Record type.</p>
+<div class="section" id="compute">
+<h3>Compute<a class="headerlink" href="#compute" title="Permalink to this headline">¶</a></h3>
+<dl class="py class">
+<dt id="amieclient.usage.record.ComputeUsageRecord">
+<em class="property">class </em><code class="sig-prename descclassname">amieclient.usage.record.</code><code class="sig-name descname">ComputeUsageRecord</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">parent_record_id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">queue</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">cpu_core_count</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">job_name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">memory</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">charge</span></em>, <em class="sig-param"><span class="n">end_time</span></em>, <em class="sig-param"><span class="n">local_project_id</span></em>, <em class="sig-param"><span class="n">local_record_id</span></em>, <em class="sig-param"><span class="n">resource</span></em>, <em class="sig-param"><span class="n">start_time</span></em>, <em class="sig-param"><span class="n">submit_time</span></em>, <em class="sig-param"><span class="n">username</span></em>, <em class="sig-param"><span class="n">node_count</span></em><span class="sig-paren">)</span><a class="headerlink" href="#amieclient.usage.record.ComputeUsageRecord" title="Permalink to this definition">¶</a></dt>
+<dd><p>A ComputeUsageRecord. A Record of Compute Usage.</p>
+<p>(TODO: a better description)</p>
+<dl class="py method">
+<dt id="amieclient.usage.record.ComputeUsageRecord.as_dict">
+<code class="sig-name descname">as_dict</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#amieclient.usage.record.ComputeUsageRecord.as_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a dictionary version of this record</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="amieclient.usage.record.ComputeUsageRecord.from_dict">
+<em class="property">classmethod </em><code class="sig-name descname">from_dict</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_dict</span></em><span class="sig-paren">)</span><a class="headerlink" href="#amieclient.usage.record.ComputeUsageRecord.from_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a ComputeUsageRecord from a provided dictionary</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="storage">
+<h3>Storage<a class="headerlink" href="#storage" title="Permalink to this headline">¶</a></h3>
+<dl class="py class">
+<dt id="amieclient.usage.record.StorageUsageRecord">
+<em class="property">class </em><code class="sig-prename descclassname">amieclient.usage.record.</code><code class="sig-name descname">StorageUsageRecord</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">charge</span></em>, <em class="sig-param"><span class="n">collection_time</span></em>, <em class="sig-param"><span class="n">local_project_id</span></em>, <em class="sig-param"><span class="n">local_record_id</span></em>, <em class="sig-param"><span class="n">resource</span></em>, <em class="sig-param"><span class="n">username</span></em>, <em class="sig-param"><span class="n">bytes_read</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">bytes_stored</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">bytes_written</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">collection_interval</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">file_count</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">files_read</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">files_written</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">media_type</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">system_copies</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">user_copies</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#amieclient.usage.record.StorageUsageRecord" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py attribute">
+<dt id="amieclient.usage.record.StorageUsageRecord.record_type">
+<code class="sig-name descname">record_type</code><em class="property"> = 'storage'</em><a class="headerlink" href="#amieclient.usage.record.StorageUsageRecord.record_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>A usage record for storage usage.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>charge</strong> (<em>str</em>) – The amount of allocation units that should be deducted
+from the project allocation for this job.  For storage
+this is usually gigabytes stored</p></li>
+<li><p><strong>collection_time</strong> (<em>str</em>) – Time the storage use was collected</p></li>
+<li><p><strong>local_project_id</strong> (<em>str</em>) – The Site Project ID for the job.  This must
+match the ProjectID provided by the site for
+the project with AMIE</p></li>
+<li><p><strong>local_record_id</strong> (<em>str</em>) – Site Record ID.  Use to make the record
+identifiable to you locally</p></li>
+<li><p><strong>resource</strong> (<em>str</em>) – Resource the job ran on.  Must match the resource name
+used in AMIE</p></li>
+<li><p><strong>username</strong> (<em>str</em>) – The local username of the user who ran the job. Must
+match the username used in AMIE</p></li>
+<li><p><strong>bytes_read</strong> (<em>str</em>) – Number of bytes Read</p></li>
+<li><p><strong>bytes_stored</strong> (<em>str</em>) – Number of bytes stored</p></li>
+<li><p><strong>bytes_written</strong> (<em>str</em>) – Number of bytes written</p></li>
+<li><p><strong>collection_interval</strong> (<em>str</em>) – How often the storage use will be calculated
+in days</p></li>
+<li><p><strong>file_count</strong> (<em>str</em>) – Number of files stored</p></li>
+<li><p><strong>files_read</strong> (<em>str</em>) – Number of files read</p></li>
+<li><p><strong>files_written</strong> (<em>str</em>) – Number of files written</p></li>
+<li><p><strong>media_type</strong> (<em>str</em>) – Type of the storage (Tape, Disk, SSD, etc)</p></li>
+<li><p><strong>system_copies</strong> (<em>str</em>) – Number of copies of the data the system keeps</p></li>
+<li><p><strong>user_copies</strong> (<em>str</em>) – Number of copies of the data the user has chosen
+to keep</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="adjustment">
+<h3>Adjustment<a class="headerlink" href="#adjustment" title="Permalink to this headline">¶</a></h3>
+<dl class="py class">
+<dt id="amieclient.usage.record.AdjustmentUsageRecord">
+<em class="property">class </em><code class="sig-prename descclassname">amieclient.usage.record.</code><code class="sig-name descname">AdjustmentUsageRecord</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">adjustment_type</span></em>, <em class="sig-param"><span class="n">charge</span></em>, <em class="sig-param"><span class="n">start_time</span></em>, <em class="sig-param"><span class="n">local_project_id</span></em>, <em class="sig-param"><span class="n">local_record_id</span></em>, <em class="sig-param"><span class="n">resource</span></em>, <em class="sig-param"><span class="n">username</span></em>, <em class="sig-param"><span class="n">comment</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#amieclient.usage.record.AdjustmentUsageRecord" title="Permalink to this definition">¶</a></dt>
+<dd><p>Usage record for an Adjustment
+:param adjustment_type: Which type of allocation adjustment is this?</p>
+<blockquote>
+<div><p>Valid values are ‘credit’, ‘refund’,
+‘storage-credit’, ‘debit’, ‘reservation’,
+‘storage-debit’</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>charge</strong> (<em>str</em>) – The amount of allocation units that should be deducted
+from the project allocation for this job.  For storage
+this is usually gigabytes stored.</p></li>
+<li><p><strong>start_time</strong> (<em>str</em>) – Time for which this adjustment should be applied.
+For example a the time for a job refund should be
+the same as the job submit time to ensure the correct
+allocation is credited.</p></li>
+<li><p><strong>local_project_id</strong> (<em>str</em>) – The Site Project ID for the job. This must
+match the ProjectID provided by the site for
+the project with.</p></li>
+<li><p><strong>local_record_id</strong> (<em>str</em>) – AMIE Site Record ID. Use to make this record
+identifiable to you locally. Must be unique
+for the resource.</p></li>
+<li><p><strong>resource</strong> (<em>str</em>) – Resource the job ran on.  Must match the resource name
+used in AMIE</p></li>
+<li><p><strong>username</strong> (<em>str</em>) – The local username of the user who ran the job.  Must
+match the username used in AMIE</p></li>
+<li><p><strong>comment</strong> (<em>str</em>) – Comment to explain reason for adjustment</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="usage-messages">
+<h2>Usage Messages<a class="headerlink" href="#usage-messages" title="Permalink to this headline">¶</a></h2>
+<p>Usage Records are sent and received from the Usage API in the form of Usage Messages.
+A Usage Message is, essentially, a list of one particular type of Usage Record – so, for
+example, you cannot send a UsageMessage with a record of both Compute and Storage usage.
+The send_usage() method of the Usage Client will make a UsageMessage for you automatically
+if you give it a list of UsageRecords of the same kind, or if you give it a single
+UsageRecord.</p>
+<dl class="py class">
+<dt id="amieclient.usage.message.UsageMessage">
+<em class="property">class </em><code class="sig-prename descclassname">amieclient.usage.message.</code><code class="sig-name descname">UsageMessage</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">records</span></em><span class="sig-paren">)</span><a class="headerlink" href="#amieclient.usage.message.UsageMessage" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py method">
+<dt id="amieclient.usage.message.UsageMessage.as_dict">
+<code class="sig-name descname">as_dict</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#amieclient.usage.message.UsageMessage.as_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a dictionary version of this record</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="amieclient.usage.message.UsageMessage.from_dict">
+<em class="property">classmethod </em><code class="sig-name descname">from_dict</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_dict</span></em><span class="sig-paren">)</span><a class="headerlink" href="#amieclient.usage.message.UsageMessage.from_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a UsageMessage from a provided dictionary</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="amieclient.usage.message.UsageMessage.json">
+<code class="sig-name descname">json</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#amieclient.usage.message.UsageMessage.json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a json version of this message</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="responses">
+<h2>Responses<a class="headerlink" href="#responses" title="Permalink to this headline">¶</a></h2>
+<p>The Usage API backend processes received records asynchronously. This means that when you
+send along a UsageRecord, your data is validated, but not processed immediately. You will
+receive a quick response from the API, letting you know how many records were validated
+successfully and put on the stack to be processed. Any records that fail validation will be
+returned to you, so that you can correct whatever horrible mistake you have inflicted on the API.
+You monster.</p>
+<dl class="py class">
+<dt id="amieclient.usage.response.UsageResponse">
+<em class="property">class </em><code class="sig-prename descclassname">amieclient.usage.response.</code><code class="sig-name descname">UsageResponse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">message</span></em>, <em class="sig-param"><span class="n">records_failed</span></em><span class="sig-paren">)</span><a class="headerlink" href="#amieclient.usage.response.UsageResponse" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="checking-status">
+<h2>Checking status<a class="headerlink" href="#checking-status" title="Permalink to this headline">¶</a></h2>
+<p>To see what the current status of your submitted records are, there is the usage_status()
+method. It takes two optional paramters – from_date and to_date – that define a date and
+time range. The response includes a list of resources. For each resource, the number of
+successful and failed records is sent. If there are any records that failed processing,
+they are sent as well, grouped by the error that occured.</p>
+<dl class="py class">
+<dt id="amieclient.usage.response.UsageStatus">
+<em class="property">class </em><code class="sig-prename descclassname">amieclient.usage.response.</code><code class="sig-name descname">UsageStatus</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">resources</span></em><span class="sig-paren">)</span><a class="headerlink" href="#amieclient.usage.response.UsageStatus" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt id="amieclient.usage.response.UsageStatusResource">
+<em class="property">class </em><code class="sig-prename descclassname">amieclient.usage.response.</code><code class="sig-name descname">UsageStatusResource</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">resource_name</span></em>, <em class="sig-param"><span class="n">loaded_record_count</span></em>, <em class="sig-param"><span class="n">failed_record_count</span></em>, <em class="sig-param"><span class="n">errors</span><span class="o">=</span><span class="default_value">[]</span></em><span class="sig-paren">)</span><a class="headerlink" href="#amieclient.usage.response.UsageStatusResource" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">amieclient</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="client.html">amieclient API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;XSEDE.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.1.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/usage.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

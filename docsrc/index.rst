@@ -8,6 +8,7 @@ API.
    :caption: Contents:
 
    client
+   usage
    examples
 
 Indices and tables

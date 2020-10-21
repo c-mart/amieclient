@@ -1,13 +1,13 @@
 amieclient API
 ==============
 
-The client itself
------------------
+The main client itself
+----------------------
 
 To communicate with the AMIE REST API, create a client object. You'll need to provide your
 site name and your API key.
 
-.. automodule:: amieclient.client
+.. autoclass:: amieclient.client.AMIEClient
    :members:
 
 
