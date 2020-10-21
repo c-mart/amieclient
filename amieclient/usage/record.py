@@ -29,8 +29,8 @@ class UsageRecord(ABC):
     """
     Abstract base class for a usage record
     """
-    @abstractmethod
     @classmethod
+    @abstractmethod
     def from_dict(cls, input_dict):
         pass
 

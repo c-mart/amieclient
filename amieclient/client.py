@@ -274,7 +274,7 @@ class UsageClient:
         """
         pass
 
-    def usage_status(self, from_date, to_date):
+    def usage_status(self, from_date=None, to_date=None):
         """
         Gets the status of records processed from the queue in the provided interval.
 
