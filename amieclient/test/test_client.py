@@ -10,13 +10,13 @@ class TestAMIEClient:
         assert client._session.headers['XA-SITE'] == 'test'
         assert client._session.headers['XA-API-KEY'] == 'test'
 
-    def test_base_url(self):
+    def test_amie_url(self):
         client1 = AMIEClient(site_name='test', api_key='test',
-                             base_url='http://localhost/amie')
-        assert client1.base_url == 'http://localhost/amie/'
+                             amie_url='http://localhost/amie')
+        assert client1.amie_url == 'http://localhost/amie/'
         client2 = AMIEClient(site_name='test', api_key='test',
-                             base_url='http://localhost/amie/')
-        assert client2.base_url == 'http://localhost/amie/'
+                             amie_url='http://localhost/amie/')
+        assert client2.amie_url == 'http://localhost/amie/'
 
     def test_get_packet(self, requests_mock):
         client = AMIEClient(site_name='test', api_key='test')
