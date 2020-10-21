@@ -5,10 +5,11 @@ import requests
 from .packet import PacketList
 from .packet.base import Packet
 from .transaction import Transaction
-from .usage import UsageMessage, UsageRecord, UsageResponse, UsageResponseError
+from .usage import (UsageMessage, UsageRecord, UsageResponse, UsageResponseError,
+                    UsageStatus)
 
 
-"""AMIE client class"""
+"""AMIE client and Usage Client classes"""
 
 
 class AMIEClient(object):
@@ -274,7 +275,7 @@ class UsageClient:
         """
         pass
 
-    def usage_status(self, from_date=None, to_date=None):
+    def usage_status(self, from_time=None, to_time=None):
         """
         Gets the status of records processed from the queue in the provided interval.
 
@@ -284,4 +285,11 @@ class UsageClient:
             to_date (Datetime): End date and time
 
         """
-        pass
+        from_iso = from_time.isoformat() if from_time is not None else None
+        to_iso = to_time.isoformat() if to_time is not None else None
+        p = {'FromTime': from_iso, 'ToTime': to_iso}
+
+        url = self.usage_url + '/status'
+        r = self._session.get(url, params=p)
+        r.raise_for_status()
+        return UsageStatus.from_dict(r.json())
