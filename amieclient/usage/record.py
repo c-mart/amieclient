@@ -1,14 +1,10 @@
 import json
 from collections import namedtuple, defaultdict
 from abc import ABC, abstractmethod
+
 ComputeUsageAttributes = namedtuple('ComputeUsageAttributes',
                                     ['node_count', 'cpu_core_count',
                                      'job_name', 'memory', 'queue'],
-                                    # for named tuples, defaults start with the
-                                    # right, so 4 Nones here means that the
-                                    # last 4 fields above have a default value
-                                    # of None
-                                    defaults=[None] * 4
                                     )
 
 StorageUsageAttributes = namedtuple('StorageUsageAttributes',
@@ -17,8 +13,13 @@ StorageUsageAttributes = namedtuple('StorageUsageAttributes',
                                      'FileCount', 'FilesRead', 'FilesWritten',
                                      'MediaType', 'SystemCopies',
                                      'UserCopies'],
-                                    defaults=[None] * 10
                                     )
+
+# Workaround for Python 3.5 and Python 3.6 having no 'defaults' parameter
+# for named tuples, defaults start with the right, so 4 Nones here means that
+# the last 4 fields above have a default value of None
+ComputeUsageAttributes.__new__.__defaults__ = (None,) * 4
+StorageUsageAttributes.__new__.__defaults__ = (None,) * 10
 
 
 class UsageRecordException(Exception):
