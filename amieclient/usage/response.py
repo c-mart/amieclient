@@ -77,8 +77,8 @@ class UsageStatus:
     @classmethod
     def from_dict(cls, input_dict):
         return cls(
-            resources=[UsageStatusResource.from_dict(d) for d in
-                         input_dict.get('Resources', [])]
+            resources=[UsageStatusResource.from_dict(d)
+                       for d in input_dict.get('Resources', [])]
             )
 
     @classmethod
@@ -88,10 +88,8 @@ class UsageStatus:
 
     def as_dict(self):
         return {
-            'Resources': [r.as_dict() for e in self.resources]
+            'Resources': [r.as_dict() for r in self.resources]
         }
 
     def json(self):
         return json.dumps(self.as_dict())
-
-
