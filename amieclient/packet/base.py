@@ -244,6 +244,21 @@ class Packet(object, metaclass=MetaPacket):
 
         return data_dict
 
+    def missing_attributes(self):
+        """
+        Returns a list of attributes that need to be filled out by the user in
+        order for this packet to be valid.
+        """
+        if self.in_reply_to_id:
+            reqd = list(set(self._data_keys_required)
+                        - set(self._data_keys_not_required_in_reply))
+        else:
+            reqd = self._data_keys_required
+
+        missing = [r for r in reqd if self._required_data[r] is None]
+        return missing
+
+
     def json(self):
         """
         The JSON representation of this AMIE packet
