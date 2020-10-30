@@ -9,6 +9,7 @@ class DataAccountCreate(Packet):
     _packet_type = 'data_account_create'
     _expected_reply = ['inform_transaction_complete']
     _data_keys_required = ['PersonID', 'ProjectID']
+    _data_keys_not_required_in_reply = []
     _data_keys_allowed = ['DnList']
 
 
@@ -26,6 +27,14 @@ class NotifyAccountCreate(Packet):
         'UserOrgCode',
         'UserPersonID',
         'UserRemoteSiteLogin',
+    ]
+    _data_keys_not_required_in_reply = [
+        'AcademicDegree',
+        'UserFirstName',
+        'UserLastName',
+        'UserOrganization',
+        'UserOrgCode',
+        'UserPersonID'
     ]
     _data_keys_allowed = [
         'NsfStatusCode',
@@ -52,11 +61,11 @@ class NotifyAccountCreate(Packet):
         'UserTitle',
     ]
 
-
 class NotifyAccountInactivate(Packet):
     _packet_type = 'notify_account_inactivate'
     _expected_reply = ['inform_transaction_complete']
     _data_keys_required = ['PersonID', 'ProjectID', 'ResourceList']
+    _data_keys_not_required_in_reply = ['PersonID', 'ProjectID', 'ResourceList']
     _data_keys_allowed = ['Comment']
 
 
@@ -64,6 +73,7 @@ class NotifyAccountReactivate(Packet):
     _packet_type = 'notify_account_reactivate'
     _expected_reply = ['inform_transaction_complete']
     _data_keys_required = ['PersonID', 'ProjectID', 'ResourceList']
+    _data_keys_not_required_in_reply = []
     _data_keys_allowed = ['Comment']
 
 
@@ -78,6 +88,7 @@ class RequestAccountCreate(Packet):
         'UserOrganization',
         'UserOrgCode',
     ]
+    _data_keys_not_required_in_reply = []
     _data_keys_allowed = [
         'RoleList',
         'UserGlobalID',
@@ -115,6 +126,7 @@ class RequestAccountInactivate(Packet):
     _packet_type = 'request_account_inactivate'
     _expected_reply = ['notify_account_inactivate']
     _data_keys_required = ['PersonID', 'ProjectID', 'ResourceList']
+    _data_keys_not_required_in_reply = []
     _data_keys_allowed = ['Comment']
 
 
@@ -122,4 +134,5 @@ class RequestAccountReactivate(Packet):
     _packet_type = 'request_account_reactivate'
     _expected_reply = ['notify_account_reactivate']
     _data_keys_required = ['PersonID', 'ProjectID', 'ResourceList']
+    _data_keys_not_required_in_reply = []
     _data_keys_allowed = ['Comment']

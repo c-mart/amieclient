@@ -9,6 +9,7 @@ class DataProjectCreate(Packet):
     _packet_type = 'data_project_create'
     _expected_reply = ['inform_transaction_complete']
     _data_keys_required = ['PersonID', 'ProjectID']
+    _data_keys_not_required_in_reply = ['GlobalID', 'PersonID']
     _data_keys_allowed = ['DnList']
 
 
@@ -22,6 +23,15 @@ class NotifyProjectCreate(Packet):
         'PiPersonID',
         'PiRemoteSiteLogin',
         'ProjectID',
+        'ProjectTitle',
+        'ResourceList',
+        'ServiceUnitsAllocated',
+        'StartDate'
+    ]
+    _data_keys_not_required_in_reply = [
+        'GrantNumber',
+        'PfosNumber',
+        'PiOrgCode',
         'ProjectTitle',
         'ResourceList',
         'ServiceUnitsAllocated',
@@ -69,6 +79,9 @@ class NotifyProjectInactivate(Packet):
     _packet_type = 'notify_project_inactivate'
     _expected_reply = ['inform_transaction_complete']
     _data_keys_required = ['ProjectID', 'ResourceList']
+    _data_keys_not_required_in_reply = [
+        'Comment', 'PersonID', 'ProjectID', 'ResourceList'
+    ]
     _data_keys_allowed = []
 
 
@@ -76,6 +89,9 @@ class NotifyProjectReactivate(Packet):
     _packet_type = 'notify_project_reactivate'
     _expected_reply = ['inform_transaction_complete']
     _data_keys_required = ['ProjectID', 'ResourceList']
+    _data_keys_not_required_in_reply = [
+        'Comment', 'PersonID', 'ProjectID', 'ResourceList'
+    ]
     _data_keys_allowed = []
 
 
@@ -95,6 +111,7 @@ class RequestProjectCreate(Packet):
         'ResourceList',
         'ServiceUnitsAllocated',
     ]
+    _data_keys_not_required_in_reply = []
     _data_keys_allowed = [
         'AcademicDegree',
         'AllocatedResource',
@@ -136,6 +153,7 @@ class RequestProjectInactivate(Packet):
     _packet_type = 'request_project_inactivate'
     _expected_reply = ['notify_project_inactivate']
     _data_keys_required = ['ProjectID', 'ResourceList']
+    _data_keys_not_required_in_reply = []
     _data_keys_allowed = ['Comment',
                           'AllocatedResource',
                           'GrantNumber',
@@ -150,6 +168,7 @@ class RequestProjectReactivate(Packet):
     _packet_type = 'request_project_reactivate'
     _expected_reply = ['notify_project_reactivate']
     _data_keys_required = ['ProjectID', 'ResourceList']
+    _data_keys_not_required_in_reply = []
     _data_keys_allowed = ['PersonID',
                           'Comment',
                           'AllocatedResource',

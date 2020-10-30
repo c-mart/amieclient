@@ -12,6 +12,7 @@ class NotifyUserModify(Packet):
         'ActionType',
         'PersonID',
     ]
+    _data_keys_not_required_in_reply = []
     _data_keys_allowed = [
         'AcademicDegree',
         'BusinessPhoneComment',
@@ -49,6 +50,7 @@ class RequestUserModify(Packet):
         'ActionType',
         'PersonID',
     ]
+    _data_keys_not_required_in_reply = []
     _data_keys_allowed = [
         'AcademicDegree',
         'BusinessPhoneComment',
