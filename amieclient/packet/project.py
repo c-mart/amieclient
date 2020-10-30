@@ -109,6 +109,7 @@ class RequestProjectCreate(Packet):
         'PiOrgCode',
         'StartDate',
         'ResourceList',
+        'RecordID',
         'ServiceUnitsAllocated',
     ]
     _data_keys_not_required_in_reply = []
