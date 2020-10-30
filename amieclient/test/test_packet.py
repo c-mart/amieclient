@@ -62,7 +62,7 @@ class TestClient:
                 assert getattr(packet, k) == DEMO_JSON_PKT_1['body'].get(k)
                 assert packet._allowed_data.get(k) == DEMO_JSON_PKT_1['body'].get(k)
 
-    def test_reply_packet(self):
+    def test_reply_packet_validation(self):
         """
         The in_reply_to field and the packet type are properly set on a packet
         generated via the reply_packet method. Additionally, that packet passes
@@ -79,6 +79,27 @@ class TestClient:
             assert reply_packet.validate_data()
             # Replace the data so we're not double-testing
             setattr(reply_packet, k, v)
+
+    def test_reply_packet_missing(self):
+        """
+        The in_reply_to field and the packet type are properly set on a packet
+        generated via the reply_packet method. Additionally, that packet passes
+        validation check even if required data is missing.
+        """
+        parent_packet = Packet.from_dict(DEMO_JSON_PKT_1)
+        reply_packet = parent_packet.reply_packet()
+        assert reply_packet.in_reply_to_id == parent_packet.packet_id
+        assert reply_packet.packet_type == 'notify_account_create'
+        assert isinstance(reply_packet, NotifyAccountCreate)
+        actually_required_keys = list(set(NotifyAccountCreate._data_keys_required) -
+                                      set(NotifyAccountCreate._data_keys_not_required_in_reply))
+        for k in actually_required_keys:
+            v = getattr(reply_packet, k)
+            delattr(reply_packet, k)
+            assert k in reply_packet.missing_attributes()
+            # Replace the data so we're not double-testing
+            setattr(reply_packet, k, v)
+
 
     def test_validation_required_data(self):
         """

@@ -255,7 +255,7 @@ class Packet(object, metaclass=MetaPacket):
         else:
             reqd = self._data_keys_required
 
-        missing = [r for r in reqd if self._required_data[r] is None]
+        missing = [r for r in reqd if self._required_data.get(r) is None]
         return missing
 
 
