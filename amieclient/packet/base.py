@@ -82,7 +82,7 @@ class Packet(object, metaclass=MetaPacket):
 
 
     Args:
-        packet_id (str): The ID for this packet
+        packet_rec_id (str): The ID for this packet
         date (datetime.Datetime): A datetime object representing this packet's date attribute
         additional_data (dict): Body data that is outsite the AMIE spec.
         in_reply_to (str, int, amieclient.Packet): The packet this packet is in response to. Can take a packet, int, string, or None.
@@ -91,10 +91,16 @@ class Packet(object, metaclass=MetaPacket):
     _data_keys_not_required_in_reply = []
     _data_keys_allowed = []
 
-    def __init__(self, packet_id=None, date=None,
+    def __init__(self, packet_rec_id=None, trans_rec_id=None,
+                 packet_id=None, transaction_id=None,
+                 date=None,
                  additional_data={}, in_reply_to=None,
                  **kwargs):
+        self.packet_rec_id = str(packet_rec_id)
         self.packet_id = str(packet_id)
+        self.trans_rec_id = str(trans_rec_id)
+        self.transaction_id = str(transaction_id)
+
         self.additional_data = additional_data
         if not date:
             self.date = datetime.now()
@@ -105,12 +111,12 @@ class Packet(object, metaclass=MetaPacket):
         elif type(in_reply_to) == int:
             # If it's a int, make it a string
             self.in_reply_to_id = "{}".format(in_reply_to)
-        elif hasattr(in_reply_to, 'packet_id'):
+        elif hasattr(in_reply_to, 'packet_rec_id'):
             # If we're given a packet object, get the ID
-            self.in_reply_to_id = in_reply_to.packet_id
-        elif in_reply_to.get('header', {}).get('packet_id'):
+            self.in_reply_to_id = in_reply_to.packet_rec_id
+        elif in_reply_to.get('header', {}).get('packet_rec_id'):
             # If we're given a dict-like object, get the ID from the header
-            self.in_reply_to_id = in_reply_to['header']['packet_id']
+            self.in_reply_to_id = in_reply_to['header']['packet_rec_id']
         for key, value in kwargs.items():
             if key in self._data_keys_required or key in self._data_keys_allowed:
                 if 'Date' in key:
@@ -155,7 +161,10 @@ class Packet(object, metaclass=MetaPacket):
         # Get the subclass that matches this json input
         pkt_class = cls._find_packet_type(data['type'])
 
-        obj = pkt_class(packet_id=data['header']['packet_id'],
+        obj = pkt_class(packet_rec_id=data['header']['packet_rec_id'],
+                        trans_rec_id=data['header']['trans_rec_id'],
+                        packet_id=data['header']['packet_id'],
+                        transaction_id=data['header']['transaction_id'],
                         in_reply_to=data['header'].get('in_reply_to'),
                         **data['body'])
 
@@ -174,16 +183,16 @@ class Packet(object, metaclass=MetaPacket):
         data = json.loads(json_string)
         return cls.from_dict(data)
 
-    def reply_packet(self, packet_id=None, packet_type=None, force=False):
+    def reply_packet(self, packet_rec_id=None, packet_type=None, force=False):
         """
         Returns a packet that the current packet would expect as a response,
         with the in_reply_to attribute set to the current packet's ID.
 
         Generally, most packets only have one kind of expected reply,
-        so you should be fine to use reply_packet with just the desired packet_id
+        so you should be fine to use reply_packet with just the desired packet_rec_id
 
         Args:
-            packet_id: The ID of the reply packet, if needed
+            packet_rec_id: The ID of the reply packet, if needed
             packet_type: Optionally, the type of the reply packet
             force: will create a reply packet whether or not packet_type is in _expected_reply
 
@@ -212,7 +221,7 @@ class Packet(object, metaclass=MetaPacket):
             if packet_type is None:
                 packet_type = self._expected_reply[0]
             pkt_class = self._find_packet_type(packet_type)
-        return pkt_class(packet_id=packet_id, in_reply_to=self.packet_id)
+        return pkt_class(packet_rec_id=packet_rec_id, in_reply_to=self.packet_rec_id)
 
     def as_dict(self):
         """
@@ -229,7 +238,7 @@ class Packet(object, metaclass=MetaPacket):
                     data_body[k] = v
 
         header = {
-            'packet_id': self.packet_id,
+            'packet_rec_id': self.packet_rec_id,
             'date': self.date.isoformat(),
             'type': self.packet_type,
             'expected_reply_list': self._expected_reply

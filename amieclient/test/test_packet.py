@@ -70,7 +70,7 @@ class TestClient:
         """
         parent_packet = Packet.from_dict(DEMO_JSON_PKT_1)
         reply_packet = parent_packet.reply_packet()
-        assert reply_packet.in_reply_to_id == parent_packet.packet_id
+        assert reply_packet.in_reply_to_id == parent_packet.packet_rec_id
         assert reply_packet.packet_type == 'notify_account_create'
         assert isinstance(reply_packet, NotifyAccountCreate)
         for k in NotifyAccountCreate._data_keys_not_required_in_reply:
@@ -88,7 +88,7 @@ class TestClient:
         """
         parent_packet = Packet.from_dict(DEMO_JSON_PKT_1)
         reply_packet = parent_packet.reply_packet()
-        assert reply_packet.in_reply_to_id == parent_packet.packet_id
+        assert reply_packet.in_reply_to_id == parent_packet.packet_rec_id
         assert reply_packet.packet_type == 'notify_account_create'
         assert isinstance(reply_packet, NotifyAccountCreate)
         actually_required_keys = list(set(NotifyAccountCreate._data_keys_required) -
