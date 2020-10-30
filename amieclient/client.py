@@ -162,7 +162,7 @@ class AMIEClient(object):
 
         url = self.amie_url + 'packets/{}'.format(self.site_name)
         r = self._session.post(url, json=packet.as_dict())
-        r.raise_for_response()
+        r.raise_for_status()
         return r
 
 
