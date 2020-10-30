@@ -73,7 +73,7 @@ class TestClient:
         assert reply_packet.in_reply_to_id == parent_packet.packet_id
         assert reply_packet.packet_type == 'notify_account_create'
         assert isinstance(reply_packet, NotifyAccountCreate)
-        for k in NotifyAccountCreate._data_keys_required:
+        for k in NotifyAccountCreate._data_keys_not_required_in_reply:
             v = getattr(reply_packet, k)
             delattr(reply_packet, k)
             assert reply_packet.validate_data()
@@ -89,7 +89,8 @@ class TestClient:
             v = getattr(packet, k)
             delattr(packet, k)
             with pytest.raises(PacketInvalidData):
-                packet.validate_data()
+                packet.validate_data(raise_on_invalid=True)
+            assert not packet.validate_data()
             # Replace the data so we're not double-testing
             setattr(packet, k, v)
 
@@ -114,7 +115,9 @@ class TestClient:
             setattr(npd_packet, pid, None)
             setattr(npd_packet, gid, None)
             with pytest.raises(PacketInvalidData, match=err_regex):
-                npd_packet.validate_data()
+                npd_packet.validate_data(raise_on_invalid=True)
+            assert not npd_packet.validate_data()
+
             # Test when only PID is provided
             setattr(npd_packet, pid, 'abcde')
             assert npd_packet.validate_data()
@@ -130,7 +133,8 @@ class TestClient:
         num_packet = NotifyUserModify('12345', PersonID='abcde')
         # test missing action type
         with pytest.raises(PacketInvalidData):
-            num_packet.validate_data()
+            num_packet.validate_data(raise_on_invalid=True)
+        assert not num_packet.validate_data()
 
         # Test valid action types
         for action_type in ['add', 'delete', 'replace']:
@@ -140,7 +144,8 @@ class TestClient:
         # Test invalid action type
         num_packet.ActionType = 'make_just_a_little_bit_taller'
         with pytest.raises(PacketInvalidData):
-            num_packet.validate_data()
+            num_packet.validate_data(raise_on_invalid=True)
+        assert not num_packet.validate_data()
 
     def test_validation_request_user_modify(self):
         """
@@ -149,7 +154,8 @@ class TestClient:
         rum_packet = RequestUserModify('12345', PersonID='abcde')
         # test missing action type
         with pytest.raises(PacketInvalidData):
-            rum_packet.validate_data()
+            rum_packet.validate_data(raise_on_invalid=True)
+        assert not rum_packet.validate_data()
 
         # Test valid action types
         for action_type in ['add', 'delete', 'replace']:
@@ -159,4 +165,5 @@ class TestClient:
         # Test invalid action type
         rum_packet.ActionType = 'make_just_a_little_bit_taller'
         with pytest.raises(PacketInvalidData):
-            rum_packet.validate_data()
+            rum_packet.validate_data(raise_on_invalid=True)
+        assert not rum_packet.validate_data()
