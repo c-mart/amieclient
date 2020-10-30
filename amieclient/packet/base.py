@@ -75,6 +75,9 @@ class Packet(object, metaclass=MetaPacket):
         _packet_type: the type of the packet (string)
         _expected_reply: expected reply types (list[string] or list[Packet type])
         _data_keys_required: Data keys that are required for this packet type
+        _data_keys_not_required_in_reply: Data keys that are required but
+                                          whose value can be inferred if
+                                          this is a reply packet
         _data_keys_allowed: Data keys that are allowed for this packet type
 
 
@@ -84,6 +87,9 @@ class Packet(object, metaclass=MetaPacket):
         additional_data (dict): Body data that is outsite the AMIE spec.
         in_reply_to (str, int, amieclient.Packet): The packet this packet is in response to. Can take a packet, int, string, or None.
     """
+    _data_keys_required = []
+    _data_keys_not_required_in_reply = []
+    _data_keys_allowed = []
 
     def __init__(self, packet_id=None, date=None,
                  additional_data={}, in_reply_to=None,
@@ -245,7 +251,7 @@ class Packet(object, metaclass=MetaPacket):
         data_dict = self.as_dict()
         return json.dumps(data_dict)
 
-    def validate_data(self):
+    def validate_data(self, raise_on_invalid=False):
         """
         By default, checks to see that all required data items have a
         defined value, unless in_reply_to is not None (in which case,
@@ -254,11 +260,18 @@ class Packet(object, metaclass=MetaPacket):
 
         Some packet types will override this function, or add additional checks.
         """
-        if self.in_reply_to_id:
-            return True
         for k, v in self._required_data.items():
-            if v is None:
-                raise PacketInvalidData('Missing required data field: "{}"'.format(k))
+            # If this is a packet in reply to another, and this key is one that
+            # the server can infer, skip it.
+            if (self.in_reply_to_id and
+               k in self._data_keys_not_required_in_reply):
+                continue
+            # Otherwise, throw an error or return false.
+            elif v is None:
+                if raise_on_invalid:
+                    raise PacketInvalidData('Missing required data field: "{}"'.format(k))
+                else:
+                    return False
         return True
 
     @property

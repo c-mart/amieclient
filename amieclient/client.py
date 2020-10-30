@@ -158,7 +158,7 @@ class AMIEClient(object):
             requests.Response: The response from the AMIE API.
         """
         if not skip_validation:
-            packet.validate_data()
+            packet.validate_data(raise_on_invalid=True)
 
         url = self.amie_url + 'packets/{}'.format(self.site_name)
         r = self._session.post(url, json=packet.as_dict())
