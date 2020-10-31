@@ -79,6 +79,7 @@ for packet in packets:
     # the data_project_create(DPC) packet has two functions:
     # 1. to let the site know that the project and PI account have been setup in the XDCDB
     # 2. to provide any new DNs for the PI that were added after the RPC was sent
+    # NOTE: a DPC does *not* have the resource. You have to get the resource from the RPC for the trans_rec_id
 
     # construct the InformTransactionComplete(ITC) success packet
     itc = packet.reply_to()
@@ -134,6 +135,7 @@ for packet in packets:
     # the data_account_create(DAC) packet has two functions:
     # 1. to let the site know that the User account on the project has been setup in the XDCDB
     # 2. to provide any new DNs for the User that were added after the RAC was sent
+    # NOTE: a DAC does *not* have the resource. You have to get the resource from the RAC for the trans_rec_id
 
     # construct the InformTransactionComplete(ITC) success packet
     itc = packet.reply_to()
