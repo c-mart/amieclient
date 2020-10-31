@@ -40,11 +40,11 @@ for packet in packets:
     pi_middle_name      = packet.PiMiddleName
     pi_last_name        = packet.PiLastName
     pi_organization     = packet.PiOrganization
-    pi_department       = packet.PiDepaartment
+    pi_department       = packet.PiDepartment
     pi_email            = packet.PiEmail
     pi_phone_number     = packet.PiBusinessPhoneNumber
     pi_phone_extension  = packet.PiBusinessPhoneExtension
-    pi_address1         = packet.PiStreetAddress1
+    pi_address1         = packet.PiStreetAddress
     pi_address2         = packet.PiStreetAddress2
     pi_city             = packet.PiCity
     pi_state            = packet.PiState
@@ -100,11 +100,11 @@ for packet in packets:
     user_middle_name      = packet.UserMiddleName
     user_last_name        = packet.UserLastName
     user_organization     = packet.UserOrganization
-    user_department       = packet.UserDepaartment
+    user_department       = packet.UserDepartment
     user_email            = packet.UserEmail
     user_phone_number     = packet.UserBusinessPhoneNumber
     user_phone_extension  = packet.UserBusinessPhoneExtension
-    user_address1         = packet.UserStreetAddress1
+    user_address1         = packet.UserStreetAddress
     user_address2         = packet.UserStreetAddress2
     user_city             = packet.UserCity
     user_state            = packet.UserState
@@ -134,6 +134,43 @@ for packet in packets:
     # the data_account_create(DAC) packet has two functions:
     # 1. to let the site know that the User account on the project has been setup in the XDCDB
     # 2. to provide any new DNs for the User that were added after the RAC was sent
+
+    # construct the InformTransactionComplete(ITC) success packet
+    itc = packet.reply_to()
+    itc.StatusCode = 'Success'
+    itc.DetailCode = '1'
+    itc.Message = 'OK'
+
+    # send the ITC
+    amie_client.send_packet(itc)
+
+  if packet_type == 'request_user_modify':
+    person_id = packet.person_id
+    if packet.Actiontype == 'delete':
+      inactive_dn_list = packet.DnList
+      # inactive the specified DNs for the user
+    else:
+      active_dn_list       = packet.DnList
+      first_name           = packet.FirstName
+      middle_name          = packet.MiddleName
+      last_name            = packet.LastName
+      organization         = packet.Organization
+      department           = packet.Department
+      email                = packet.Email
+      bus_phone_number     = packet.BusinessPhoneNumber
+      bus_phone_extension  = packet.BusinessPhoneExtension
+      home_phone_number    = packet.HomePhoneNumber
+      home_phone_extension = packet.HomePhoneExtension
+      fax                  = packet.Fax
+      address1             = packet.StreetAddress
+      address2             = packet.StreetAddress2
+      city                 = packet.City
+      state                = packet.State
+      zipcode              = packet.Zip
+      country              = packet.Country
+      nsf_status_code      = packet.NsfStatusCode
+
+      # update the User info and Dns
 
     # construct the InformTransactionComplete(ITC) success packet
     itc = packet.reply_to()
