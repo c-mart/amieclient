@@ -184,9 +184,22 @@ for packet in packets:
     # send the ITC
     amie_client.send_packet(itc)
 
-# TODO: fill out these packet types
   if packet_type == 'request_person_merge':
-    pass
+    keep_person_id   = packet.KeepPersonID
+    delete_person_id = packet.DeletePersonID
+
+    # merge delete_person_id into keep_person_id and remove delete_person_id from local accounting system
+
+    # construct the InformTransactionComplete(ITC) success packet
+    itc = packet.reply_to()
+    itc.StatusCode = 'Success'
+    itc.DetailCode = '1'
+    itc.Message = 'OK'
+
+    # send the ITC
+    amie_client.send_packet(itc)
+
+
 
   if packet_type == 'request_project_inactivate':
     resource = packet.ResourceList[0]
