@@ -70,3 +70,21 @@ for packet in packets:
 
     # send the NPC
     amie_client.send_packet(npc)
+
+  if packet_type == 'data_project_create':
+    person_id  = packet.PersonID
+    project_id = packet.ProjectID
+    dn_list    = packet.DnList
+
+    # the data_project_create packet has two functions:
+    # 1. to let the site know that the project and PI account have been setup in the XDCDB
+    # 2. to provide any new DNs for the PI that were added after the RPC was sent
+
+    # construct the InformTransactionComplete(ITC) success packet
+    itc = packet.reply_to()
+    itc.StatusCode = 'Success'
+    itc.DetailCode = '1'
+    itc.Message = 'OK'
+
+    # send the ITC
+    amie_client.send_packet(itc)
