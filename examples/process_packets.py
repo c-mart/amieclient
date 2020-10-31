@@ -34,8 +34,8 @@ for packet in packets:
     board_type      = packet.BoardType
     pfos_num        = packet.PfosNumber
 
-    pi_person_id        = packet.PiPersonID  # site person_id for the PI (if known)
-    pi_login            = packet.PiRemoteSiteLogin # login on resource for the PI (if known)
+    pi_person_id        = packet.PiPersonID         # site person_id for the PI (if known)
+    pi_login            = packet.PiRemoteSiteLogin  # login on resource for the PI (if known)
     pi_first_name       = packet.PiFirstName
     pi_middle_name      = packet.PiMiddleName
     pi_last_name        = packet.PiLastName
@@ -65,7 +65,7 @@ for packet in packets:
     # construct a NotifyProjectCreate(NPC) packet.
     npc = packet.reply_to()
     npc.ProjectID = project_id           # local project ID
-    npc.PiRemoteSiteLogin = pi_login     # local login for the PI
+    npc.PiRemoteSiteLogin = pi_login     # local login for the PI on the resource
     npc.PiPersonID = pi_person_id        # local person ID for the pi
 
     # send the NPC
@@ -76,9 +76,64 @@ for packet in packets:
     project_id = packet.ProjectID
     dn_list    = packet.DnList
 
-    # the data_project_create packet has two functions:
+    # the data_project_create(DPC) packet has two functions:
     # 1. to let the site know that the project and PI account have been setup in the XDCDB
     # 2. to provide any new DNs for the PI that were added after the RPC was sent
+
+    # construct the InformTransactionComplete(ITC) success packet
+    itc = packet.reply_to()
+    itc.StatusCode = 'Success'
+    itc.DetailCode = '1'
+    itc.Message = 'OK'
+
+    # send the ITC
+    amie_client.send_packet(itc)
+
+  if packet_type == 'request_account_create':
+    grant_number    = packet.GrantNumber
+    project_id      = packet.ProjectID # site project_id
+    resource        = packet.ResourceList[0] # xsede site resource name, eg, delta.ncsa.xsede.org
+
+    user_person_id        = packet.UserPersonID         # site person_id for the User (if known)
+    user_login            = packet.UserRemoteSiteLogin  # login on resource for the User (if known)
+    user_first_name       = packet.UserFirstName
+    user_middle_name      = packet.UserMiddleName
+    user_last_name        = packet.UserLastName
+    user_organization     = packet.UserOrganization
+    user_department       = packet.UserDepaartment
+    user_email            = packet.UserEmail
+    user_phone_number     = packet.UserBusinessPhoneNumber
+    user_phone_extension  = packet.UserBusinessPhoneExtension
+    user_address1         = packet.UserStreetAddress1
+    user_address2         = packet.UserStreetAddress2
+    user_city             = packet.UserCity
+    user_state            = packet.UserState
+    user_zipcode          = packet.UserZip
+    user_country          = packet.UserCountry
+    user_nsf_status_code  = packet.UserNsfStatusCode
+    user_requested_logins = packet.UserRequestedLoginList
+    user_dn_list          = packet.UserDnList
+
+    # add code to find the User from the local database (or create the person in the local database)
+    # then add an account for the User on the specified project (project_id) on the resource
+
+    # construct a NotifyAccountCreate(NAC) packet.
+    nac = packet.reply_to()
+    nac.ProjectID = project_id               # local project ID
+    nac.UserRemoteSiteLogin = user_login     # local login for the User on the resource
+    nac.UserPersonID = user_person_id        # local person ID for the User
+
+    # send the NAC
+    amie_client.send_packet(nac)
+
+  if packet_type == 'data_account_create':
+    person_id  = packet.PersonID
+    project_id = packet.ProjectID
+    dn_list    = packet.DnList
+
+    # the data_account_create(DAC) packet has two functions:
+    # 1. to let the site know that the User account on the project has been setup in the XDCDB
+    # 2. to provide any new DNs for the User that were added after the RAC was sent
 
     # construct the InformTransactionComplete(ITC) success packet
     itc = packet.reply_to()
