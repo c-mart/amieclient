@@ -63,7 +63,7 @@ for packet in packets:
     # but the data from the first RPC sent in the reply NPC
 
     # construct a NotifyProjectCreate(NPC) packet.
-    npc = packet.reply_to()
+    npc = packet.reply_packet()
     npc.ProjectID = project_id           # local project ID
     npc.PiRemoteSiteLogin = pi_login     # local login for the PI on the resource
     npc.PiPersonID = pi_person_id        # local person ID for the pi
@@ -82,7 +82,7 @@ for packet in packets:
     # NOTE: a DPC does *not* have the resource. You have to get the resource from the RPC for the trans_rec_id
 
     # construct the InformTransactionComplete(ITC) success packet
-    itc = packet.reply_to()
+    itc = packet.reply_packet()
     itc.StatusCode = 'Success'
     itc.DetailCode = '1'
     itc.Message = 'OK'
@@ -120,7 +120,7 @@ for packet in packets:
     # RACs are also used to reactivate accounts, so if the account already exists, just set it active
 
     # construct a NotifyAccountCreate(NAC) packet.
-    nac = packet.reply_to()
+    nac = packet.reply_packet()
     nac.ProjectID = project_id               # local project ID
     nac.UserRemoteSiteLogin = user_login     # local login for the User on the resource
     nac.UserPersonID = user_person_id        # local person ID for the User
@@ -139,7 +139,7 @@ for packet in packets:
     # NOTE: a DAC does *not* have the resource. You have to get the resource from the RAC for the trans_rec_id
 
     # construct the InformTransactionComplete(ITC) success packet
-    itc = packet.reply_to()
+    itc = packet.reply_packet()
     itc.StatusCode = 'Success'
     itc.DetailCode = '1'
     itc.Message = 'OK'
@@ -176,7 +176,7 @@ for packet in packets:
       # update the User info and DNs
 
     # construct the InformTransactionComplete(ITC) success packet
-    itc = packet.reply_to()
+    itc = packet.reply_packet()
     itc.StatusCode = 'Success'
     itc.DetailCode = '1'
     itc.Message = 'OK'
@@ -191,7 +191,7 @@ for packet in packets:
     # merge delete_person_id into keep_person_id and remove delete_person_id from local accounting system
 
     # construct the InformTransactionComplete(ITC) success packet
-    itc = packet.reply_to()
+    itc = packet.reply_packet()
     itc.StatusCode = 'Success'
     itc.DetailCode = '1'
     itc.Message = 'OK'
@@ -207,7 +207,7 @@ for packet in packets:
 
     # inactivate the project and all accounts on the project
 
-    npi = packet.reply_to()
+    npi = packet.reply_packet()
     amie_client.send_packet(npi)
 
   if packet_type == 'request_account_inactivate':
@@ -217,7 +217,7 @@ for packet in packets:
 
     # inactivate the account on the project
 
-    nai = packet.reply_to()
+    nai = packet.reply_packet()
     amie_client.send_packet(nai)
 
   if packet_type == 'request_project_reactivate':
@@ -227,6 +227,6 @@ for packet in packets:
 
     # reactivate the project and the PI account on the project (but no other accounts)
 
-    npr = packet.reply_to()
+    npr = packet.reply_packet()
     amie_client.send_packet(npr)
 
