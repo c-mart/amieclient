@@ -2,7 +2,7 @@ from configparser import ConfigParser
 from amieclient import AMIEClient
 
 # NOTE: functionality that is required to be implemented by Service Providers 
-# are markedJ with comments that begin with the prefix SP:
+# are marked with comments that begin with the prefix SP:
 
 # For more information on the configparser library, please see the python docs:
 # https://docs.python.org/3.5/library/configparser.html
