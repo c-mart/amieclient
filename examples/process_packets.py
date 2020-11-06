@@ -62,6 +62,7 @@ for packet in packets:
     #   and set pi_person_id, pi_login
     # - add code to create the project for the grant_number (if project doesn't exist), or apply the action specified by allocation_type
     # - set the project_id to the local id for the project (if it isn't already set from the RPC)
+    # - set the project state to active (if it is inactive), as the XDCDB will not send RPCs for inactive projects
     #
     # NOTE: if the record_id is not null, you should track it (associate it with the packet_rec_id).
     # If a second RPC gets sent with the same record_id, the second RPC should not be processed,
