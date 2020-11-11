@@ -23,39 +23,39 @@ for packet in packets:
     trans_rec_id = packet.trans_rec_id
 
     if packet_type == 'request_project_create':
-        grant_number    = packet.GrantNumber
-        record_id       = packet.RecordID
-        project_id      = packet.ProjectID # site project_id (if known)
-        resource        = packet.ResourceList[0] # xsede site resource name, eg, delta.ncsa.xsede.org
-        request_type    = packet.RequestType
+        grant_number = packet.GrantNumber
+        record_id = packet.RecordID
+        project_id = packet.ProjectID # site project_id (if known)
+        resource = packet.ResourceList[0] # xsede site resource name, eg, delta.ncsa.xsede.org
+        request_type = packet.RequestType
         allocation_type = packet.AllocationType # new, renewal, supplement, transfer, adjustment, advance, extension, ...
-        start_date      = packet.StartDate
-        end_date        = packet.EndDate
-        amount          = packet.ServiceUnitsAllocated
-        abstract        = packet.Abstract
-        project_title   = packet.ProjectTitle
-        board_type      = packet.BoardType
-        pfos_num        = packet.PfosNumber
+        start_date = packet.StartDate
+        end_date = packet.EndDate
+        amount = packet.ServiceUnitsAllocated
+        abstract = packet.Abstract
+        project_title = packet.ProjectTitle
+        board_type = packet.BoardType
+        pfos_num = packet.PfosNumber
 
-        pi_person_id        = packet.PiPersonID         # site person_id for the PI (if known)
-        pi_login            = packet.PiRemoteSiteLogin  # login on resource for the PI (if known)
-        pi_first_name       = packet.PiFirstName
-        pi_middle_name      = packet.PiMiddleName
-        pi_last_name        = packet.PiLastName
-        pi_organization     = packet.PiOrganization
-        pi_department       = packet.PiDepartment
-        pi_email            = packet.PiEmail
-        pi_phone_number     = packet.PiBusinessPhoneNumber
-        pi_phone_extension  = packet.PiBusinessPhoneExtension
-        pi_address1         = packet.PiStreetAddress
-        pi_address2         = packet.PiStreetAddress2
-        pi_city             = packet.PiCity
-        pi_state            = packet.PiState
-        pi_zipcode          = packet.PiZip
-        pi_country          = packet.PiCountry
-        pi_nsf_status_code  = packet.PiNsfStatusCode
+        pi_person_id = packet.PiPersonID         # site person_id for the PI (if known)
+        pi_login = packet.PiRemoteSiteLogin  # login on resource for the PI (if known)
+        pi_first_name = packet.PiFirstName
+        pi_middle_name = packet.PiMiddleName
+        pi_last_name = packet.PiLastName
+        pi_organization = packet.PiOrganization
+        pi_department = packet.PiDepartment
+        pi_email = packet.PiEmail
+        pi_phone_number = packet.PiBusinessPhoneNumber
+        pi_phone_extension = packet.PiBusinessPhoneExtension
+        pi_address1 = packet.PiStreetAddress
+        pi_address2 = packet.PiStreetAddress2
+        pi_city = packet.PiCity
+        pi_state = packet.PiState
+        pi_zipcode = packet.PiZip
+        pi_country = packet.PiCountry
+        pi_nsf_status_code = packet.PiNsfStatusCode
         pi_requested_logins = packet.PiRequestedLoginList
-        pi_dn_list          = packet.PiDnList
+        pi_dn_list = packet.PiDnList
 
         # SP: 
         # - add code to find the PI from the local database (or create the person in the local database)
@@ -78,9 +78,9 @@ for packet in packets:
         amie_client.send_packet(npc)
 
     if packet_type == 'data_project_create':
-        person_id  = packet.PersonID
+        person_id = packet.PersonID
         project_id = packet.ProjectID
-        dn_list    = packet.DnList
+        dn_list = packet.DnList
 
         # the data_project_create(DPC) packet has two functions:
         # 1. to let the site know that the project and PI account have been setup in the XDCDB
@@ -97,29 +97,29 @@ for packet in packets:
         amie_client.send_packet(itc)
 
     if packet_type == 'request_account_create':
-        grant_number    = packet.GrantNumber
-        project_id      = packet.ProjectID # site project_id
-        resource        = packet.ResourceList[0] # xsede site resource name, eg, delta.ncsa.xsede.org
+        grant_number = packet.GrantNumber
+        project_id = packet.ProjectID # site project_id
+        resource = packet.ResourceList[0] # xsede site resource name, eg, delta.ncsa.xsede.org
 
-        user_person_id        = packet.UserPersonID         # site person_id for the User (if known)
-        user_login            = packet.UserRemoteSiteLogin  # login on resource for the User (if known)
-        user_first_name       = packet.UserFirstName
-        user_middle_name      = packet.UserMiddleName
-        user_last_name        = packet.UserLastName
-        user_organization     = packet.UserOrganization
-        user_department       = packet.UserDepartment
-        user_email            = packet.UserEmail
-        user_phone_number     = packet.UserBusinessPhoneNumber
-        user_phone_extension  = packet.UserBusinessPhoneExtension
-        user_address1         = packet.UserStreetAddress
-        user_address2         = packet.UserStreetAddress2
-        user_city             = packet.UserCity
-        user_state            = packet.UserState
-        user_zipcode          = packet.UserZip
-        user_country          = packet.UserCountry
-        user_nsf_status_code  = packet.UserNsfStatusCode
+        user_person_id = packet.UserPersonID         # site person_id for the User (if known)
+        user_login = packet.UserRemoteSiteLogin  # login on resource for the User (if known)
+        user_first_name = packet.UserFirstName
+        user_middle_name = packet.UserMiddleName
+        user_last_name = packet.UserLastName
+        user_organization = packet.UserOrganization
+        user_department = packet.UserDepartment
+        user_email = packet.UserEmail
+        user_phone_number = packet.UserBusinessPhoneNumber
+        user_phone_extension = packet.UserBusinessPhoneExtension
+        user_address1 = packet.UserStreetAddress
+        user_address2 = packet.UserStreetAddress2
+        user_city = packet.UserCity
+        user_state = packet.UserState
+        user_zipcode = packet.UserZip
+        user_country = packet.UserCountry
+        user_nsf_status_code = packet.UserNsfStatusCode
         user_requested_logins = packet.UserRequestedLoginList
-        user_dn_list          = packet.UserDnList
+        user_dn_list = packet.UserDnList
 
         # SP: add code to find the User from the local database (or create the person in the local database)
         # then add an account for the User on the specified project (project_id) on the resource
@@ -135,9 +135,9 @@ for packet in packets:
         amie_client.send_packet(nac)
 
     if packet_type == 'data_account_create':
-        person_id  = packet.PersonID
+        person_id = packet.PersonID
         project_id = packet.ProjectID
-        dn_list    = packet.DnList
+        dn_list = packet.DnList
 
         # the data_account_create(DAC) packet has two functions:
         # 1. to let the site know that the User account on the project has been setup in the XDCDB
@@ -159,25 +159,25 @@ for packet in packets:
             inactive_dn_list = packet.DnList
             # SP: inactivate the specified DNs for the user
         else:
-            active_dn_list       = packet.DnList
-            first_name           = packet.FirstName
-            middle_name          = packet.MiddleName
-            last_name            = packet.LastName
-            organization         = packet.Organization
-            department           = packet.Department
-            email                = packet.Email
-            bus_phone_number     = packet.BusinessPhoneNumber
-            bus_phone_extension  = packet.BusinessPhoneExtension
-            home_phone_number    = packet.HomePhoneNumber
+            active_dn_list = packet.DnList
+            first_name = packet.FirstName
+            middle_name = packet.MiddleName
+            last_name = packet.LastName
+            organization = packet.Organization
+            department = packet.Department
+            email = packet.Email
+            bus_phone_number = packet.BusinessPhoneNumber
+            bus_phone_extension = packet.BusinessPhoneExtension
+            home_phone_number = packet.HomePhoneNumber
             home_phone_extension = packet.HomePhoneExtension
-            fax                  = packet.Fax
-            address1             = packet.StreetAddress
-            address2             = packet.StreetAddress2
-            city                 = packet.City
-            state                = packet.State
-            zipcode              = packet.Zip
-            country              = packet.Country
-            nsf_status_code      = packet.NsfStatusCode
+            fax = packet.Fax
+            address1 = packet.StreetAddress
+            address2 = packet.StreetAddress2
+            city = packet.City
+            state = packet.State
+            zipcode = packet.Zip
+            country = packet.Country
+            nsf_status_code = packet.NsfStatusCode
 
             # SP: update the User info and DNs
 
@@ -191,7 +191,7 @@ for packet in packets:
         amie_client.send_packet(itc)
 
     if packet_type == 'request_person_merge':
-        keep_person_id   = packet.KeepPersonID
+        keep_person_id = packet.KeepPersonID
         delete_person_id = packet.DeletePersonID
 
         # SP: merge delete_person_id into keep_person_id and remove delete_person_id from local accounting system
