@@ -15,7 +15,7 @@ amie_client = AMIEClient(site_name=site_config['site_name'],
                          amie_url=site_config['amie_url'],
                          api_key=site_config['api_key'])
 
-packets = amie_client.list_packets()
+packets = amie_client.list_packets().packets
 
 for packet in packets:
   packet_type = packet.packet_type
