@@ -11,6 +11,9 @@ from .usage import (UsageMessage, UsageRecord, UsageResponse, UsageResponseError
 
 """AMIE client and Usage Client classes"""
 
+class AMIERequestError(requests.RequestException):
+    pass
+
 
 class AMIEClient(object):
     """
@@ -89,8 +92,11 @@ class AMIEClient(object):
         """
         url = self.amie_url + 'transactions/{}/{}/packets'.format(self.site_name, trans_rec_id)
         r = self._session.get(url)
-        r.raise_for_status()
-        return Transaction.from_dict(r.json())
+        response = r.json()
+        if r.status_code > 200:
+            message = response.get('message', 'Server did not provide an error message')
+            raise AMIERequestError(message, response=r)
+        return Transaction.from_dict(response)
 
     def get_packet(self, *, packet_rec_id):
         """
@@ -104,8 +110,11 @@ class AMIEClient(object):
         """
         url = self.amie_url + 'packets/{}/{}'.format(self.site_name, packet_rec_id)
         r = self._session.get(url)
-        r.raise_for_status()
-        return Packet.from_dict(r.json())
+        response = r.json()
+        if r.status_code > 200:
+            message = response.get('message', 'Server did not provide an error message')
+            raise AMIERequestError(message, response=r)
+        return Packet.from_dict(response)
 
     def list_packets(self, *, trans_rec_ids=None, outgoing=None,
                      update_time_start=None, update_time_until=None,
@@ -144,8 +153,11 @@ class AMIEClient(object):
         # Get the list of packets
         url = self.amie_url + 'packets/{}'.format(self.site_name)
         r = self._session.get(url, params=params)
-        r.raise_for_status()
-        return PacketList.from_dict(r.json())
+        response = r.json()
+        if r.status_code > 200:
+            message = response.get('message', 'Server did not provide an error message')
+            raise AMIERequestError(message, response=r)
+        return PacketList.from_dict(response)
 
     def send_packet(self, packet, skip_validation=False):
         """
@@ -162,7 +174,10 @@ class AMIEClient(object):
 
         url = self.amie_url + 'packets/{}'.format(self.site_name)
         r = self._session.post(url, json=packet.as_dict())
-        r.raise_for_status()
+        response = r.json()
+        if r.status_code > 200:
+            message = response.get('message', 'Server did not provide an error message')
+            raise AMIERequestError(message, response=r)
         return r
 
 
