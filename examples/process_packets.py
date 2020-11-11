@@ -25,10 +25,10 @@ for packet in packets:
     if packet_type == 'request_project_create':
         grant_number = packet.GrantNumber
         record_id = packet.RecordID
-        project_id = packet.ProjectID # site project_id (if known)
-        resource = packet.ResourceList[0] # xsede site resource name, eg, delta.ncsa.xsede.org
+        project_id = packet.ProjectID  # site project_id (if known)
+        resource = packet.ResourceList[0]  # xsede site resource name, eg, delta.ncsa.xsede.org
         request_type = packet.RequestType
-        allocation_type = packet.AllocationType # new, renewal, supplement, transfer, adjustment, advance, extension, ...
+        allocation_type = packet.AllocationType  # new, renewal, supplement, transfer, adjustment, advance, extension, ...
         start_date = packet.StartDate
         end_date = packet.EndDate
         amount = packet.ServiceUnitsAllocated
@@ -98,8 +98,8 @@ for packet in packets:
 
     if packet_type == 'request_account_create':
         grant_number = packet.GrantNumber
-        project_id = packet.ProjectID # site project_id
-        resource = packet.ResourceList[0] # xsede site resource name, eg, delta.ncsa.xsede.org
+        project_id = packet.ProjectID  # site project_id
+        resource = packet.ResourceList[0]  # xsede site resource name, eg, delta.ncsa.xsede.org
 
         user_person_id = packet.UserPersonID         # site person_id for the User (if known)
         user_login = packet.UserRemoteSiteLogin  # login on resource for the User (if known)
