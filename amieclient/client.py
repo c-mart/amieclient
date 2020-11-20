@@ -276,7 +276,7 @@ class UsageClient:
             resp = UsageResponse.from_dict(r.json())
         elif r.status_code == 400:
             # Get the message if we're given one; otherwise
-            msg = r.json().get('Message', 'Bad Request, but error not specified by server')
+            msg = r.json().get('error', 'Bad Request, but error not specified by server')
             raise UsageResponseError(msg)
         else:
             r.raise_for_status()
@@ -304,7 +304,14 @@ class UsageClient:
         to_iso = to_time.isoformat() if to_time is not None else None
         p = {'FromTime': from_iso, 'ToTime': to_iso}
 
-        url = self.usage_url + '/status'
+        url = self.usage_url + 'usage/status'
         r = self._session.get(url, params=p)
-        r.raise_for_status()
-        return UsageStatus.from_dict(r.json())
+        if r.status_code == 200:
+            resp = UsageResponse.from_dict(r.json())
+        elif r.status_code == 400:
+            # Get the message if we're given one; otherwise
+            msg = r.json().get('error', 'Bad Request, but error not specified by server')
+            raise UsageResponseError(msg)
+        else:
+            r.raise_for_status()
+        return UsageStatus.from_dict(resp)
