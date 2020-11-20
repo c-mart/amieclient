@@ -223,7 +223,7 @@ class UsageClient:
     def __exit__(self, *args):
         self._session.close()
 
-    def send_usage(self, usage_packets):
+    def send(self, usage_packets):
         """
         Sends a usage update to the Usage API host. This function accepts
         individual UsageMessages, lists of UsageRecords, or even a single
@@ -283,7 +283,7 @@ class UsageClient:
         print(r.json())
         return [resp]
 
-    def usage_summary(self):
+    def summary(self):
         """
         Gets a usage summary
 
@@ -291,7 +291,7 @@ class UsageClient:
         """
         pass
 
-    def usage_status(self, from_time=None, to_time=None):
+    def status(self, from_time=None, to_time=None):
         """
         Gets the status of records processed from the queue in the provided interval.
 
