@@ -280,7 +280,6 @@ class UsageClient:
             raise UsageResponseError(msg)
         else:
             r.raise_for_status()
-        print(r.json())
         return [resp]
 
     def summary(self):
@@ -311,5 +310,4 @@ class UsageClient:
             # Get the message if we're given one; otherwise
             msg = r.json().get('error', 'Bad Request, but error not specified by server')
             raise UsageResponseError(msg)
-        print(r.json())
         return UsageStatus.from_list(r.json())
