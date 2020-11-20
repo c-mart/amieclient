@@ -289,7 +289,7 @@ class UsageClient:
 
         Not implemented yet
         """
-        pass
+        raise NotImplementedError("Usage summaries are not yet implemented in the AMIE Usage api")
 
     def status(self, from_time=None, to_time=None):
         """
