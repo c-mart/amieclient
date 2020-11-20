@@ -50,6 +50,9 @@ class _UsageRecordList:
     def __len__(self):
         return len(self._list)
 
+    def __repr__(self):
+        return "<UsageRecordList: {s._record_type} type, length {l}>".format(s=self, l=len(self))
+
 
 class UsageMessage:
     def __init__(self, records):
@@ -129,5 +132,5 @@ class UsageMessageError:
         d = self.as_dict()
         return json.dumps(d)
 
-
-
+    def __repr__(self):
+        return "<UsageMessageError: {s._error}>".format(s=self)

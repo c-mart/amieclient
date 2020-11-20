@@ -30,6 +30,9 @@ class UsageResponse:
     def json(self):
         return json.dumps(self.as_dict())
 
+    def __repr__(self):
+        return "<UsageResponse: {s.message}>".format(s=self)
+
 
 class UsageResponseError(Exception):
     pass
@@ -72,6 +75,10 @@ class UsageStatusResource:
     def json(self):
         return json.dumps(self.as_dict())
 
+    def __repr__(self):
+        return "<UsageStatusResource: {s.resource}, {n} errors>".format(s=self, n=len(self.errors))
+
+
 
 class UsageStatus:
     def __init__(self, resources):
@@ -79,8 +86,6 @@ class UsageStatus:
 
     @classmethod
     def from_list(cls, input_list):
-        #errors = [r for r in input_list if 'Error' in r]
-        #resources = [r for r in input_list if 'Error' not in r]
         resources = input_list
         return cls(
             resources=[UsageStatusResource.from_dict(d) for d in resources]
@@ -96,3 +101,8 @@ class UsageStatus:
 
     def json(self):
         return json.dumps(self.as_list())
+
+    def __repr__(self):
+        return "<UsageStatus: {n} resources>".format(n=len(self.resources))
+
+

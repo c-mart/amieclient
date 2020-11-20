@@ -53,6 +53,10 @@ class UsageRecord(ABC):
         """
         return json.dumps(self.as_dict())
 
+    def __repr__(self):
+        return "<{s.record_type} UsageRecord: resource={s.resource} local_record_id={s.local_record_id}>".format(s=self)
+
+
 
 class ComputeUsageRecord(UsageRecord):
     """
@@ -153,6 +157,7 @@ class ComputeUsageRecord(UsageRecord):
             d['ParentRecordID'] = self.parent_record_id
 
         return d
+
 
 
 class StorageUsageRecord(UsageRecord):
@@ -364,6 +369,9 @@ class UsageRecordError:
     def json(self):
         d = self.as_dict()
         return json.dumps(d)
+
+    def __repr__(self):
+        return "<{s.record.record_type} UsageRecordError: {s.error} resource={s.record.resource} local_record_id={s.record.local_record_id}>".format(s=self)
 
 
 def _type_lookup(ut):
