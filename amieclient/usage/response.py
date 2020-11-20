@@ -36,20 +36,22 @@ class UsageResponseError(Exception):
 
 
 class UsageStatusResource:
-    def __init__(self, resource_name, loaded_record_count, failed_record_count,
-                 errors=[]):
-        self.resource_name = resource_name
+    def __init__(self, resource, loaded_record_count, failed_job_count,
+                 total_charge, errors=[]):
+        self.resource = resource
         self.loaded_record_count = loaded_record_count
-        self.failed_record_count = failed_record_count
+        self.failed_job_count = failed_job_count
+        self.total_charge = total_charge
         self.errors = errors
 
     @classmethod
     def from_dict(cls, input_dict):
         errors = [UsageMessageError.from_dict(d) for d in input_dict.get('Errors', [])]
         return cls(
-            resource_name=input_dict['ResourceName'],
+            resource=input_dict['Resource'],
             loaded_record_count=input_dict['LoadedRecordCount'],
-            failed_record_count=input_dict['FailedRecordCount'],
+            failed_job_count=input_dict['FailedJobCount'],
+            total_charge=input_dict['TotalCharge'],
             errors=errors
         )
 
@@ -60,9 +62,10 @@ class UsageStatusResource:
 
     def as_dict(self):
         return {
-            'ResourceName': self.resource_name,
+            'Resource': self.resource,
             'LoadedRecordCount': self.loaded_record_count,
-            'FailedRecordCount': self.failed_record_count,
+            'FailedJobCount': self.failed_job_count,
+            'TotalCharge': self.total_charge,
             'Errors': [e.as_dict() for e in self.errors]
         }
 
@@ -75,21 +78,21 @@ class UsageStatus:
         self.resources = resources
 
     @classmethod
-    def from_dict(cls, input_dict):
+    def from_list(cls, input_list):
+        #errors = [r for r in input_list if 'Error' in r]
+        #resources = [r for r in input_list if 'Error' not in r]
+        resources = input_list
         return cls(
-            resources=[UsageStatusResource.from_dict(d)
-                       for d in input_dict.get('Resources', [])]
+            resources=[UsageStatusResource.from_dict(d) for d in resources]
             )
 
     @classmethod
-    def from_json(cls, input_json):
-        d = json.loads(input_json)
-        return cls.from_dict(d)
+    def from_json(cls, input_list):
+        d = json.loads(input_list)
+        return cls.from_list(d)
 
-    def as_dict(self):
-        return {
-            'Resources': [r.as_dict() for r in self.resources]
-        }
+    def as_list(self):
+        return [r.as_dict() for r in self.resources]
 
     def json(self):
-        return json.dumps(self.as_dict())
+        return json.dumps(self.as_list())

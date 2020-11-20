@@ -26,7 +26,7 @@ class _UsageRecordList:
                                             .format(rt))
             self._record_type = rt
         # iterate over list records and check against stored type
-        return all([x.record_type == self._record_type for x in self._list])
+        return all([x.record_type.lower().capitalize() == self._record_type for x in self._list])
 
     def append(self, item):
         if not isinstance(item, UsageRecord):
@@ -60,6 +60,7 @@ class UsageMessage:
         """
         Returns a UsageMessage from a provided dictionary
         """
+        print(input_dict)
         ut = input_dict['UsageType']
         ur_class = _type_lookup(ut)
         records = [ur_class.from_dict(d) for d in input_dict['Records']]
@@ -111,7 +112,8 @@ class UsageMessageError:
 
     @classmethod
     def from_dict(cls, input_dict):
-        error = input_dict.pop('error', None)
+        print(input_dict)
+        error = input_dict.pop('Error', None)
         message = UsageMessage.from_dict(input_dict)
         return cls(error, message)
 

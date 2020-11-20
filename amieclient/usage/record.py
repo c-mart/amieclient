@@ -47,7 +47,6 @@ class UsageRecord(ABC):
         input_dict = json.loads(input_json)
         return cls.from_dict(input_dict)
 
-    @abstractmethod
     def json(self):
         """
         Returns a json version of this record
@@ -119,7 +118,7 @@ class ComputeUsageRecord(UsageRecord):
             start_time=input_dict['StartTime'],
             end_time=input_dict['EndTime'],
             charge=input_dict['Charge'],
-            node_count=input_dict['Attributes']['NodeCount'],
+            node_count=input_dict['Attributes'].get('NodeCount'),
             cpu_core_count=input_dict['Attributes'].get('CpuCoreCount'),
             job_name=input_dict['Attributes'].get('JobName'),
             memory=input_dict['Attributes'].get('Memory'),
@@ -340,8 +339,8 @@ class UsageRecordError:
 
     @classmethod
     def from_dict(cls, input_dict):
-        error = input_dict.pop('error', None)
-        ut = input_dict.pop('UsageType')
+        error = input_dict.pop('Error', None)
+        ut = input_dict['UsageType']
         ur_class = _type_lookup(ut)
         record_dict = defaultdict(lambda: None)
         record_dict.update(input_dict)

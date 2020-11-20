@@ -250,7 +250,7 @@ class UsageClient:
             pkt_list = UsageMessage(usage_packets)
         elif isinstance(usage_packets, UsageMessage):
             pkt_list = usage_packets
-        url = self.usage_url + '/usage'
+        url = self.usage_url + 'usage/'
 
         # prepare the request
         req = requests.Request('POST',  url, json=pkt_list.as_dict())
@@ -280,6 +280,7 @@ class UsageClient:
             raise UsageResponseError(msg)
         else:
             r.raise_for_status()
+        print(r.json())
         return [resp]
 
     def usage_summary(self):
@@ -306,12 +307,9 @@ class UsageClient:
 
         url = self.usage_url + 'usage/status'
         r = self._session.get(url, params=p)
-        if r.status_code == 200:
-            resp = UsageResponse.from_dict(r.json())
-        elif r.status_code == 400:
+        if r.status_code > 200:
             # Get the message if we're given one; otherwise
             msg = r.json().get('error', 'Bad Request, but error not specified by server')
             raise UsageResponseError(msg)
-        else:
-            r.raise_for_status()
-        return UsageStatus.from_dict(resp)
+        print(r.json())
+        return UsageStatus.from_list(r.json())
