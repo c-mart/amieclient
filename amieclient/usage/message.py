@@ -63,7 +63,7 @@ class UsageMessage:
         """
         Returns a UsageMessage from a provided dictionary
         """
-        ut = input_dict['UsageType']
+        ut = input_dict['Records'][0]['UsageType']
         ur_class = _type_lookup(ut)
         records = [ur_class.from_dict(d) for d in input_dict['Records']]
         return cls(records)
