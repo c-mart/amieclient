@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>amieclient API &#8212; amieclient  documentation</title>
+    <title>Usage API &#8212; amieclient  documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -15,6 +15,8 @@
     <script src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Examples" href="examples.html" />
+    <link rel="prev" title="amieclient API" href="client.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -31,8 +33,8 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="amieclient-api">
-<h1>amieclient API<a class="headerlink" href="#amieclient-api" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="usage-api">
+<h1>Usage API<a class="headerlink" href="#usage-api" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="the-usage-api-client">
 <h2>The Usage API client<a class="headerlink" href="#the-usage-api-client" title="Permalink to this headline">¶</a></h2>
 <p>To communicate with the AMIE REST Usage API, create a UsageClient object.
@@ -60,8 +62,8 @@ doing local development or testing out a new version.</p>
 </pre></div>
 </div>
 <dl class="py method">
-<dt id="amieclient.client.UsageClient.send_usage">
-<code class="sig-name descname">send_usage</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">usage_packets</span></em><span class="sig-paren">)</span><a class="headerlink" href="#amieclient.client.UsageClient.send_usage" title="Permalink to this definition">¶</a></dt>
+<dt id="amieclient.client.UsageClient.send">
+<code class="sig-name descname">send</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">usage_packets</span></em><span class="sig-paren">)</span><a class="headerlink" href="#amieclient.client.UsageClient.send" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sends a usage update to the Usage API host. This function accepts
 individual UsageMessages, lists of UsageRecords, or even a single
 UsageRecord. Returns a list of UsageResponses</p>
@@ -84,8 +86,8 @@ UsageRecord to send.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="amieclient.client.UsageClient.usage_status">
-<code class="sig-name descname">usage_status</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">from_date</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_date</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#amieclient.client.UsageClient.usage_status" title="Permalink to this definition">¶</a></dt>
+<dt id="amieclient.client.UsageClient.status">
+<code class="sig-name descname">status</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">from_time</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_time</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#amieclient.client.UsageClient.status" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets the status of records processed from the queue in the provided interval.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -98,8 +100,8 @@ UsageRecord to send.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="amieclient.client.UsageClient.usage_summary">
-<code class="sig-name descname">usage_summary</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#amieclient.client.UsageClient.usage_summary" title="Permalink to this definition">¶</a></dt>
+<dt id="amieclient.client.UsageClient.summary">
+<code class="sig-name descname">summary</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#amieclient.client.UsageClient.summary" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets a usage summary</p>
 <p>Not implemented yet</p>
 </dd></dl>
@@ -279,7 +281,7 @@ they are sent as well, grouped by the error that occured.</p>
 
 <dl class="py class">
 <dt id="amieclient.usage.response.UsageStatusResource">
-<em class="property">class </em><code class="sig-prename descclassname">amieclient.usage.response.</code><code class="sig-name descname">UsageStatusResource</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">resource_name</span></em>, <em class="sig-param"><span class="n">loaded_record_count</span></em>, <em class="sig-param"><span class="n">failed_record_count</span></em>, <em class="sig-param"><span class="n">errors</span><span class="o">=</span><span class="default_value">[]</span></em><span class="sig-paren">)</span><a class="headerlink" href="#amieclient.usage.response.UsageStatusResource" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">amieclient.usage.response.</code><code class="sig-name descname">UsageStatusResource</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">resource</span></em>, <em class="sig-param"><span class="n">loaded_record_count</span></em>, <em class="sig-param"><span class="n">failed_job_count</span></em>, <em class="sig-param"><span class="n">total_charge</span></em>, <em class="sig-param"><span class="n">errors</span><span class="o">=</span><span class="default_value">[]</span></em><span class="sig-paren">)</span><a class="headerlink" href="#amieclient.usage.response.UsageStatusResource" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>
@@ -303,8 +305,16 @@ they are sent as well, grouped by the error that occured.</p>
 
 <h3>Navigation</h3>
 <p class="caption"><span class="caption-text">Contents:</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="client.html">amieclient API</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Usage API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#the-usage-api-client">The Usage API client</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#usage-records">Usage Records</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#usage-messages">Usage Messages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#responses">Responses</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#checking-status">Checking status</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
 </ul>
 
@@ -312,6 +322,8 @@ they are sent as well, grouped by the error that occured.</p>
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="client.html" title="previous chapter">amieclient API</a></li>
+      <li>Next: <a href="examples.html" title="next chapter">Examples</a></li>
   </ul></li>
 </ul>
 </div>

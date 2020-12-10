@@ -1,4 +1,4 @@
-amieclient API
+Usage API
 ==============
 
 The Usage API client

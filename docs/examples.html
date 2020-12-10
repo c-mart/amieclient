@@ -15,7 +15,7 @@
     <script src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="amieclient API" href="client.html" />
+    <link rel="prev" title="Usage API" href="usage.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -117,19 +117,19 @@
 <h2>Reading configuration information from a file<a class="headerlink" href="#reading-configuration-information-from-a-file" title="Permalink to this headline">¶</a></h2>
 <p>Here’s the configuration file:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">PSC</span><span class="p">]</span>
-<span class="n">site_name</span> <span class="o">=</span> <span class="s2">&quot;PSC&quot;</span>
-<span class="n">api_key</span> <span class="o">=</span> <span class="s2">&quot;some_secret_key&quot;</span>
+<span class="n">site_name</span> <span class="o">=</span> <span class="n">PSC</span>
+<span class="n">api_key</span> <span class="o">=</span> <span class="n">some_secret_key</span>
 
 <span class="p">[</span><span class="n">PSC_TEST</span><span class="p">]</span>
-<span class="n">site_name</span> <span class="o">=</span> <span class="s2">&quot;PSC&quot;</span>
-<span class="n">amie_url</span> <span class="o">=</span> <span class="s2">&quot;https://amieclient.xsede.org/v0.20/&quot;</span>
-<span class="n">api_key</span> <span class="o">=</span> <span class="s2">&quot;some_beta_key&quot;</span>
+<span class="n">site_name</span> <span class="o">=</span> <span class="n">PSC</span>
+<span class="n">amie_url</span> <span class="o">=</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">amieclient</span><span class="o">.</span><span class="n">xsede</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">v0</span><span class="o">.</span><span class="mi">20</span><span class="o">/</span>
+<span class="n">api_key</span> <span class="o">=</span> <span class="n">some_beta_key</span>
 
 <span class="p">[</span><span class="n">NCSA_LOCAL_DEV</span><span class="p">]</span>
-<span class="n">site_name</span> <span class="o">=</span> <span class="s2">&quot;NCSA&quot;</span>
-<span class="n">amie_url</span> <span class="o">=</span> <span class="s2">&quot;http://localhost:12345&quot;</span>
-<span class="n">usage_url</span> <span class="o">=</span> <span class="s2">&quot;http://localhost:23456&quot;</span>
-<span class="n">api_key</span> <span class="o">=</span> <span class="s2">&quot;some_dev_key&quot;</span>
+<span class="n">site_name</span> <span class="o">=</span> <span class="n">NCSA</span>
+<span class="n">amie_url</span> <span class="o">=</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">localhost</span><span class="p">:</span><span class="mi">12345</span>
+<span class="n">usage_url</span> <span class="o">=</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">localhost</span><span class="p">:</span><span class="mi">23456</span>
+<span class="n">api_key</span> <span class="o">=</span> <span class="n">some_dev_key</span>
 </pre></div>
 </div>
 <p>And here’s how you read from the configuration file and use it to create clients:</p>
@@ -208,6 +208,7 @@
 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="client.html">amieclient API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage API</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Examples</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#replying-to-a-packet-from-a-transaction">Replying to a packet from a transaction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#creating-a-new-packet-from-scratch">Creating a new packet from scratch</a></li>
@@ -220,7 +221,7 @@
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="client.html" title="previous chapter">amieclient API</a></li>
+      <li>Previous: <a href="usage.html" title="previous chapter">Usage API</a></li>
   </ul></li>
 </ul>
 </div>
