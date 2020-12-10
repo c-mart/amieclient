@@ -1,9 +1,9 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(
     name='amieclient',
     version='0.1',
-    packages=['amieclient'],
+    packages=find_packages(),
     install_requires=[
         'requests>=2.20.0,<3',
         'python-dateutil>=2.6.1,<2.7'
