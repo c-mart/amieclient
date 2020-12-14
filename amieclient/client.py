@@ -118,7 +118,8 @@ class AMIEClient(object):
 
     def list_packets(self, *, trans_rec_ids=None, outgoing=None,
                      update_time_start=None, update_time_until=None,
-                     states=None, client_states=None, incoming=None):
+                     states=None, client_states=None, transaction_states=None,
+                     incoming=None):
         """
         Fetches a list of transactions based on the provided search parameters
 
@@ -129,6 +130,7 @@ class AMIEClient(object):
             update_time_until (datetime.Datetime): Searches for packets updated before this time.
             states (list): Searches for packets in the provided states.
             client_states (list): Searches for packets in the provided client states.
+            transaction_states (list): Searches for packets in the provided client states.
             incoming (bool): If true, search is limited to incoming packets.
 
         Returns:
@@ -137,6 +139,7 @@ class AMIEClient(object):
         trans_rec_ids_str = self._join_list(trans_rec_ids)
         states_str = self._join_list(states)
         client_states_str = self._join_list(client_states)
+        transaction_states_str = self._join_list(transaction_states)
         time_str = self._dt_range(update_time_start, update_time_until)
 
         # Build a dict of parameters. Requests skips any with a None value,
@@ -147,6 +150,7 @@ class AMIEClient(object):
             'update_time': time_str,
             'states': states_str,
             'client_states': client_states_str,
+            'transaction_states': transaction_states_str,
             'incoming': incoming
         }
 
