@@ -3,8 +3,8 @@ from collections import namedtuple, defaultdict
 from abc import ABC, abstractmethod
 
 ComputeUsageAttributes = namedtuple('ComputeUsageAttributes',
-                                    ['node_count', 'cpu_core_count',
-                                     'job_name', 'memory', 'queue'],
+                                    ['NodeCount', 'CpuCoreCount',
+                                     'JobName', 'Memory', 'Queue'],
                                     )
 
 StorageUsageAttributes = namedtuple('StorageUsageAttributes',
