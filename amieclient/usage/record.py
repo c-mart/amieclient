@@ -361,7 +361,7 @@ class UsageRecordError:
     def as_dict(self):
         d = {
             'UsageType': self.record.record_type,
-            'error': self.error
+            'Error': self.error
         }
         d.update(self.record.as_dict())
         return d
