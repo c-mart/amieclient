@@ -387,7 +387,7 @@ class UsageRecordError:
         return self._failed_record_id
 
     @failed_record_id.setter
-    def error(self, _):
+    def failed_record_id(self, _):
         pass
 
     @classmethod
