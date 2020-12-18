@@ -68,9 +68,9 @@ class ComputeUsageRecord(UsageRecord):
 
     def __init__(self, *,
                  parent_record_id=None, queue=None, cpu_core_count=None,
-                 job_name=None, memory=None, charge, end_time,
-                 local_project_id, local_record_id, resource, start_time,
-                 submit_time, username, node_count):
+                 job_name=None, memory=None, local_reference=None, charge,
+                 end_time, local_project_id, local_record_id, resource,
+                 start_time, submit_time, username, node_count):
         """
         Creates a new compute usage record.
 
@@ -84,6 +84,12 @@ class ComputeUsageRecord(UsageRecord):
             end_time (str): Job End Time
             local_project_id (str): The Site Project ID for the job.  This must match the ProjectID provided by the site for the project with AMIE
             local_record_id (str): Site Job ID.  Typically a slurm job id
+            local_reference (str): An optional key to help you identify this
+                                   record locally.  Included when the record
+                                   load fails in the initial post or in the
+                                   errors reported by the GET usage/status end
+                                   point. This could be a primary key value
+                                   from a local accounting system
             resource (str): Resource the job ran on.  Must match the resource name used in AMIE
             start_time (str): Start Time of the job
             submit_time (str): Start Time of the job
@@ -102,6 +108,7 @@ class ComputeUsageRecord(UsageRecord):
         self.end_time = end_time
         self.local_project_id = local_project_id
         self.local_record_id = local_record_id
+        self.local_reference = local_reference
         self.resource = resource
         self.start_time = start_time
         self.submit_time = submit_time
@@ -128,6 +135,7 @@ class ComputeUsageRecord(UsageRecord):
             memory=input_dict['Attributes'].get('Memory'),
             queue=input_dict['Attributes'].get('Queue'),
             parent_record_id=input_dict.get('ParentRecordID'),
+            local_reference=input_dict.get('LocalReference'),
         )
 
     def as_dict(self):
@@ -155,6 +163,8 @@ class ComputeUsageRecord(UsageRecord):
 
         if self.parent_record_id is not None:
             d['ParentRecordID'] = self.parent_record_id
+        if self.local_reference is not None:
+            d['LocalReference'] = self.local_reference
 
         return d
 
@@ -175,6 +185,12 @@ class StorageUsageRecord(UsageRecord):
                                 the project with AMIE
         local_record_id (str): Site Record ID.  Use to make the record
                                identifiable to you locally
+        local_reference (str): An optional key to help you identify this
+                               record locally.  Included when the record
+                               load fails in the initial post or in the
+                               errors reported by the GET usage/status end
+                               point. This could be a primary key value
+                               from a local accounting system
         resource (str): Resource the job ran on.  Must match the resource name
                         used in AMIE
         username (str): The local username of the user who ran the job. Must
@@ -197,7 +213,7 @@ class StorageUsageRecord(UsageRecord):
                  bytes_read=None, bytes_stored=None, bytes_written=None,
                  collection_interval=None, file_count=None, files_read=None,
                  files_written=None, media_type=None, system_copies=None,
-                 user_copies=None):
+                 user_copies=None, local_reference=None):
         self.attributes = StorageUsageAttributes(bytes_read, bytes_stored,
                                                  bytes_written, collection_interval,
                                                  file_count, files_read,
@@ -207,6 +223,7 @@ class StorageUsageRecord(UsageRecord):
         self.collection_time = collection_time
         self.local_project_id = local_project_id
         self.local_record_id = local_record_id
+        self.local_reference = local_reference
         self.resource = resource
         self.username = username
 
@@ -230,6 +247,7 @@ class StorageUsageRecord(UsageRecord):
             media_type=attributes.get('MediaType'),
             system_copies=attributes.get('SystemCopies'),
             user_copies=attributes.get('UserCopies'),
+            local_reference=input_dict.get('LocalReference'),
         )
 
     def as_dict(self):
@@ -248,6 +266,9 @@ class StorageUsageRecord(UsageRecord):
             'Username': self.username,
             'Attributes': attributes
         }
+
+        if self.local_reference is not None:
+            d['LocalReference'] = self.local_reference
 
         return d
 
@@ -273,6 +294,12 @@ class AdjustmentUsageRecord(UsageRecord):
         local_record_id (str): AMIE Site Record ID. Use to make this record
                                identifiable to you locally. Must be unique
                                for the resource.
+        local_reference (str): An optional key to help you identify this
+                               record locally.  Included when the record
+                               load fails in the initial post or in the
+                               errors reported by the GET usage/status end
+                               point. This could be a primary key value
+                               from a local accounting system
         resource (str): Resource the job ran on.  Must match the resource name
                         used in AMIE
         username (str): The local username of the user who ran the job.  Must
@@ -286,7 +313,8 @@ class AdjustmentUsageRecord(UsageRecord):
                               'reservation', 'storage-debit']
 
     def __init__(self, adjustment_type, charge, start_time, local_project_id,
-                 local_record_id, resource, username, comment=None):
+                 local_record_id, resource, username, comment=None,
+                 local_reference=None):
         at = adjustment_type.lower()
         if at not in self.VALID_ADJUSTMENT_TYPES:
             raise ValueError('Adjustment type "{}" invalid, must be one of {}'
@@ -296,6 +324,7 @@ class AdjustmentUsageRecord(UsageRecord):
         self.start_time = start_time
         self.local_project_id = local_project_id
         self.local_record_id = local_record_id
+        self.local_reference = local_reference
         self.resource = resource
         self.username = username
         self.comment = comment
@@ -310,7 +339,8 @@ class AdjustmentUsageRecord(UsageRecord):
             local_record_id=input_dict['LocalRecordID'],
             resource=input_dict['Resource'],
             username=input_dict['Username'],
-            comment=input_dict.get('Comment')
+            comment=input_dict.get('Comment'),
+            local_reference=input_dict.get('LocalReference'),
         )
 
     def as_dict(self):
@@ -325,6 +355,9 @@ class AdjustmentUsageRecord(UsageRecord):
         }
         if self.comment is not None:
             d['Comment'] = self.comment
+
+        if self.local_reference is not None:
+            d['LocalReference'] = self.local_reference
 
         return d
 
