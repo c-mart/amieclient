@@ -369,8 +369,9 @@ class AdjustmentUsageRecord(UsageRecord):
 
 
 class UsageRecordError:
-    def __init__(self, error, record):
+    def __init__(self, error, record, failed_record_id=None):
         self._error = error
+        self._failed_record_id = failed_record_id
         self.record = record
 
     @property
@@ -381,16 +382,25 @@ class UsageRecordError:
     def error(self, _):
         pass
 
+    @property
+    def failed_record_id(self):
+        return self._failed_record_id
+
+    @failed_record_id.setter
+    def error(self, _):
+        pass
+
     @classmethod
     def from_dict(cls, input_dict):
         error = input_dict.pop('Error', None)
+        failed_id = input_dict.pop('FailedRecordID', None)
         ut = input_dict['UsageType']
         ur_class = _type_lookup(ut)
         record_dict = defaultdict(lambda: None)
         record_dict.update(input_dict)
         record = ur_class.from_dict(record_dict)
 
-        return cls(error=error, record=record)
+        return cls(error=error, record=record, failed_record_id=failed_id)
 
     @classmethod
     def from_json(cls, input_json):
@@ -402,6 +412,8 @@ class UsageRecordError:
             'UsageType': self.record.record_type,
             'Error': self.error
         }
+        if self.failed_record_id is not None:
+            d['FailedRecordID'] = self.failed_record_id
         d.update(self.record.as_dict())
         return d
 
@@ -415,7 +427,12 @@ class UsageRecordError:
         print(self.json(indent=4, sort_keys=True))
 
     def __repr__(self):
-        return "<{s.record.record_type} UsageRecordError: {s.error} resource={s.record.resource} local_record_id={s.record.local_record_id}>".format(s=self)
+        rep = "<{s.record.record_type} UsageRecordError: {s.error} resource={s.record.resource} local_record_id={s.record.local_record_id}".format(s=self)
+        if self.failed_record_id is not None:
+            rep += " failed_record_id={s.failed_record_id>}".format(s=self)
+        else:
+            rep += ">"
+        return rep
 
 
 def _type_lookup(ut):
