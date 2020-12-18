@@ -11,6 +11,7 @@ from .usage import (UsageMessage, UsageRecord, UsageResponse, UsageResponseError
 
 """AMIE client and Usage Client classes"""
 
+
 class AMIERequestError(requests.RequestException):
     pass
 
@@ -309,6 +310,27 @@ class UsageClient:
             msg = r.json().get('error', 'Bad Request, but error not specified by server')
             raise UsageResponseError(msg)
         return FailedUsageResponse.from_dict(r.json())
+
+    def clear_failed_records(self, failed_records_or_ids):
+
+        def _get_id(fr):
+            if hasattr(fr, 'failed_record_id'):
+                return str(fr.failed_record_id)
+            else:
+                return str(fr)
+
+        if isinstance(failed_records_or_ids, list):
+            failed_ids = map(_get_id, failed_records_or_ids)
+        else:
+            failed_ids = [_get_id(failed_records_or_ids)]
+
+        fids = ','.join(failed_ids)
+
+        url = self.usage_url + 'usage/failed/{fids}'.format(fids)
+
+        r = self._session.delete(url)
+        r.raise_for_status()
+        return True
 
     def status(self, from_time=None, to_time=None):
         """
