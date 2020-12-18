@@ -95,11 +95,18 @@ class Packet(object, metaclass=MetaPacket):
                  packet_id=None, transaction_id=None,
                  date=None,
                  additional_data={}, in_reply_to=None,
+                 client_state=None, client_json=None,
                  **kwargs):
         self.packet_rec_id = str(packet_rec_id)
         self.packet_id = str(packet_id)
         self.trans_rec_id = str(trans_rec_id)
         self.transaction_id = str(transaction_id)
+        # This one is a property with special...properties. See client_json() below for
+        # details.
+        self.client_json = client_json
+
+        # TODO make sure client_state is one of the valid AMIE client states
+        self.client_state = client_state
 
         self.additional_data = additional_data
         if not date:
@@ -126,6 +133,21 @@ class Packet(object, metaclass=MetaPacket):
                     setattr(self, key, value)
             else:
                 self.additional_data[key] = value
+
+    @property
+    def client_json(self):
+        return self._client_json
+
+    @client_json.setter
+    def client_json(self, input_json):
+        """
+        If we're given a string for client_json, assume it's json and
+        parse it
+        """
+        if isinstance(input_json, str):
+            self._client_json = json.loads(input_json)
+        else:
+            self._client_json = input_json
 
     @classmethod
     def _find_packet_type(cls, packet_or_packet_type):
@@ -166,6 +188,8 @@ class Packet(object, metaclass=MetaPacket):
                         packet_id=data['header']['packet_id'],
                         transaction_id=data['header']['transaction_id'],
                         in_reply_to=data['header'].get('in_reply_to'),
+                        client_state=data['header'].get('client_state'),
+                        client_json=data['header'].get('client_json'),
                         **data['body'])
 
         # Return an instance of the proper subclass
@@ -245,6 +269,10 @@ class Packet(object, metaclass=MetaPacket):
         }
         if self.in_reply_to_id:
             header['in_reply_to'] = self.in_reply_to_id
+        if self.client_state:
+            header['client_state'] = self.client_state
+        if self.client_json:
+            header['client_json'] = self.client_json
         data_dict = {
             'DATA_TYPE': 'packet',
             'body': data_body,
