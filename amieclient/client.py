@@ -149,8 +149,8 @@ class AMIEClient(object):
             'outgoing': outgoing,
             'update_time': time_str,
             'states': states_str,
-            'client_states': client_states_str,
-            'transaction_states': transaction_states_str,
+            'client_state': client_states_str,
+            'transaction_state': transaction_states_str,
             'incoming': incoming
         }
 
