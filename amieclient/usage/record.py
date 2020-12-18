@@ -47,11 +47,17 @@ class UsageRecord(ABC):
         input_dict = json.loads(input_json)
         return cls.from_dict(input_dict)
 
-    def json(self):
+    def json(self, **json_kwargs):
         """
         Returns a json version of this record
         """
-        return json.dumps(self.as_dict())
+        return json.dumps(self.as_dict(), **json_kwargs)
+
+    def pretty_print(self):
+        """
+        prints() a pretty version of the JSON of this packet
+        """
+        print(self.json(indent=4, sort_keys=True))
 
     def __repr__(self):
         return "<{s.record_type} UsageRecord: resource={s.resource} local_record_id={s.local_record_id}>".format(s=self)
@@ -399,9 +405,14 @@ class UsageRecordError:
         d.update(self.record.as_dict())
         return d
 
-    def json(self):
-        d = self.as_dict()
-        return json.dumps(d)
+    def json(self, **json_kwargs):
+        return json.dumps(self.as_dict(), **json_kwargs)
+
+    def pretty_print(self):
+        """
+        prints() a pretty version of the JSON of this packet
+        """
+        print(self.json(indent=4, sort_keys=True))
 
     def __repr__(self):
         return "<{s.record.record_type} UsageRecordError: {s.error} resource={s.record.resource} local_record_id={s.record.local_record_id}>".format(s=self)

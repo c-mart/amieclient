@@ -83,11 +83,17 @@ class UsageMessage:
         }
         return d
 
-    def json(self):
+    def json(self, **json_kwargs):
         """
         Returns a json version of this message
         """
-        return json.dumps(self.as_dict())
+        return json.dumps(self.as_dict(), **json_kwargs)
+
+    def pretty_print(self):
+        """
+        prints() a pretty version of the JSON of this packet
+        """
+        print(self.json(indent=4, sort_keys=True))
 
     def _chunked(self, chunk_size=1000):
         """
@@ -128,9 +134,14 @@ class UsageMessageError:
         d.update(self.message.as_dict())
         return d
 
-    def json(self):
-        d = self.as_dict()
-        return json.dumps(d)
+    def json(self, **json_kwargs):
+        return json.dumps(self.as_dict(), **json_kwargs)
+
+    def pretty_print(self):
+        """
+        prints() a pretty version of the JSON of this packet
+        """
+        print(self.json(indent=4, sort_keys=True))
 
     def __repr__(self):
         return "<UsageMessageError: {s._error}>".format(s=self)

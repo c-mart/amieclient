@@ -27,8 +27,14 @@ class UsageResponse:
         }
         return d
 
-    def json(self):
-        return json.dumps(self.as_dict())
+    def json(self, **json_kwargs):
+        return json.dumps(self.as_dict(), **json_kwargs)
+
+    def pretty_print(self):
+        """
+        prints() a pretty version of the JSON of this packet
+        """
+        print(self.json(indent=4, sort_keys=True))
 
     def __repr__(self):
         return "<UsageResponse: {s.message}>".format(s=self)
@@ -72,12 +78,17 @@ class UsageStatusResource:
             'Errors': [e.as_dict() for e in self.errors]
         }
 
-    def json(self):
-        return json.dumps(self.as_dict())
+    def json(self, **json_kwargs):
+        return json.dumps(self.as_dict(), **json_kwargs)
+
+    def pretty_print(self):
+        """
+        prints() a pretty version of the JSON of this packet
+        """
+        print(self.json(indent=4, sort_keys=True))
 
     def __repr__(self):
         return "<UsageStatusResource: {s.resource}, {n} errors>".format(s=self, n=len(self.errors))
-
 
 
 class UsageStatus:
@@ -99,10 +110,14 @@ class UsageStatus:
     def as_list(self):
         return [r.as_dict() for r in self.resources]
 
-    def json(self):
-        return json.dumps(self.as_list())
+    def json(self, **json_kwargs):
+        return json.dumps(self.as_dict(), **json_kwargs)
+
+    def pretty_print(self):
+        """
+        prints() a pretty version of the JSON of this packet
+        """
+        print(self.json(indent=4, sort_keys=True))
 
     def __repr__(self):
         return "<UsageStatus: {n} resources>".format(n=len(self.resources))
-
-
