@@ -6,7 +6,7 @@ from .packet import PacketList
 from .packet.base import Packet
 from .transaction import Transaction
 from .usage import (UsageMessage, UsageRecord, UsageResponse, UsageResponseError,
-                    UsageStatus)
+                    FailedUsageResponse, UsageStatus)
 
 
 """AMIE client and Usage Client classes"""
@@ -293,6 +293,22 @@ class UsageClient:
         Not implemented yet
         """
         raise NotImplementedError("Usage summaries are not yet implemented in the AMIE Usage api")
+
+    def get_failed_records(self):
+        """
+        Gets all failed records
+
+        Takes no arguments
+        """
+
+        url = self.usage_url + 'usage/failed'
+        r = self._session.get(url)
+
+        if r.status_code > 200:
+            # Get the message if we're given one; otherwise placeholder
+            msg = r.json().get('error', 'Bad Request, but error not specified by server')
+            raise UsageResponseError(msg)
+        return FailedUsageResponse.from_dict(r.json())
 
     def status(self, from_time=None, to_time=None):
         """
