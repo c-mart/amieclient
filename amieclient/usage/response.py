@@ -3,17 +3,21 @@ from .message import UsageMessage, UsageMessageError
 from .record import UsageRecordError
 
 
+class UsageResponseError(Exception):
+    pass
+
+
 class UsageResponse:
-    def __init__(self, message, records_failed, ):
+    def __init__(self, message, failed_records):
         self.message = message
-        self.records_failed = records_failed
+        self.failed_records = failed_records
 
     @classmethod
     def from_dict(cls, input_dict):
         records = [UsageRecordError.from_dict(d) for d in
                    input_dict.get('ValidationFailedRecords', [])]
         message = input_dict['Message']
-        return cls(message=message, records_failed=records)
+        return cls(message=message, failed_records=records)
 
     @classmethod
     def from_json(cls, input_json):
@@ -23,7 +27,7 @@ class UsageResponse:
     def as_dict(self):
         d = {
             'Message': self.message,
-            'ValidationFailedRecords': [r.as_dict() for r in self.records_failed]
+            'ValidationFailedRecords': [r.as_dict() for r in self.failed_records]
         }
         return d
 
@@ -40,8 +44,38 @@ class UsageResponse:
         return "<UsageResponse: {s.message}>".format(s=self)
 
 
-class UsageResponseError(Exception):
-    pass
+class FailedUsageResponse:
+    def __init__(self, failed_records):
+        self.failed_records = failed_records
+
+    @classmethod
+    def from_dict(cls, input_dict):
+        records = [UsageRecordError.from_dict(d) for d in
+                   input_dict.get('ValidationFailedRecords', [])]
+        return cls(failed_records=records)
+
+    @classmethod
+    def from_json(cls, input_json):
+        d = json.loads(input_json)
+        return cls.from_dict(d)
+
+    def as_dict(self):
+        d = {
+            'FailedRecords': [r.as_dict() for r in self.failed_records]
+        }
+        return d
+
+    def json(self, **json_kwargs):
+        return json.dumps(self.as_dict(), **json_kwargs)
+
+    def pretty_print(self):
+        """
+        prints() a pretty version of the JSON of this packet
+        """
+        print(self.json(indent=4, sort_keys=True))
+
+    def __repr__(self):
+        return "<FailedUsageResponse: {r} records>".format(r=len(self.failed_records))
 
 
 class UsageStatusResource:
