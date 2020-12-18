@@ -267,13 +267,17 @@ class Packet(object, metaclass=MetaPacket):
         missing = [r for r in reqd if self._required_data.get(r) is None]
         return missing
 
-
-    def json(self):
+    def json(self, **json_kwargs):
         """
         The JSON representation of this AMIE packet
         """
-        data_dict = self.as_dict()
-        return json.dumps(data_dict)
+        return json.dumps(self.as_dict(), **json_kwargs)
+
+    def pretty_print(self):
+        """
+        prints() a pretty version of the JSON of this packet
+        """
+        print(self.json(indent=4, sort_keys=True))
 
     def validate_data(self, raise_on_invalid=False):
         """

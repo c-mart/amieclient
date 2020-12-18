@@ -94,7 +94,14 @@ class TransactionList(object):
         }
         return data_dict
 
-    def json(self):
-        data_dict = self.as_dict()
-        return json.dumps(data_dict)
+    def json(self, **json_kwargs):
+        """
+        The JSON representation of this AMIE transaction
+        """
+        return json.dumps(self.as_dict(), **json_kwargs)
 
+    def pretty_print(self):
+        """
+        prints() a pretty version of the JSON of this packet
+        """
+        print(self.json(indent=4, sort_keys=True))
