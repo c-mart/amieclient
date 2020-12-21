@@ -96,17 +96,31 @@ class Packet(object, metaclass=MetaPacket):
                  date=None,
                  additional_data={}, in_reply_to=None,
                  client_state=None, client_json=None,
+                 remote_site_name=None, local_site_name=None,
+                 originating_site_name=None, outgoing_flag=None,
+                 transaction_state=None, packet_state=None,
+                 _original_data=None,
                  **kwargs):
-        self.packet_rec_id = str(packet_rec_id)
-        self.packet_id = str(packet_id)
-        self.trans_rec_id = str(trans_rec_id)
-        self.transaction_id = str(transaction_id)
-        # This one is a property with special...properties. See client_json() below for
-        # details.
+        self.packet_rec_id = str(packet_rec_id) if packet_rec_id is not None else None
+        self.packet_id = str(packet_id) if packet_id is not None else None
+        self.trans_rec_id = str(trans_rec_id) if trans_rec_id is not None else None
+        self.transaction_id = str(transaction_id) if transaction_id is not None else None
+        self.local_site_name = str(local_site_name) if local_site_name is not None else None
+        self.remote_site_name = str(remote_site_name) if remote_site_name is not None else None
+        self.originating_site_name = str(originating_site_name) if originating_site_name is not None else None
+        self.outgoing_flag = str(outgoing_flag) if outgoing_flag is not None else None
+        # TODO make sure these states are valid amie states
+        self.transaction_state = str(transaction_state) if transaction_state is not None else None
+        self.client_state = str(client_state) if client_state is not None else None
+        self.packet_state = str(packet_state) if packet_state is not None else None
+
+        # This one is a property with special...properties. See client_json() 
+        # below for details.
         self.client_json = client_json
 
-        # TODO make sure client_state is one of the valid AMIE client states
-        self.client_state = client_state
+        # Optionally, save the origininal version of the packet, usually
+        # meaning the JSON we got from the server
+        self._original_data = _original_data
 
         self.additional_data = additional_data
         if not date:
@@ -183,13 +197,21 @@ class Packet(object, metaclass=MetaPacket):
         # Get the subclass that matches this json input
         pkt_class = cls._find_packet_type(data['type'])
 
+        print(data['header'])
         obj = pkt_class(packet_rec_id=data['header']['packet_rec_id'],
                         trans_rec_id=data['header']['trans_rec_id'],
                         packet_id=data['header']['packet_id'],
                         transaction_id=data['header']['transaction_id'],
+                        local_site_name=data['header']['local_site_name'],
+                        remote_site_name=data['header']['remote_site_name'],
+                        originating_site_name=data['header']['originating_site_name'],
+                        outgoing_flag=data['header']['outgoing_flag'],
+                        transaction_state=data['header']['transaction_state'],
+                        packet_state=data['header']['packet_state'],
                         in_reply_to=data['header'].get('in_reply_to'),
                         client_state=data['header'].get('client_state'),
                         client_json=data['header'].get('client_json'),
+                        _original_data=data,
                         **data['body'])
 
         # Return an instance of the proper subclass
@@ -263,9 +285,18 @@ class Packet(object, metaclass=MetaPacket):
 
         header = {
             'packet_rec_id': self.packet_rec_id,
+            'packet_id': self.packet_id,
+            'transaction_id': self.packet_rec_id,
             'date': self.date.isoformat(),
             'type': self.packet_type,
-            'expected_reply_list': self._expected_reply
+            'trans_rec_id': self.trans_rec_id,
+            'expected_reply_list': self._expected_reply,
+            'local_site_name': self.local_site_name,
+            'remote_site_name': self.remote_site_name,
+            'originating_site_name': self.originating_site_name,
+            'outgoing_flag': self.outgoing_flag,
+            'transaction_state': self.transaction_state,
+            'packet_state': self.packet_state,
         }
         if self.in_reply_to_id:
             header['in_reply_to'] = self.in_reply_to_id
