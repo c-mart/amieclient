@@ -82,18 +82,28 @@ class AMIEClient(object):
             time_str = "{},{}".format(start_str, end_str)
         return time_str
 
-    def get_transaction(self, *, trans_rec_id):
+    def get_transaction(self, *, transaction_or_id):
         """
         Given a single transaction record id, fetches the related transaction.
 
+        See the `Swagger documentation`_ for more details.
+
         Args:
-            trans_rec_id: The transaction record ID.
+            transaction_or_id: The transaction or transaction record ID.
 
         Returns:
             amieclient.Transaction
 
+        .. _Swagger documentation:
+           https://a3mdev.xsede.org/amie-api-test/swagger-ui/dist/index.html?url=/amie-api-test/apidocs/#/AMIE_Client/get_transactions__site_name___amie_transaction_id__packets
+
         """
-        url = self.amie_url + 'transactions/{}/{}/packets'.format(self.site_name, trans_rec_id)
+        if isinstance(transaction_or_id, Transaction):
+            tx_id = transaction_or_id.trans_rec_id
+        else:
+            tx_id = transaction_or_id
+
+        url = self.amie_url + 'transactions/{}/{}/packets'.format(self.site_name, tx_id)
         r = self._session.get(url)
         response = r.json()
         if r.status_code > 200:
@@ -105,11 +115,17 @@ class AMIEClient(object):
         """
         Given a single packet record id, fetches the packet.
 
+        See the `Swagger documentation`_ for more details.
+
         Args:
             packet_rec_id: The transaction record ID.
 
         Returns:
             amieclient.Packet
+
+        .. _Swagger documentation:
+           https://a3mdev.xsede.org/amie-api-test/swagger-ui/dist/index.html?url=/amie-api-test/apidocs/#/AMIE_Client/get_packets__site_name_
+
         """
         url = self.amie_url + 'packets/{}/{}'.format(self.site_name, packet_rec_id)
         r = self._session.get(url)
@@ -119,27 +135,14 @@ class AMIEClient(object):
             raise AMIERequestError(message, response=r)
         return Packet.from_dict(response)
 
-    def get_packets_from_transaction(self, transaction_or_id):
-        if isinstance(transaction_or_id, Transaction):
-            tx_id = transaction_or_id.trans_rec_id
-        else:
-            tx_id = transaction_or_id
-
-        url = self.amie_url + 'transactions/{}/{}/packets'.format(self.site_name, tx_id)
-
-        r = self._session.get(url)
-        response = r.json()
-        if r.status_code > 200:
-            message = response.get('message', 'Server did not provide an error message')
-            raise AMIERequestError(message, response=r)
-        return PacketList.from_dict(response)
-
     def list_packets(self, *, trans_rec_ids=None, outgoing=None,
                      update_time_start=None, update_time_until=None,
                      states=None, client_states=None, transaction_states=None,
                      incoming=None):
         """
         Fetches a list of packets based on the provided search parameters
+
+        See the `Swagger documentation`_ for more details.
 
         Args:
             trans_rec_ids (list): Searches for packets with these transaction record  IDs.
@@ -153,6 +156,10 @@ class AMIEClient(object):
 
         Returns:
             amieclient.PacketList: a list of packets matching the provided parameters.
+
+        .. _Swagger documentation:
+           https://a3mdev.xsede.org/amie-api-test/swagger-ui/dist/index.html?url=/amie-api-test/apidocs/#/AMIE_Client/get_packets__site_name_
+
         """
         trans_rec_ids_str = self._join_list(trans_rec_ids)
         states_str = self._join_list(states)
@@ -185,11 +192,17 @@ class AMIEClient(object):
         """
         Send a packet
 
+        See the `Swagger documentation`_ for more details.
+
         Args:
             packet (amieclient.Packet): The packet to send.
 
         Returns:
             requests.Response: The response from the AMIE API.
+
+        .. _Swagger documentation:
+           https://a3mdev.xsede.org/amie-api-test/swagger-ui/dist/index.html?url=/amie-api-test/apidocs/#/AMIE_Client/post_packets__site_name_
+
         """
         if not skip_validation:
             packet.validate_data(raise_on_invalid=True)
@@ -207,9 +220,15 @@ class AMIEClient(object):
         Set the client state on the server of the packet corresponding to the given
         packet_or_id.
 
+        See the `Swagger documentation`_ for more details.
+
         Args:
           packet_or_id (Packet, int): The packet or packet_rec_id to set state on.
           state (str): The state to set
+
+        .. _Swagger documentation:
+           https://a3mdev.xsede.org/amie-api-test/swagger-ui/dist/index.html?url=/amie-api-test/apidocs/#/AMIE_Client/put_packets__site_name___packet_rec_id__client_state__client_state_
+
         """
         if isinstance(packet_or_id, Packet):
             pkt_id = packet_or_id.packet_rec_id
@@ -231,8 +250,14 @@ class AMIEClient(object):
         Clears the client state on the server of the packet corresponding to the given
         packet_or_id.
 
+        See the `Swagger documentation`_ for more details.
+
         Args:
           packet_or_id (Packet, int): The packet or packet_rec_id to clear client_state on.
+
+        .. _Swagger documentation:
+           https://a3mdev.xsede.org/amie-api-test/swagger-ui/dist/index.html?url=/amie-api-test/apidocs/#/AMIE_Client/delete_packets__site_name___packet_rec_id__client_state_
+
         """
         if isinstance(packet_or_id, Packet):
             pkt_id = packet_or_id.packet_rec_id
@@ -254,10 +279,16 @@ class AMIEClient(object):
         Set the client JSON on the server of the packet corresponding to the given
         packet_or_id.
 
+        See the `Swagger documentation`_ for more details.
+
         Args:
           packet_or_id (Packet, int): The packet or packet_rec_id to set client_json on.
           client_json: The json to set. Can be any serializable object or a string of
             JSON.
+
+        .. _Swagger documentation:
+           https://a3mdev.xsede.org/amie-api-test/swagger-ui/dist/index.html?url=/amie-api-test/apidocs/#/AMIE_Client/put_packets__site_name___packet_rec_id__client_json
+
         """
         if isinstance(packet_or_id, Packet):
             pkt_id = packet_or_id.packet_rec_id
@@ -283,8 +314,13 @@ class AMIEClient(object):
         Clears the client JSON on the server of the packet corresponding to the given
         packet_or_id.
 
+        See the `Swagger documentation`_ for more details.
+
         Args:
           packet_or_id (Packet, int): The packet or packet_rec_id to clear client_json on.
+
+        .. _Swagger documentation:
+           https://a3mdev.xsede.org/amie-api-test/swagger-ui/dist/index.html?url=/amie-api-test/apidocs/#/AMIE_Client/delete_packets__site_name___packet_rec_id__client_json
         """
         if isinstance(packet_or_id, Packet):
             pkt_id = packet_or_id.packet_rec_id
