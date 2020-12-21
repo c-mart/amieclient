@@ -197,7 +197,6 @@ class Packet(object, metaclass=MetaPacket):
         # Get the subclass that matches this json input
         pkt_class = cls._find_packet_type(data['type'])
 
-        print(data['header'])
         obj = pkt_class(packet_rec_id=data['header']['packet_rec_id'],
                         trans_rec_id=data['header']['trans_rec_id'],
                         packet_id=data['header']['packet_id'],
