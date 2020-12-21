@@ -287,7 +287,6 @@ class Packet(object, metaclass=MetaPacket):
             'packet_id': self.packet_id,
             'transaction_id': self.packet_rec_id,
             'date': self.date.isoformat(),
-            'type': self.packet_type,
             'trans_rec_id': self.trans_rec_id,
             'expected_reply_list': self._expected_reply,
             'local_site_name': self.local_site_name,
@@ -305,6 +304,7 @@ class Packet(object, metaclass=MetaPacket):
             header['client_json'] = self.client_json
         data_dict = {
             'DATA_TYPE': 'packet',
+            'type': self.packet_type,
             'body': data_body,
             'header': header
         }
