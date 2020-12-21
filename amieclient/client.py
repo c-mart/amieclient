@@ -1,3 +1,5 @@
+import json
+
 from math import ceil, floor
 
 import requests
@@ -194,6 +196,104 @@ class AMIEClient(object):
 
         url = self.amie_url + 'packets/{}'.format(self.site_name)
         r = self._session.post(url, json=packet.as_dict())
+        response = r.json()
+        if r.status_code > 200:
+            message = response.get('message', 'Server did not provide an error message')
+            raise AMIERequestError(message, response=r)
+        return r
+
+    def set_packet_client_state(self, packet_or_id, state):
+        """
+        Set the client state on the server of the packet corresponding to the given
+        packet_or_id.
+
+        Args:
+          packet_or_id (Packet, int): The packet or packet_rec_id to set state on.
+          state (str): The state to set
+        """
+        if isinstance(packet_or_id, Packet):
+            pkt_id = packet_or_id.packet_rec_id
+        else:
+            pkt_id = packet_or_id
+
+        url = self.amie_url + 'packets/{}/{}/client_state/{}'.format(self.site_name,
+                                                                     pkt_id, state)
+
+        r = self._session.put(url)
+        response = r.json()
+        if r.status_code > 200:
+            message = response.get('message', 'Server did not provide an error message')
+            raise AMIERequestError(message, response=r)
+        return r
+
+    def clear_packet_client_state(self, packet_or_id):
+        """
+        Clears the client state on the server of the packet corresponding to the given
+        packet_or_id.
+
+        Args:
+          packet_or_id (Packet, int): The packet or packet_rec_id to clear client_state on.
+        """
+        if isinstance(packet_or_id, Packet):
+            pkt_id = packet_or_id.packet_rec_id
+        else:
+            pkt_id = packet_or_id
+
+        url = self.amie_url + 'packets/{}/{}/client_state'.format(self.site_name, pkt_id)
+
+        r = self._session.delete(url)
+        response = r.json()
+        if r.status_code > 200:
+            message = response.get('message', 'Server did not provide an error message')
+            raise AMIERequestError(message, response=r)
+        return r
+        pass
+
+    def set_packet_client_json(self, packet_or_id, client_json):
+        """
+        Set the client JSON on the server of the packet corresponding to the given
+        packet_or_id.
+
+        Args:
+          packet_or_id (Packet, int): The packet or packet_rec_id to set client_json on.
+          client_json: The json to set. Can be any serializable object or a string of
+            JSON.
+        """
+        if isinstance(packet_or_id, Packet):
+            pkt_id = packet_or_id.packet_rec_id
+        else:
+            pkt_id = packet_or_id
+
+        url = self.amie_url + 'packets/{}/{}/client_json'.format(self.site_name, pkt_id)
+
+        if isinstance(client_json, str):
+            # Best to parse the json here. Ensures it's valid and that everything
+            # serializes back properly when we do the PUT
+            client_json = json.loads(client_json)
+
+        r = self._session.put(url, data=client_json)
+        response = r.json()
+        if r.status_code > 200:
+            message = response.get('message', 'Server did not provide an error message')
+            raise AMIERequestError(message, response=r)
+        return r
+
+    def clear_packet_client_json(self, packet_or_id):
+        """
+        Clears the client JSON on the server of the packet corresponding to the given
+        packet_or_id.
+
+        Args:
+          packet_or_id (Packet, int): The packet or packet_rec_id to clear client_json on.
+        """
+        if isinstance(packet_or_id, Packet):
+            pkt_id = packet_or_id.packet_rec_id
+        else:
+            pkt_id = packet_or_id
+
+        url = self.amie_url + 'packets/{}/{}/client_json'.format(self.site_name, pkt_id)
+
+        r = self._session.delete(url)
         response = r.json()
         if r.status_code > 200:
             message = response.get('message', 'Server did not provide an error message')
