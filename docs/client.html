@@ -66,7 +66,7 @@ doing local development or testing out a new version.</p>
 <code class="sig-name descname">clear_packet_client_json</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">packet_or_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#amieclient.client.AMIEClient.clear_packet_client_json" title="Permalink to this definition">¶</a></dt>
 <dd><p>Clears the client JSON on the server of the packet corresponding to the given
 packet_or_id.</p>
-<p>See the <a href="#id10"><span class="problematic" id="id11">`Swagger documentation`_</span></a> for more details.</p>
+<p>See the <a class="reference external" href="https://a3mdev.xsede.org/amie-api-test/swagger-ui/dist/index.html?url=/amie-api-test/apidocs/#/AMIE_Client/delete_packets__site_name___packet_rec_id__client_json">Swagger documentation</a> for more details.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>packet_or_id</strong> (<a class="reference internal" href="#amieclient.packet.base.Packet" title="amieclient.packet.base.Packet"><em>Packet</em></a><em>, </em><em>int</em>) – The packet or packet_rec_id to clear client_json on.</p>
@@ -79,7 +79,7 @@ packet_or_id.</p>
 <code class="sig-name descname">clear_packet_client_state</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">packet_or_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#amieclient.client.AMIEClient.clear_packet_client_state" title="Permalink to this definition">¶</a></dt>
 <dd><p>Clears the client state on the server of the packet corresponding to the given
 packet_or_id.</p>
-<p>See the <a href="#id12"><span class="problematic" id="id13">`Swagger documentation`_</span></a> for more details.</p>
+<p>See the <a class="reference external" href="https://a3mdev.xsede.org/amie-api-test/swagger-ui/dist/index.html?url=/amie-api-test/apidocs/#/AMIE_Client/delete_packets__site_name___packet_rec_id__client_state_">Swagger documentation</a> for more details.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>packet_or_id</strong> (<a class="reference internal" href="#amieclient.packet.base.Packet" title="amieclient.packet.base.Packet"><em>Packet</em></a><em>, </em><em>int</em>) – The packet or packet_rec_id to clear client_state on.</p>
@@ -91,7 +91,7 @@ packet_or_id.</p>
 <dt id="amieclient.client.AMIEClient.get_packet">
 <code class="sig-name descname">get_packet</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">packet_rec_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#amieclient.client.AMIEClient.get_packet" title="Permalink to this definition">¶</a></dt>
 <dd><p>Given a single packet record id, fetches the packet.</p>
-<p>See the <a href="#id14"><span class="problematic" id="id15">`Swagger documentation`_</span></a> for more details.</p>
+<p>See the <a class="reference external" href="https://a3mdev.xsede.org/amie-api-test/swagger-ui/dist/index.html?url=/amie-api-test/apidocs/#/AMIE_Client/get_packets__site_name_">Swagger documentation</a> for more details.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>packet_rec_id</strong> – The transaction record ID.</p>
@@ -106,7 +106,7 @@ packet_or_id.</p>
 <dt id="amieclient.client.AMIEClient.get_transaction">
 <code class="sig-name descname">get_transaction</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">transaction_or_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#amieclient.client.AMIEClient.get_transaction" title="Permalink to this definition">¶</a></dt>
 <dd><p>Given a single transaction record id, fetches the related transaction.</p>
-<p>See the <a href="#id3"><span class="problematic" id="id4">:swagger:`Swagger documentation &lt;AMIE_Client/get_transactions__site_name___amie_transaction_id__packets/&gt;`_</span></a> for more details.</p>
+<p>See the <a class="reference external" href="https://a3mdev.xsede.org/amie-api-test/swagger-ui/dist/index.html?url=/amie-api-test/apidocs/#/AMIE_Client/get_transactions__site_name___amie_transaction_id__packets/">Swagger documentation</a> for more details.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>transaction_or_id</strong> – The transaction or transaction record ID.</p>
@@ -121,7 +121,7 @@ packet_or_id.</p>
 <dt id="amieclient.client.AMIEClient.list_packets">
 <code class="sig-name descname">list_packets</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">trans_rec_ids</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">outgoing</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">update_time_start</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">update_time_until</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">states</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">client_states</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">transaction_states</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">incoming</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#amieclient.client.AMIEClient.list_packets" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fetches a list of packets based on the provided search parameters</p>
-<p>See the <a href="#id16"><span class="problematic" id="id17">`Swagger documentation`_</span></a> for more details.</p>
+<p>See the <a class="reference external" href="https://a3mdev.xsede.org/amie-api-test/swagger-ui/dist/index.html?url=/amie-api-test/apidocs/#/AMIE_Client/get_packets__site_name_">Swagger documentation</a> for more details.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -148,7 +148,7 @@ packet_or_id.</p>
 <dt id="amieclient.client.AMIEClient.send_packet">
 <code class="sig-name descname">send_packet</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">packet</span></em>, <em class="sig-param"><span class="n">skip_validation</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#amieclient.client.AMIEClient.send_packet" title="Permalink to this definition">¶</a></dt>
 <dd><p>Send a packet</p>
-<p>See the <a href="#id18"><span class="problematic" id="id19">`Swagger documentation`_</span></a> for more details.</p>
+<p>See the <a class="reference external" href="https://a3mdev.xsede.org/amie-api-test/swagger-ui/dist/index.html?url=/amie-api-test/apidocs/#/AMIE_Client/post_packets__site_name_">Swagger documentation</a> for more details.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>packet</strong> (<em>amieclient.Packet</em>) – The packet to send.</p>
@@ -167,7 +167,7 @@ packet_or_id.</p>
 <code class="sig-name descname">set_packet_client_json</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">packet_or_id</span></em>, <em class="sig-param"><span class="n">client_json</span></em><span class="sig-paren">)</span><a class="headerlink" href="#amieclient.client.AMIEClient.set_packet_client_json" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the client JSON on the server of the packet corresponding to the given
 packet_or_id.</p>
-<p>See the <a href="#id20"><span class="problematic" id="id21">`Swagger documentation`_</span></a> for more details.</p>
+<p>See the <a class="reference external" href="https://a3mdev.xsede.org/amie-api-test/swagger-ui/dist/index.html?url=/amie-api-test/apidocs/#/AMIE_Client/put_packets__site_name___packet_rec_id__client_json">Swagger documentation</a> for more details.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -184,7 +184,7 @@ JSON.</p></li>
 <code class="sig-name descname">set_packet_client_state</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">packet_or_id</span></em>, <em class="sig-param"><span class="n">state</span></em><span class="sig-paren">)</span><a class="headerlink" href="#amieclient.client.AMIEClient.set_packet_client_state" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the client state on the server of the packet corresponding to the given
 packet_or_id.</p>
-<p>See the <a href="#id22"><span class="problematic" id="id23">`Swagger documentation`_</span></a> for more details.</p>
+<p>See the <a class="reference external" href="https://a3mdev.xsede.org/amie-api-test/swagger-ui/dist/index.html?url=/amie-api-test/apidocs/#/AMIE_Client/put_packets__site_name___packet_rec_id__client_state__client_state_">Swagger documentation</a> for more details.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -199,7 +199,7 @@ packet_or_id.</p>
 <dt id="amieclient.client.AMIEClient.set_transaction_failed">
 <code class="sig-name descname">set_transaction_failed</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">transaction_or_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#amieclient.client.AMIEClient.set_transaction_failed" title="Permalink to this definition">¶</a></dt>
 <dd><p>Given a single transaction or transaction record id, marks it faield.</p>
-<p>See the <a href="#id24"><span class="problematic" id="id25">`Swagger documentation`_</span></a> for more details.</p>
+<p>See the <a class="reference external" href="https://a3mdev.xsede.org/amie-api-test/swagger-ui/dist/index.html?url=/amie-api-test/apidocs/#/AMIE_Client/put_transactions__site_name___amie_transaction_id__state_failed">Swagger documentation</a> for more details.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>transaction_or_id</strong> – The transaction or transaction record ID.</p>
