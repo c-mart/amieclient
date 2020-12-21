@@ -101,10 +101,10 @@ class Packet(object, metaclass=MetaPacket):
                  transaction_state=None, packet_state=None,
                  _original_data=None,
                  **kwargs):
-        self.packet_rec_id = str(packet_rec_id) if packet_rec_id is not None else None
-        self.packet_id = str(packet_id) if packet_id is not None else None
-        self.trans_rec_id = str(trans_rec_id) if trans_rec_id is not None else None
-        self.transaction_id = str(transaction_id) if transaction_id is not None else None
+        self.packet_rec_id = int(packet_rec_id) if packet_rec_id is not None else None
+        self.packet_id = int(packet_id) if packet_id is not None else None
+        self.trans_rec_id = int(trans_rec_id) if trans_rec_id is not None else None
+        self.transaction_id = int(transaction_id) if transaction_id is not None else None
         self.local_site_name = str(local_site_name) if local_site_name is not None else None
         self.remote_site_name = str(remote_site_name) if remote_site_name is not None else None
         self.originating_site_name = str(originating_site_name) if originating_site_name is not None else None
