@@ -7,7 +7,7 @@ from .base import Packet
 
 class DataAccountCreate(Packet):
     _packet_type = 'data_account_create'
-    _expected_reply = ['inform_transaction_complete']
+    _expected_reply = [{'type': 'inform_transaction_complete', 'timeout': 30240}]
     _data_keys_required = ['PersonID', 'ProjectID']
     _data_keys_not_required_in_reply = []
     _data_keys_allowed = ['DnList']
@@ -15,7 +15,7 @@ class DataAccountCreate(Packet):
 
 class NotifyAccountCreate(Packet):
     _packet_type = 'notify_account_create'
-    _expected_reply = ['data_account_create']
+    _expected_reply = [{'type': 'data_account_create', 'timeout': 30240}]
     _data_keys_required = [
         'AccountActivityTime',
         'AcademicDegree',
@@ -63,7 +63,7 @@ class NotifyAccountCreate(Packet):
 
 class NotifyAccountInactivate(Packet):
     _packet_type = 'notify_account_inactivate'
-    _expected_reply = ['inform_transaction_complete']
+    _expected_reply = [{'type': 'inform_transaction_complete', 'timeout': 30240}]
     _data_keys_required = ['PersonID', 'ProjectID', 'ResourceList']
     _data_keys_not_required_in_reply = ['PersonID', 'ProjectID', 'ResourceList']
     _data_keys_allowed = ['Comment']
@@ -71,7 +71,7 @@ class NotifyAccountInactivate(Packet):
 
 class NotifyAccountReactivate(Packet):
     _packet_type = 'notify_account_reactivate'
-    _expected_reply = ['inform_transaction_complete']
+    _expected_reply = [{'type': 'inform_transaction_complete', 'timeout': 30240}]
     _data_keys_required = ['PersonID', 'ProjectID', 'ResourceList']
     _data_keys_not_required_in_reply = []
     _data_keys_allowed = ['Comment']
@@ -124,7 +124,7 @@ class RequestAccountCreate(Packet):
 
 class RequestAccountInactivate(Packet):
     _packet_type = 'request_account_inactivate'
-    _expected_reply = ['notify_account_inactivate']
+    _expected_reply = [{'type': 'notify_account_inactivate', 'timeout': 30240}]
     _data_keys_required = ['PersonID', 'ProjectID', 'ResourceList']
     _data_keys_not_required_in_reply = []
     _data_keys_allowed = ['Comment']
@@ -132,7 +132,7 @@ class RequestAccountInactivate(Packet):
 
 class RequestAccountReactivate(Packet):
     _packet_type = 'request_account_reactivate'
-    _expected_reply = ['notify_account_reactivate']
+    _expected_reply = [{'type': 'notify_account_reactivate', 'timeout': 30240}]
     _data_keys_required = ['PersonID', 'ProjectID', 'ResourceList']
     _data_keys_not_required_in_reply = []
     _data_keys_allowed = ['Comment']

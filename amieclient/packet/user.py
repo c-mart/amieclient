@@ -7,7 +7,7 @@ from .base import Packet, PacketInvalidData
 
 class NotifyUserModify(Packet):
     _packet_type = 'notify_account_inactivate'
-    _expected_reply = ['inform_transaction_complete']
+    _expected_reply = [{'type': 'inform_transaction_complete', 'timeout': 30240}]
     _data_keys_required = [
         'ActionType',
         'PersonID',
@@ -48,7 +48,7 @@ class NotifyUserModify(Packet):
 
 class RequestUserModify(Packet):
     _packet_type = 'request_user_modify'
-    _expected_reply = ['inform_transaction_complete']
+    _expected_reply = [{'type': 'inform_transaction_complete', 'timeout': 30240}]
     _data_keys_required = [
         'ActionType',
         'PersonID',

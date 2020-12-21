@@ -7,7 +7,7 @@ from .base import Packet
 
 class DataProjectCreate(Packet):
     _packet_type = 'data_project_create'
-    _expected_reply = ['inform_transaction_complete']
+    _expected_reply = [{'type': 'inform_transaction_complete', 'timeout': 30240}]
     _data_keys_required = ['PersonID', 'ProjectID']
     _data_keys_not_required_in_reply = ['GlobalID', 'PersonID']
     _data_keys_allowed = ['DnList']
@@ -15,7 +15,7 @@ class DataProjectCreate(Packet):
 
 class NotifyProjectCreate(Packet):
     _packet_type = 'notify_project_create'
-    _expected_reply = ['data_project_create']
+    _expected_reply = [{'type': 'data_project_create', 'timeout': 30240}]
     _data_keys_required = [
         'GrantNumber',
         'PfosNumber',
@@ -77,7 +77,7 @@ class NotifyProjectCreate(Packet):
 
 class NotifyProjectInactivate(Packet):
     _packet_type = 'notify_project_inactivate'
-    _expected_reply = ['inform_transaction_complete']
+    _expected_reply = [{'type': 'inform_transaction_complete', 'timeout': 30240}]
     _data_keys_required = ['ProjectID', 'ResourceList']
     _data_keys_not_required_in_reply = [
         'Comment', 'PersonID', 'ProjectID', 'ResourceList'
@@ -87,7 +87,7 @@ class NotifyProjectInactivate(Packet):
 
 class NotifyProjectReactivate(Packet):
     _packet_type = 'notify_project_reactivate'
-    _expected_reply = ['inform_transaction_complete']
+    _expected_reply = [{'type': 'inform_transaction_complete', 'timeout': 30240}]
     _data_keys_required = ['ProjectID', 'ResourceList']
     _data_keys_not_required_in_reply = [
         'Comment', 'PersonID', 'ProjectID', 'ResourceList'
@@ -97,7 +97,7 @@ class NotifyProjectReactivate(Packet):
 
 class RequestProjectCreate(Packet):
     _packet_type = 'request_project_create'
-    _expected_reply = ['notify_project_create']
+    _expected_reply = [{'type': 'notify_project_create', 'timeout': 30240}]
     _data_keys_required = [
         'AllocationType',
         'EndDate',
@@ -152,7 +152,7 @@ class RequestProjectCreate(Packet):
 
 class RequestProjectInactivate(Packet):
     _packet_type = 'request_project_inactivate'
-    _expected_reply = ['notify_project_inactivate']
+    _expected_reply = [{'type': 'notify_project_inactivate', 'timeout': 30240}]
     _data_keys_required = ['ProjectID', 'ResourceList']
     _data_keys_not_required_in_reply = []
     _data_keys_allowed = ['Comment',
@@ -167,7 +167,7 @@ class RequestProjectInactivate(Packet):
 
 class RequestProjectReactivate(Packet):
     _packet_type = 'request_project_reactivate'
-    _expected_reply = ['notify_project_reactivate']
+    _expected_reply = [{'type': 'notify_project_reactivate', 'timeout': 30240}]
     _data_keys_required = ['ProjectID', 'ResourceList']
     _data_keys_not_required_in_reply = []
     _data_keys_allowed = ['PersonID',

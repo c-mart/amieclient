@@ -7,7 +7,7 @@ from .base import Packet, PacketInvalidData
 
 class NotifyPersonDuplicate(Packet):
     _packet_type = 'notify_person_duplicate'
-    _expected_reply = ['inform_transaction_complete']
+    _expected_reply = [{'type': 'inform_transaction_complete', 'timeout': 30240}]
     _data_keys_required = []
     _data_keys_not_required_in_reply = []
     _data_keys_allowed = ['GlobalID1', 'GlobalID2', 'PersonID1', 'PersonID2']
@@ -35,7 +35,7 @@ class NotifyPersonDuplicate(Packet):
 
 class NotifyPersonIDs(Packet):
     _packet_type = 'notify_person_ids'
-    _expected_reply = ['inform_transaction_complete']
+    _expected_reply = [{'type': 'inform_transaction_complete', 'timeout': 30240}]
     _data_keys_required = ['PersonID', 'PrimaryPersonID']
     _data_keys_not_required_in_reply = []
     _data_keys_allowed = ['PersonIDList', 'RemoveResourceList', 'ResourceLogin']
@@ -43,7 +43,7 @@ class NotifyPersonIDs(Packet):
 
 class RequestPersonMerge(Packet):
     _packet_type = 'request_person_merge'
-    _expected_reply = ['inform_transaction_complete']
+    _expected_reply = [{'type': 'inform_transaction_complete', 'timeout': 30240}]
     _data_keys_required = ['KeepGlobalID', 'KeepPersonID', 'DeleteGlobalID',
                            'DeletePersonID']
     _data_keys_not_required_in_reply = []
