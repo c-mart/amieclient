@@ -111,6 +111,33 @@ class AMIEClient(object):
             raise AMIERequestError(message, response=r)
         return Transaction.from_dict(response)
 
+    def set_transaction_failed(self, *, transaction_or_id):
+        """
+        Given a single transaction or transaction record id, marks it faield.
+
+        See the `Swagger documentation`_ for more details.
+
+        Args:
+            transaction_or_id: The transaction or transaction record ID.
+
+        .. _Swagger documentation:
+           https://a3mdev.xsede.org/amie-api-test/swagger-ui/dist/index.html?url=/amie-api-test/apidocs/#/AMIE_Client/put_transactions__site_name___amie_transaction_id__state_failed
+
+        """
+        if isinstance(transaction_or_id, Transaction):
+            tx_id = transaction_or_id.trans_rec_id
+        else:
+            tx_id = transaction_or_id
+
+        url = self.amie_url + 'transactions/{}/{}/state/failed'.format(self.site_name, tx_id)
+        r = self._session.put(url)
+        response = r.json()
+        if r.status_code > 200:
+            message = response.get('message', 'Server did not provide an error message')
+            raise AMIERequestError(message, response=r)
+        return r
+
+
     def get_packet(self, *, packet_rec_id):
         """
         Given a single packet record id, fetches the packet.
