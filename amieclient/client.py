@@ -327,6 +327,14 @@ class UsageClient:
         return FailedUsageResponse.from_dict(r.json())
 
     def clear_failed_records(self, failed_records_or_ids):
+        """
+        Tells the server to clear the failed records given
+
+        Args:
+            failed_records_or_ids ([FailedUsageRecord], [int]):
+                A list of FailedUsageRecords, or plain FailedRecordIds, to unmark as
+                failed
+        """
 
         def _get_id(fr):
             if hasattr(fr, 'failed_record_id'):
