@@ -117,12 +117,27 @@ class AMIEClient(object):
             raise AMIERequestError(message, response=r)
         return Packet.from_dict(response)
 
+    def get_packets_from_transaction(self, transaction_or_id):
+        if isinstance(transaction_or_id, Transaction):
+            tx_id = transaction_or_id.trans_rec_id
+        else:
+            tx_id = transaction_or_id
+
+        url = self.amie_url + 'transactions/{}/{}/packets'.format(self.site_name, tx_id)
+
+        r = self._session.get(url)
+        response = r.json()
+        if r.status_code > 200:
+            message = response.get('message', 'Server did not provide an error message')
+            raise AMIERequestError(message, response=r)
+        return PacketList.from_dict(response)
+
     def list_packets(self, *, trans_rec_ids=None, outgoing=None,
                      update_time_start=None, update_time_until=None,
                      states=None, client_states=None, transaction_states=None,
                      incoming=None):
         """
-        Fetches a list of transactions based on the provided search parameters
+        Fetches a list of packets based on the provided search parameters
 
         Args:
             trans_rec_ids (list): Searches for packets with these transaction record  IDs.
