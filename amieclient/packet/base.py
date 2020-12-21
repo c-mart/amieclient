@@ -64,6 +64,25 @@ class MetaPacket(type):
                                 _make_del_required(k))
         for k in allowed_fields:
             attrs[k] = property(_make_get_allowed(k), _make_set_allowed(k))
+
+        # fix expected_replies to add a default timeouts
+        expected_replies = attrs.get('_expected_replies', [])
+        expected_with_timeouts = []
+        for r in expected_replies:
+            if isinstance(r, dict):
+                expected_with_timeouts.append(r)
+            elif isinstance(r, Packet):
+                expected_with_timeouts.append(
+                    {'type': r._packet_type,
+                     'timeout': 30240}
+                )
+            elif isinstance(r, str):
+                expected_with_timeouts.append(
+                    {'type': r,
+                     'timeout': 30240}
+                )
+            else:
+                raise Exception("Invalid reply_type")
         return type.__new__(cls, name, base, attrs)
 
 
@@ -90,6 +109,7 @@ class Packet(object, metaclass=MetaPacket):
     _data_keys_required = []
     _data_keys_not_required_in_reply = []
     _data_keys_allowed = []
+    _expected_replies = []
 
     def __init__(self, packet_rec_id=None, trans_rec_id=None,
                  packet_id=None, transaction_id=None,
@@ -123,21 +143,24 @@ class Packet(object, metaclass=MetaPacket):
         self._original_data = _original_data
 
         self.additional_data = additional_data
-        if not date:
-            self.date = datetime.now()
+        if date is not None:
+            self.date = dtparse(date)
+        else:
+            self.date = None
 
-        if in_reply_to is None or type(in_reply_to) == str:
+        if in_reply_to is None or isinstance(in_reply_to, int):
             # If we're given a string, or None, just use that.
             self.in_reply_to_id = in_reply_to
-        elif type(in_reply_to) == int:
-            # If it's a int, make it a string
-            self.in_reply_to_id = "{}".format(in_reply_to)
+        elif isinstance(in_reply_to, str):
+            # If it's a string, make it an int
+            self.in_reply_to_id = int(in_reply_to)
         elif hasattr(in_reply_to, 'packet_rec_id'):
             # If we're given a packet object, get the ID
             self.in_reply_to_id = in_reply_to.packet_rec_id
         elif in_reply_to.get('header', {}).get('packet_rec_id'):
             # If we're given a dict-like object, get the ID from the header
             self.in_reply_to_id = in_reply_to['header']['packet_rec_id']
+
         for key, value in kwargs.items():
             if key in self._data_keys_required or key in self._data_keys_allowed:
                 if 'Date' in key:
@@ -245,26 +268,27 @@ class Packet(object, metaclass=MetaPacket):
             >>> my_npc = received_rpc.reply_packet()
         """
 
+        expected_replies = [r['type'] for r in self._expected_reply]
         if packet_type and force:
             # Just do it
             pkt_class = self._find_packet_type(packet_type)
-        elif len(self._expected_reply) == 0:
+        elif len(expected_replies) == 0:
             # This is a packet that does not expect a response
             raise PacketInvalidType("Packet type '{}' does not expect a reply"
                                     .format(self._packet_type))
-        elif len(self._expected_reply) > 1 and packet_type is None:
+        elif len(expected_replies) > 1 and packet_type is None:
             # We have more than one expected reply, but no spec'd type
             # to disambiguate
             raise PacketInvalidType("Packet type '{}' has more than one"
                                     " expected response. Specify a packet type"
                                     " for the reply".format(self._packet_type))
-        elif packet_type is not None and packet_type not in self._expected_reply:
+        elif packet_type is not None and packet_type not in expected_replies:
             raise PacketInvalidType("'{}' is not an expected reply for packet type '{}'"
                                     .format(packet_type, self._packet_type))
         else:
             # We have one packet type, or a specified packet type, and it is valid
             if packet_type is None:
-                packet_type = self._expected_reply[0]
+                packet_type = expected_replies[0]
             pkt_class = self._find_packet_type(packet_type)
         return pkt_class(packet_rec_id=packet_rec_id, in_reply_to=self.packet_rec_id)
 
@@ -286,7 +310,6 @@ class Packet(object, metaclass=MetaPacket):
             'packet_rec_id': self.packet_rec_id,
             'packet_id': self.packet_id,
             'transaction_id': self.packet_rec_id,
-            'date': self.date.isoformat(),
             'trans_rec_id': self.trans_rec_id,
             'expected_reply_list': self._expected_reply,
             'local_site_name': self.local_site_name,
@@ -296,6 +319,8 @@ class Packet(object, metaclass=MetaPacket):
             'transaction_state': self.transaction_state,
             'packet_state': self.packet_state,
         }
+        if self.date is not None:
+            header['date'] = self.date.isoformat()
         if self.in_reply_to_id:
             header['in_reply_to'] = self.in_reply_to_id
         if self.client_state:
