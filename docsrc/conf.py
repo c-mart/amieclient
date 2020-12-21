@@ -28,7 +28,10 @@ author = 'G. Ryan Sablosky <sablosky@psc.edu>'
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    'sphinx.ext.autodoc', 'sphinx.ext.coverage', 'sphinx.ext.napoleon'
+    'sphinx.ext.autodoc',
+    'sphinx.ext.coverage',
+    'sphinx.ext.napoleon',
+    'sphinx.ext.extlinks',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -51,3 +54,12 @@ html_theme = 'alabaster'
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
+
+
+# -- external links -------------------
+extlinks = {'issue': ('https://github.com/xsede/amieclient/issues/%s',
+                      'issue '),
+            'swagger':
+            ('https://a3mdev.xsede.org/amie-api-test/swagger-ui/dist/index.html?url=/amie-api-test/apidocs/#/%s',
+             '')}
+
