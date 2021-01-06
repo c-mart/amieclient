@@ -14,7 +14,13 @@ DEMO_JSON_PKT_1 = {
         'packet_id': 1,
         'trans_rec_id': 87139097,
         'transaction_id': 244206,
-        'packet_rec_id': 174709745
+        'packet_rec_id': 174709745,
+        'local_site_name': 'PSC',
+        'remote_site_name': 'SDSC',
+        'originating_site_name': 'SDSC',
+        'outgoing_flag': False,
+        'transaction_state': 'in-progress',
+        'packet_state': None,
     },
     'body': {
         'AcademicDegree': [
@@ -72,7 +78,13 @@ DEMO_JSON_PKT_2 = {
     "packet_id": 1,
     "trans_rec_id": 86860578,
     "transaction_id": 243873,
-    "packet_rec_id": 174151086
+    "packet_rec_id": 174151086,
+    'local_site_name': 'PSC',
+    'remote_site_name': 'SDSC',
+    'originating_site_name': 'SDSC',
+    'outgoing_flag': False,
+    'transaction_state': 'in-progress',
+    'packet_state': None,
   },
   "body": {
     "AcademicDegree": [
