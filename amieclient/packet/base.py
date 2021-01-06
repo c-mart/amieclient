@@ -66,7 +66,7 @@ class MetaPacket(type):
             attrs[k] = property(_make_get_allowed(k), _make_set_allowed(k))
 
         # fix expected_replies to add a default timeouts
-        expected_replies = attrs.get('_expected_replies', [])
+        expected_replies = attrs.get('_expected_reply', [])
         expected_with_timeouts = []
         for r in expected_replies:
             if isinstance(r, dict):
@@ -83,6 +83,7 @@ class MetaPacket(type):
                 )
             else:
                 raise Exception("Invalid reply_type")
+        attrs['expected_reply'] = expected_with_timeouts
         return type.__new__(cls, name, base, attrs)
 
 
@@ -268,7 +269,7 @@ class Packet(object, metaclass=MetaPacket):
             >>> my_npc = received_rpc.reply_packet()
         """
 
-        expected_replies = [r['type'] for r in self._expected_reply]
+        expected_replies = [r['type'] for r in self.expected_reply]
         if packet_type and force:
             # Just do it
             pkt_class = self._find_packet_type(packet_type)
