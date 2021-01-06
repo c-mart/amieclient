@@ -114,8 +114,10 @@ class RequestProjectCreate(Packet):
     ]
     _data_keys_not_required_in_reply = []
     _data_keys_allowed = [
+        'Abstract',
         'AcademicDegree',
         'AllocatedResource',
+        'BoardType',
         'ChargeNumber',
         'CitizenshipList',
         'CitizenshipList',
@@ -144,6 +146,7 @@ class RequestProjectCreate(Packet):
         'PiZip',
         'ProjectID',
         'ProjectTitle',
+        'RequestType',
         'RoleList',
         'Sfos',
         'SitePersonId',
