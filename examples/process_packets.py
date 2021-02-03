@@ -235,3 +235,13 @@ for packet in packets:
 
         npr = packet.reply_packet()
         amie_client.send_packet(npr)
+
+    if packet_type == 'inform_transaction_complete':
+        # construct the InformTransactionComplete(ITC) success packet
+        itc = packet.reply_packet()
+        itc.StatusCode = 'Success'
+        itc.DetailCode = '1'
+        itc.Message = 'OK'
+
+        # send the ITC
+        amie_client.send_packet(itc)
