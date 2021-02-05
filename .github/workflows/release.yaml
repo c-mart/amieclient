@@ -38,6 +38,11 @@ jobs:
       - name: Build package
         run: |
           python -m build --sdist --wheel --outdir dist/
+      - name: Build docs
+        run: |
+          pushd docsrc
+          make github
+          popd
 
         #      - name: Build docs
         #      - name: Push package to TestPyPI
