@@ -23,6 +23,7 @@ jobs:
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
   lint:
     needs: setup
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         python-version: [3.5, 3.6, 3.7, 3.8]
@@ -35,6 +36,7 @@ jobs:
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
   test:
     needs: setup
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         python-version: [3.5, 3.6, 3.7, 3.8]
@@ -45,6 +47,7 @@ jobs:
 
   build_package:
     needs: ['lint', 'test']
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         python-version: [3.5, 3.6, 3.7, 3.8]
@@ -58,6 +61,7 @@ jobs:
 
   build_docs:
     needs: build_package
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         python-version: [3.5, 3.6, 3.7, 3.8]
