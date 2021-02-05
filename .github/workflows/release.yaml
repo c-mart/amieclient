@@ -5,7 +5,7 @@ on: [push]
 #on: [release]
 
 jobs:
-  build:
+  setup:
 
     runs-on: ubuntu-latest
     strategy:
@@ -23,24 +23,40 @@ jobs:
           python -m pip install --upgrade pip
           pip install flake8 pytest
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+  lint:
+    needs: setup
+    steps:
       - name: Lint with flake8
         run: |
           # stop the build if there are Python syntax errors or undefined names
           flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
           # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+  test:
+    needs: setup
+    steps:
       - name: Test with pytest
         run: |
           pytest ./amieclient
+
+  build_package:
+    needs: ['lint', 'test']
+    steps:
       - name: Install build command
         run: |
           pip install build
       - name: Build package
         run: |
           python -m build --sdist --wheel --outdir dist/
-      - name: Build docs
+
+  build_docs:
+    needs: build_package
+    steps:
+      - name: Install sphinx
         run: |
           pip install sphinx
+      - name: Build docs
+        run: |
           pushd docsrc
           make github
           popd
