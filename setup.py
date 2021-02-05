@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name='amieclient',
-    version='0.1',
+    version='0.1.3',
     packages=find_packages(),
     install_requires=[
         'requests>=2.20.0,<3',
@@ -16,6 +16,7 @@ setup(
     python_requires='>=3.5',
     description='Library for the XSEDE AMIE REST API.',
     long_description=long_description,
+    long_description_content_type="text/markdown",
     license='Apache Software License v2.0',
     classifiers=[
         'License :: OSI Approved :: Apache Software License',
@@ -26,4 +27,9 @@ setup(
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
     ],
+    project_urls={
+        'Documentation & Examples': 'https://xsede.github.io/amieclient/',
+        'Source': 'https://github.com/xsede/amieclient/',
+        'Tracker': 'https://github.com/xsede/amieclient/issues',
+    },
 )
