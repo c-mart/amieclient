@@ -1,5 +1,8 @@
 from setuptools import setup, find_packages
 
+with open("README.md", "r", encoding="utf-8") as fh:
+    long_description = fh.read()
+
 setup(
     name='amieclient',
     version='0.1',
@@ -12,6 +15,7 @@ setup(
     author_email='sablosky@psc.edu',
     python_requires='>=3.5',
     description='Library for the XSEDE AMIE REST API.',
+    long_description=long_description,
     license='Apache Software License v2.0',
     classifiers=[
         'License :: OSI Approved :: Apache Software License',
