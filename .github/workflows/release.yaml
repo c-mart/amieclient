@@ -45,6 +45,12 @@ jobs:
       - name: Build package
         run: |
           python -m build --sdist --wheel --outdir dist/
+      - name: Archive build output
+        uses: actions/upload-artifact@v2
+        with:
+          name: dist
+          path: |
+            dist
 
   build_docs:
     needs: lint_and_test
@@ -69,7 +75,3 @@ jobs:
         with:
           branch: gh-pages
           folder: docs
-
-
-        #      - name: Push package to TestPyPI
-        #      - name: Push package to PyPi
