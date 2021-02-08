@@ -74,3 +74,17 @@ jobs:
         with:
           branch: gh-pages
           folder: docs
+
+  upload_test_package:
+    needs: ['build_docs', 'build_package']
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download built packages
+        uses: actions/download-artifact@v2
+        with:
+          name: amieclient_build
+      - name: Publish distribution 📦 to Test PyPI
+        uses: pypa/gh-action-pypi-publish@master
+        with:
+          password: ${{ secrets.TESTPYPI_API_TOKEN }}
+          repository_url: https://test.pypi.org/legacy/
