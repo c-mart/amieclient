@@ -47,7 +47,7 @@ jobs:
           python -m build --sdist --wheel --outdir dist/
 
   build_docs:
-    needs: build_package
+    needs: lint_and_test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -63,6 +63,7 @@ jobs:
           pushd docsrc
           make github
           popd
+
 
         #      - name: Push package to TestPyPI
         #      - name: Push package to PyPi
