@@ -60,6 +60,6 @@ html_static_path = ['_static']
 extlinks = {'issue': ('https://github.com/xsede/amieclient/issues/%s',
                       'issue '),
             'swagger':
-            ('https://a3mdev.xsede.org/amie-api-test/swagger-ui/dist/index.html?url=/amie-api-test/apidocs/#/%s',
+            ('https://amie.xsede.org/swagger-ui/dist/index.html?url=/apidocs/#/%s',
              '')}
 
