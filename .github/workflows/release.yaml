@@ -60,6 +60,7 @@ jobs:
           pip install sphinx
       - name: Build docs
         run: |
+          pip install -e ./
           pushd docsrc
           make github
           popd
@@ -72,4 +73,3 @@ jobs:
 
         #      - name: Push package to TestPyPI
         #      - name: Push package to PyPi
-        #      - name: Push docs
