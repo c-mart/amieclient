@@ -48,9 +48,8 @@ jobs:
       - name: Archive build output
         uses: actions/upload-artifact@v2
         with:
-          name: dist
-          path: |
-            dist
+          name: amieclient_build
+          path: dist
 
   build_docs:
     needs: lint_and_test
