@@ -83,6 +83,13 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: amieclient_build
+      - name: Where is everything?
+        run: |
+          ls -lah
+          cd amieclient
+          ls -lah
+          cd amieclient
+          ls -lah
       - name: Publish distribution 📦 to Test PyPI
         uses: pypa/gh-action-pypi-publish@master
         with:
