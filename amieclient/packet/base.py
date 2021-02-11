@@ -54,8 +54,6 @@ class MetaPacket(type):
     stores the information in two separate dictionaries on the object.
     """
     def __new__(cls, name, base, attrs):
-        attrs['_required_data'] = {}
-        attrs['_allowed_data'] = {}
         required_fields = attrs.get('_data_keys_required', [])
         allowed_fields = attrs.get('_data_keys_allowed', [])
         for k in required_fields:
@@ -122,6 +120,10 @@ class Packet(object, metaclass=MetaPacket):
                  transaction_state=None, packet_state=None,
                  _original_data=None,
                  **kwargs):
+        # Set up empty data dicts
+        self._required_data = dict()
+        self._allowed_data = dict()
+
         self.packet_rec_id = int(packet_rec_id) if packet_rec_id is not None else None
         self.packet_id = int(packet_id) if packet_id is not None else None
         self.trans_rec_id = int(trans_rec_id) if trans_rec_id is not None else None
