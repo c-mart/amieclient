@@ -188,3 +188,33 @@ class TestClient:
         with pytest.raises(PacketInvalidData):
             rum_packet.validate_data(raise_on_invalid=True)
         assert not rum_packet.validate_data()
+
+    def test_packet_fidelity(self):
+        """
+        Make sure that the data we put into the packet is the same as the data
+        we get out, especially if we have two packets of the same type.
+        See https://github.com/XSEDE/amieclient/issues/8 &
+        https://github.com/XSEDE/amieclient/commit/7c57ce781b70e5a06a1b3811d1f11d9f99a20893
+        for why we check both packets here
+        """
+        packet_1 = Packet.from_dict(DEMO_JSON_PKT_1)
+        packet_2 = Packet.from_dict(DEMO_JSON_PKT_2)
+
+        # Check that the _original_data field matches
+        assert packet_1._original_data == DEMO_JSON_PKT_1
+        assert packet_2._original_data == DEMO_JSON_PKT_2
+
+        # Check that we process the data properly
+        for pkt in [packet_1, packet_2]:
+            for k, v in pkt._original_data['header'].items():
+                # skip header fields we handle elsewhere
+                if k in ['expected_reply_list']:
+                    continue
+                assert getattr(pkt, k) == v
+            for k, v in pkt._original_data['body'].items():
+                try:
+                    pkt_v = getattr(pkt, k)
+                except AttributeError:
+                    # Handle additional data that's kept separate
+                    pkt_v = pkt.additional_data[k]
+                assert pkt_v == v
