@@ -131,7 +131,7 @@ class Packet(object, metaclass=MetaPacket):
         self.local_site_name = str(local_site_name) if local_site_name is not None else None
         self.remote_site_name = str(remote_site_name) if remote_site_name is not None else None
         self.originating_site_name = str(originating_site_name) if originating_site_name is not None else None
-        self.outgoing_flag = str(outgoing_flag) if outgoing_flag is not None else None
+        self.outgoing_flag = outgoing_flag if outgoing_flag is not None else None
         # TODO make sure these states are valid amie states
         self.transaction_state = str(transaction_state) if transaction_state is not None else None
         self.client_state = str(client_state) if client_state is not None else None
