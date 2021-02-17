@@ -92,3 +92,19 @@ jobs:
           password: ${{ secrets.TESTPYPI_API_TOKEN }}
           repository_url: https://test.pypi.org/legacy/
           packages_dir: ./
+
+  upload_production_package:
+    needs: [upload_test_package]
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    steps:
+      - name: Download built packages
+        uses: actions/download-artifact@v2
+        with:
+          name: amieclient_build
+      - name: Publish distribution 📦 to Test PyPI
+        uses: pypa/gh-action-pypi-publish@master
+        with:
+          password: ${{ secrets.PYPI_API_TOKEN }}
+          repository_url: https://test.pypi.org/legacy/
+          packages_dir: ./
