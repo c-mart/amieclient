@@ -13,7 +13,7 @@ class Transaction(object):
         self.originating_site = originating_site
         self.local_site = local_site
         self.remote_site = remote_site
-        if packets:
+        if packets is not None:
             self.packets = packets
         else:
             self.packets = []
