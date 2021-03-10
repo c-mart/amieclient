@@ -11,8 +11,8 @@ class UsageMessageException(Exception):
 
 
 class _UsageRecordList:
-    def __init__(self, in_list=[]):
-        self._list = in_list
+    def __init__(self, in_list=None):
+        self._list = in_list if in_list is not None else []
         self._record_type = None
         if not self._check_usage_type():
             self._list = []

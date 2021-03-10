@@ -113,7 +113,7 @@ class Packet(object, metaclass=MetaPacket):
     def __init__(self, packet_rec_id=None, trans_rec_id=None,
                  packet_id=None, transaction_id=None,
                  date=None,
-                 additional_data={}, in_reply_to=None,
+                 additional_data=None, in_reply_to=None,
                  client_state=None, client_json=None,
                  remote_site_name=None, local_site_name=None,
                  originating_site_name=None, outgoing_flag=None,
@@ -145,7 +145,7 @@ class Packet(object, metaclass=MetaPacket):
         # meaning the JSON we got from the server
         self._original_data = _original_data
 
-        self.additional_data = additional_data
+        self.additional_data = additional_data if additional_data is not None else {}
         if date is not None:
             self.date = dtparse(date)
         else:

@@ -80,12 +80,12 @@ class FailedUsageResponse:
 
 class UsageStatusResource:
     def __init__(self, resource, loaded_record_count, failed_job_count,
-                 total_charge, errors=[]):
+                 total_charge, errors=None):
         self.resource = resource
         self.loaded_record_count = loaded_record_count
         self.failed_job_count = failed_job_count
         self.total_charge = total_charge
-        self.errors = errors
+        self.errors = errors if errors is not None else []
 
     @classmethod
     def from_dict(cls, input_dict):
