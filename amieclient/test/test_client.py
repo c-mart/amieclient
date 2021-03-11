@@ -1,6 +1,6 @@
 from ..client import AMIEClient
 from ..packet import RequestAccountCreate, PacketList
-from .fixtures import DEMO_JSON_PKT_1, DEMO_JSON_PKT_LIST
+from .fixtures import DEMO_JSON_SINGLE_PKT, DEMO_JSON_PKT_LIST
 
 
 class TestAMIEClient:
@@ -23,7 +23,7 @@ class TestAMIEClient:
 
         # Make the mock request
         packet_url = 'https://amieclient.xsede.org/v0.10/packets/test/12345'
-        requests_mock.get(packet_url, json=DEMO_JSON_PKT_1)
+        requests_mock.get(packet_url, json=DEMO_JSON_SINGLE_PKT)
 
         packet = client.get_packet(packet_rec_id='12345')
         assert packet.packet_type == 'request_account_create'

@@ -162,3 +162,8 @@ DEMO_JSON_PKT_LIST = {
       DEMO_JSON_PKT_2
   ]
 }
+
+DEMO_JSON_SINGLE_PKT = {
+  "message": '',
+  "result": DEMO_JSON_PKT_1
+}
