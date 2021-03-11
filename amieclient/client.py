@@ -148,7 +148,7 @@ class AMIEClient(object):
         if r.status_code > 200:
             message = response.get('message', 'Server did not provide an error message')
             raise AMIERequestError(message, response=r)
-        return Packet.from_dict(response)
+        return Packet.from_dict(response['result'])
 
     def list_packets(self, *, trans_rec_ids=None, outgoing=None,
                      update_time_start=None, update_time_until=None,
