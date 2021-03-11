@@ -271,7 +271,6 @@ class AMIEClient(object):
             message = response.get('message', 'Server did not provide an error message')
             raise AMIERequestError(message, response=r)
         return r
-        pass
 
     def set_packet_client_json(self, packet_or_id, client_json):
         """

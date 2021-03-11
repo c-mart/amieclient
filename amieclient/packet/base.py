@@ -12,7 +12,7 @@ class PacketInvalidData(Exception):
 
 class PacketInvalidType(Exception):
     """Raised when we try to create a packet with an invalid type"""
-
+    pass
 
 # Closures, for properly handling properties
 # in the metaclass
