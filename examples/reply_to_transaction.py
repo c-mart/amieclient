@@ -23,12 +23,12 @@ project_creation_request = transaction.packets[-1]
 
 # Once that's done, send a NotifyProjectCreate packet.
 # If nothing needs to be changed from the RequestProjectCreate packet,
-# you can use the packet's reply_to() method. This will create a packet that
+# you can use the packet's reply_packet() method. This will create a packet that
 # automatically has the proper type and a reference to the preceeding packet.
 # The AMIE service will extrapolate the needed information from the
 # RequestProjectCreate packet.
 
-project_created = project_creation_request.reply_to()
+project_created = project_creation_request.reply_packet()
 
 psc_client.send_packet(project_created)
 
@@ -38,5 +38,5 @@ with AMIEClient('psc', 'some_secret_key') as client_too:
     transaction = client_too.get_transaction(transaction_id='12345')
     project_creation_request = transaction.packets[-1]
     # Do something...
-    project_created = project_creation_request.reply_to()
+    project_created = project_creation_request.reply_packet()
     client_too.send_packet(project_created)
