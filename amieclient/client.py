@@ -296,7 +296,7 @@ class AMIEClient(object):
             # serializes back properly when we do the PUT
             client_json = json.loads(client_json)
 
-        r = self._session.put(url, data=client_json)
+        r = self._session.put(url, json=client_json)
         response = r.json()
         if r.status_code > 200:
             message = response.get('message', 'Server did not provide an error message')
