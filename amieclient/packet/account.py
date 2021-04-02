@@ -2,7 +2,8 @@
 AMIE packets relating to accounts
 """
 
-from .base import Packet
+from .base import Packet, PacketInvalidData
+from .validators import _validate_resource_list
 
 
 class DataAccountCreate(Packet):
@@ -61,12 +62,41 @@ class NotifyAccountCreate(Packet):
         'UserTitle',
     ]
 
+    def validate_data(self, raise_on_invalid=False):
+        """
+        Validates that there is only one element in the ResourceList attribute
+        """
+        try:
+            _validate_resource_list(self)
+
+        except PacketInvalidData as e:
+            if raise_on_invalid:
+                raise e
+            else:
+                return False
+        return super().validate_data(raise_on_invalid)
+
+
 class NotifyAccountInactivate(Packet):
     _packet_type = 'notify_account_inactivate'
     _expected_reply = [{'type': 'inform_transaction_complete', 'timeout': 30240}]
     _data_keys_required = ['PersonID', 'ProjectID', 'ResourceList']
     _data_keys_not_required_in_reply = ['PersonID', 'ProjectID', 'ResourceList']
     _data_keys_allowed = ['Comment']
+
+    def validate_data(self, raise_on_invalid=False):
+        """
+        Validates that there is only one element in the ResourceList attribute
+        """
+        try:
+            _validate_resource_list(self)
+
+        except PacketInvalidData as e:
+            if raise_on_invalid:
+                raise e
+            else:
+                return False
+        return super().validate_data(raise_on_invalid)
 
 
 class NotifyAccountReactivate(Packet):
@@ -75,6 +105,20 @@ class NotifyAccountReactivate(Packet):
     _data_keys_required = ['PersonID', 'ProjectID', 'ResourceList']
     _data_keys_not_required_in_reply = []
     _data_keys_allowed = ['Comment']
+
+    def validate_data(self, raise_on_invalid=False):
+        """
+        Validates that there is only one element in the ResourceList attribute
+        """
+        try:
+            _validate_resource_list(self)
+
+        except PacketInvalidData as e:
+            if raise_on_invalid:
+                raise e
+            else:
+                return False
+        return super().validate_data(raise_on_invalid)
 
 
 class RequestAccountCreate(Packet):
@@ -121,6 +165,20 @@ class RequestAccountCreate(Packet):
         'UserZip',
     ]
 
+    def validate_data(self, raise_on_invalid=False):
+        """
+        Validates that there is only one element in the ResourceList attribute
+        """
+        try:
+            _validate_resource_list(self)
+
+        except PacketInvalidData as e:
+            if raise_on_invalid:
+                raise e
+            else:
+                return False
+        return super().validate_data(raise_on_invalid)
+
 
 class RequestAccountInactivate(Packet):
     _packet_type = 'request_account_inactivate'
@@ -129,6 +187,20 @@ class RequestAccountInactivate(Packet):
     _data_keys_not_required_in_reply = []
     _data_keys_allowed = ['Comment']
 
+    def validate_data(self, raise_on_invalid=False):
+        """
+        Validates that there is only one element in the ResourceList attribute
+        """
+        try:
+            _validate_resource_list(self)
+
+        except PacketInvalidData as e:
+            if raise_on_invalid:
+                raise e
+            else:
+                return False
+        return super().validate_data(raise_on_invalid)
+
 
 class RequestAccountReactivate(Packet):
     _packet_type = 'request_account_reactivate'
@@ -136,3 +208,17 @@ class RequestAccountReactivate(Packet):
     _data_keys_required = ['PersonID', 'ProjectID', 'ResourceList']
     _data_keys_not_required_in_reply = []
     _data_keys_allowed = ['Comment']
+
+    def validate_data(self, raise_on_invalid=False):
+        """
+        Validates that there is only one element in the ResourceList attribute
+        """
+        try:
+            _validate_resource_list(self)
+
+        except PacketInvalidData as e:
+            if raise_on_invalid:
+                raise e
+            else:
+                return False
+        return super().validate_data(raise_on_invalid)

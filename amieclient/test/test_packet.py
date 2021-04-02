@@ -218,3 +218,15 @@ class TestClient:
                     # Handle additional data that's kept separate
                     pkt_v = pkt.additional_data[k]
                 assert pkt_v == v
+
+    def test_packet_resourcelist_validate(self):
+        # Get a packet
+        rac_packet = Packet.from_dict(DEMO_JSON_PKT_1)
+        # Make sure it's otherwise valid
+        rac_packet.validate_data(raise_on_invalid=True)
+
+        # Add an (invalid) additional resource
+        rac_packet.ResourceList.append('clever-hans.psc.edu')
+
+        with pytest.raises(PacketInvalidData):
+            rac_packet.validate_data(raise_on_invalid=True)

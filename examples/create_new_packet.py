@@ -18,7 +18,7 @@ rpc.PiOrganization = 'PSC'
 rpc.PiOrgCode = '12345'
 rpc.EndDate = datetime.now() + timedelta(days=90)
 rpc.StartDate = datetime.now()
-rpc.ResourceList = ['IDK, somthing pretty fast', 'maybe with a gpu in it']
+rpc.ResourceList = ['IDK, somthing pretty fast']
 rpc.ServiceUnitsAllocated = '3'
 
 # Send the packet

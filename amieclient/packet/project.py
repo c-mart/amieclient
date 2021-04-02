@@ -2,7 +2,8 @@
 AMIE packets relating to projects
 """
 
-from .base import Packet
+from .base import Packet, PacketInvalidData
+from .validators import _validate_resource_list
 
 
 class DataProjectCreate(Packet):
@@ -74,6 +75,20 @@ class NotifyProjectCreate(Packet):
         'Sfos',
     ]
 
+    def validate_data(self, raise_on_invalid=False):
+        """
+        Validates that there is only one element in the ResourceList attribute
+        """
+        try:
+            _validate_resource_list(self)
+
+        except PacketInvalidData as e:
+            if raise_on_invalid:
+                raise e
+            else:
+                return False
+        return super().validate_data(raise_on_invalid)
+
 
 class NotifyProjectInactivate(Packet):
     _packet_type = 'notify_project_inactivate'
@@ -84,6 +99,20 @@ class NotifyProjectInactivate(Packet):
     ]
     _data_keys_allowed = []
 
+    def validate_data(self, raise_on_invalid=False):
+        """
+        Validates that there is only one element in the ResourceList attribute
+        """
+        try:
+            _validate_resource_list(self)
+
+        except PacketInvalidData as e:
+            if raise_on_invalid:
+                raise e
+            else:
+                return False
+        return super().validate_data(raise_on_invalid)
+
 
 class NotifyProjectReactivate(Packet):
     _packet_type = 'notify_project_reactivate'
@@ -93,6 +122,20 @@ class NotifyProjectReactivate(Packet):
         'Comment', 'PersonID', 'ProjectID', 'ResourceList'
     ]
     _data_keys_allowed = []
+
+    def validate_data(self, raise_on_invalid=False):
+        """
+        Validates that there is only one element in the ResourceList attribute
+        """
+        try:
+            _validate_resource_list(self)
+
+        except PacketInvalidData as e:
+            if raise_on_invalid:
+                raise e
+            else:
+                return False
+        return super().validate_data(raise_on_invalid)
 
 
 class RequestProjectCreate(Packet):
@@ -152,6 +195,20 @@ class RequestProjectCreate(Packet):
         'SitePersonId',
     ]
 
+    def validate_data(self, raise_on_invalid=False):
+        """
+        Validates that there is only one element in the ResourceList attribute
+        """
+        try:
+            _validate_resource_list(self)
+
+        except PacketInvalidData as e:
+            if raise_on_invalid:
+                raise e
+            else:
+                return False
+        return super().validate_data(raise_on_invalid)
+
 
 class RequestProjectInactivate(Packet):
     _packet_type = 'request_project_inactivate'
@@ -166,6 +223,20 @@ class RequestProjectInactivate(Packet):
                           'ServiceUnitsAllocated',
                           'ServiceUnitsRemaining',
                           ]
+
+    def validate_data(self, raise_on_invalid=False):
+        """
+        Validates that there is only one element in the ResourceList attribute
+        """
+        try:
+            _validate_resource_list(self)
+
+        except PacketInvalidData as e:
+            if raise_on_invalid:
+                raise e
+            else:
+                return False
+        return super().validate_data(raise_on_invalid)
 
 
 class RequestProjectReactivate(Packet):
@@ -182,3 +253,17 @@ class RequestProjectReactivate(Packet):
                           'ServiceUnitsAllocated',
                           'ServiceUnitsRemaining'
                           ]
+
+    def validate_data(self, raise_on_invalid=False):
+        """
+        Validates that there is only one element in the ResourceList attribute
+        """
+        try:
+            _validate_resource_list(self)
+
+        except PacketInvalidData as e:
+            if raise_on_invalid:
+                raise e
+            else:
+                return False
+        return super().validate_data(raise_on_invalid)
