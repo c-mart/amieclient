@@ -102,10 +102,11 @@ class AMIEClient(object):
         url = self.amie_url + 'transactions/{}/{}/packets'.format(self.site_name, tx_id)
         r = self._session.get(url)
         response = r.json()
+        print(response)
         if r.status_code > 200:
             message = response.get('message', 'Server did not provide an error message')
             raise AMIERequestError(message, response=r)
-        return Transaction.from_dict(response)
+        return Transaction.from_dict(response['result'])
 
     def set_transaction_failed(self, *, transaction_or_id):
         """
