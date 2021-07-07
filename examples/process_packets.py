@@ -38,7 +38,6 @@ for packet in packets:
         pfos_num = packet.PfosNumber
 
         pi_person_id = packet.PiPersonID         # site person_id for the PI (if known)
-        pi_login = packet.PiRemoteSiteLogin  # login on resource for the PI (if known)
         pi_first_name = packet.PiFirstName
         pi_middle_name = packet.PiMiddleName
         pi_last_name = packet.PiLastName
@@ -53,7 +52,7 @@ for packet in packets:
         pi_state = packet.PiState
         pi_zipcode = packet.PiZip
         pi_country = packet.PiCountry
-        pi_nsf_status_code = packet.PiNsfStatusCode
+        pi_nsf_status_code = packet.NsfStatusCode
         pi_requested_logins = packet.PiRequestedLoginList
         pi_dn_list = packet.PiDnList
 
@@ -71,7 +70,6 @@ for packet in packets:
         # construct a NotifyProjectCreate(NPC) packet.
         npc = packet.reply_packet()
         npc.ProjectID = project_id           # local project ID
-        npc.PiRemoteSiteLogin = pi_login     # local login for the PI on the resource
         npc.PiPersonID = pi_person_id        # local person ID for the pi
 
         # send the NPC
