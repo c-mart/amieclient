@@ -265,7 +265,7 @@ class StorageUsageRecord(UsageRecord):
 
         d = {
             'Charge': self.charge,
-            'CollectionTime': self.submit_time,
+            'CollectionTime': self.collection_time,
             'LocalProjectID': self.local_project_id,
             'LocalRecordID': self.local_record_id,
             'Resource': self.resource,
