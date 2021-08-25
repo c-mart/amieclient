@@ -1,9 +1,15 @@
 import pytest
 
+from datetime import datetime
+
+from dateutil.tz import tzutc
+
 from ..packet import (Packet, RequestAccountCreate, Packet, PacketInvalidData,
                       NotifyAccountCreate, NotifyPersonDuplicate,
                       NotifyUserModify, RequestUserModify)
 from .fixtures import DEMO_JSON_PKT_1, DEMO_JSON_PKT_2
+
+
 
 
 class TestClient:
@@ -230,3 +236,10 @@ class TestClient:
 
         with pytest.raises(PacketInvalidData):
             rac_packet.validate_data(raise_on_invalid=True)
+
+    def test_packet_timestamp(self):
+        # Get a packet
+        packet = Packet.from_dict(DEMO_JSON_PKT_2)
+        # Test the timestamp is parsed correctly
+        timestamp = datetime(2021, 8, 24, 14, 47, 51, 507000, tzinfo=tzutc())
+        assert getattr(packet, 'packet_timestamp') == timestamp
