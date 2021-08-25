@@ -21,6 +21,7 @@ DEMO_JSON_PKT_1 = {
         'outgoing_flag': False,
         'transaction_state': 'in-progress',
         'packet_state': None,
+        'packet_timestamp': '2021-08-24T14:47:51.507Z',
     },
     'body': {
         'AcademicDegree': [
@@ -85,6 +86,7 @@ DEMO_JSON_PKT_2 = {
     'outgoing_flag': False,
     'transaction_state': 'in-progress',
     'packet_state': None,
+    'packet_timestamp': '2021-08-24T14:47:51.507Z',
   },
   "body": {
     "AcademicDegree": [
