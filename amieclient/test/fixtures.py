@@ -66,20 +66,20 @@ DEMO_JSON_PKT_1 = {
 }  # End packet 1
 
 DEMO_JSON_PKT_2 = {
-  "DATA_TYPE": "Packet",
-  "type_id": 16,
-  "type": "request_account_create",
-  "header": {
-    "expected_reply_list": [
+  'DATA_TYPE': 'Packet',
+  'type_id': 16,
+  'type': 'request_account_create',
+  'header': {
+    'expected_reply_list': [
       {
-        "type": "notify_account_create",
-        "timeout": 30240
+        'type': 'notify_account_create',
+        'timeout': 30240
       }
     ],
-    "packet_id": 1,
-    "trans_rec_id": 86860578,
-    "transaction_id": 243873,
-    "packet_rec_id": 174151086,
+    'packet_id': 1,
+    'trans_rec_id': 86860578,
+    'transaction_id': 243873,
+    'packet_rec_id': 174151086,
     'local_site_name': 'PSC',
     'remote_site_name': 'SDSC',
     'originating_site_name': 'SDSC',
@@ -88,84 +88,84 @@ DEMO_JSON_PKT_2 = {
     'packet_state': None,
     'packet_timestamp': '2021-08-24T14:47:51.507Z',
   },
-  "body": {
-    "AcademicDegree": [
+  'body': {
+    'AcademicDegree': [
       {
-        "Field": "Biophysics",
-        "Degree": "PhD"
+        'Field': 'Biophysics',
+        'Degree': 'PhD'
       }
     ],
-    "SitePersonId": [
+    'SitePersonId': [
       {
-        "PersonID": "xizhang",
-        "Site": "X-PORTAL"
+        'PersonID': 'xizhang',
+        'Site': 'X-PORTAL'
       },
       {
-        "PersonID": "xizhang",
-        "Site": "XD-ALLOCATIONS"
+        'PersonID': 'xizhang',
+        'Site': 'XD-ALLOCATIONS'
       },
       {
-        "PersonID": "114121",
-        "Site": "SDSC"
+        'PersonID': '114121',
+        'Site': 'SDSC'
       }
     ],
-    "UserDnList": [
-      "/C=US/O=Pittsburgh Supercomputing Center/CN=Xi Zhang 2",
-      "/C=US/O=National Center for Supercomputing Applications/CN=Xi Zhang 2"
+    'UserDnList': [
+      '/C=US/O=Pittsburgh Supercomputing Center/CN=Xi Zhang 2',
+      '/C=US/O=National Center for Supercomputing Applications/CN=Xi Zhang 2'
     ],
-    "UserPersonID": "114121",
-    "NsfStatusCode": "PD",
-    "UserOrgCode": "0090910",
-    "UserOrganization": "University of Michigan",
-    "UserTitle": "",
-    "UserDepartment": "Department of Computational Medicine and Bioinformatics",
-    "UserLastName": "Zhang",
-    "UserMiddleName": "",
-    "UserFirstName": "Xi",
-    "UserCountry": "9US",
-    "UserState": "MI",
-    "UserZip": "48197",
-    "UserStreetAddress": "2353 TWIN LAKES DR APT TB",
-    "UserCity": "Ypsilanti",
-    "UserEmail": "xizha@umich.edu",
-    "UserBusinessPhoneNumber": "734-773-2530",
-    "UserGlobalID": "76716",
-    "AllocatedResource": "comet.sdsc.xsede",
-    "UserRequestedLoginList": [
-      ""
+    'UserPersonID': '114121',
+    'NsfStatusCode': 'PD',
+    'UserOrgCode': '0090910',
+    'UserOrganization': 'University of Michigan',
+    'UserTitle': '',
+    'UserDepartment': 'Department of Computational Medicine and Bioinformatics',
+    'UserLastName': 'Zhang',
+    'UserMiddleName': '',
+    'UserFirstName': 'Xi',
+    'UserCountry': '9US',
+    'UserState': 'MI',
+    'UserZip': '48197',
+    'UserStreetAddress': '2353 TWIN LAKES DR APT TB',
+    'UserCity': 'Ypsilanti',
+    'UserEmail': 'xizha@umich.edu',
+    'UserBusinessPhoneNumber': '734-773-2530',
+    'UserGlobalID': '76716',
+    'AllocatedResource': 'comet.sdsc.xsede',
+    'UserRequestedLoginList': [
+      ''
     ],
-    "ResourceList": [
-      "comet.sdsc.xsede"
+    'ResourceList': [
+      'comet.sdsc.xsede'
     ],
-    "UserPasswordAccessEnable": "1",
-    "GrantNumber": "MCB200078",
-    "ProjectID": "MIA322"
+    'UserPasswordAccessEnable': '1',
+    'GrantNumber': 'MCB200078',
+    'ProjectID': 'MIA322'
   }  # End body
 }  # End packet 2
 
 DEMO_JSON_TXN = {
-  "DATA_TYPE": "transaction",
-  "transaction_id": "12",
-  "originating_site_name": "PSC",
-  "local_site_name": "PSC",
-  "remote_site_name": "XSEDE",
-  "state": "in_progress",
-  "timestamp": "2020-06-05T09:25:37",
-  "DATA": [
+  'DATA_TYPE': 'transaction',
+  'transaction_id': '12',
+  'originating_site_name': 'PSC',
+  'local_site_name': 'PSC',
+  'remote_site_name': 'XSEDE',
+  'state': 'in_progress',
+  'timestamp': '2020-06-05T09:25:37',
+  'DATA': [
       DEMO_JSON_PKT_1,
       DEMO_JSON_PKT_2
   ]
 }
 
 DEMO_JSON_PKT_LIST = {
-  "message": '',
-  "result": [
+  'message': '',
+  'result': [
       DEMO_JSON_PKT_1,
       DEMO_JSON_PKT_2
   ]
 }
 
 DEMO_JSON_SINGLE_PKT = {
-  "message": '',
-  "result": DEMO_JSON_PKT_1
+  'message': '',
+  'result': DEMO_JSON_PKT_1
 }
