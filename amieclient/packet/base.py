@@ -154,8 +154,9 @@ class Packet(object, metaclass=MetaPacket):
         elif packet_timestamp is None:
             self._packet_timestamp = None
         else:
-            raise PacketInvalidData(f'Invalid type for timestamp: {packet_timestamp} is ',
-                                    f'{type(packet_timestamp)}, must be parsable str or datetime object')
+            ts_type = type(packet_timestamp)
+            packet_error = 'Invalid type for timestamp: {} is {}, must be parsable str or datetime object'.format(packet_timestamp, ts_type)
+            raise PacketInvalidData(packet_error)
 
         if in_reply_to is None or isinstance(in_reply_to, int):
             # If we're given a string, or None, just use that.
