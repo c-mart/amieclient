@@ -17,7 +17,7 @@ setup(
     },
     author='G. Ryan Sablosky',
     author_email='sablosky@psc.edu',
-    python_requires='>=3.5',
+    python_requires='>=3.5,<3.10',
     description='Library for the XSEDE AMIE REST API.',
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -30,6 +30,7 @@ setup(
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
     ],
     project_urls={
         'Documentation & Examples': 'https://xsede.github.io/amieclient/',
