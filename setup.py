@@ -9,9 +9,12 @@ setup(
     packages=find_packages(),
     install_requires=[
         'requests>=2.20.0,<3',
-        "python-dateutil>=2.6.1,<2.7;python_version<'3.8'",
-        "python-dateutil>=2.8.1,<2.9;python_version>='3.8'"
+        "python-dateutil>=2.6.1,<2.7;python_version<'3.7'",
+        "python-dateutil>=2.8.1,<2.9;python_version>='3.7'"
     ],
+    extras_require={
+        'tests': ['requests-mock>=1.9.3,<1.10.0']
+    },
     author='G. Ryan Sablosky',
     author_email='sablosky@psc.edu',
     python_requires='>=3.5',
