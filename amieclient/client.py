@@ -477,7 +477,7 @@ class UsageClient:
 
         fids = ','.join(failed_ids)
 
-        url = self.usage_url + 'usage/failed/{fids}'.format(fids)
+        url = self.usage_url + 'usage/failed/{}'.format(fids)
 
         r = self._session.delete(url)
         r.raise_for_status()
