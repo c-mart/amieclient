@@ -14,6 +14,7 @@ class PacketInvalidType(Exception):
     """Raised when we try to create a packet with an invalid type"""
     pass
 
+
 # Closures, for properly handling properties
 # in the metaclass
 def _make_get_required(key):
@@ -101,7 +102,7 @@ class Packet(object, metaclass=MetaPacket):
 
     Args:
         packet_rec_id (str): The ID for this packet
-        date (datetime.Datetime): A datetime object representing this packet's date attribute
+        packet_timestamp (datetime.Datetime or str): A datetime object or str for this packet's timestamp.
         additional_data (dict): Body data that is outsite the AMIE spec.
         in_reply_to (str, int, amieclient.Packet): The packet this packet is in response to. Can take a packet, int, string, or None.
     """
@@ -112,7 +113,7 @@ class Packet(object, metaclass=MetaPacket):
 
     def __init__(self, packet_rec_id=None, trans_rec_id=None,
                  packet_id=None, transaction_id=None,
-                 date=None,
+                 packet_timestamp=None,
                  additional_data=None, in_reply_to=None,
                  client_state=None, client_json=None,
                  remote_site_name=None, local_site_name=None,
@@ -146,10 +147,15 @@ class Packet(object, metaclass=MetaPacket):
         self._original_data = _original_data
 
         self.additional_data = additional_data if additional_data is not None else {}
-        if date is not None:
-            self.date = dtparse(date)
+        if isinstance(packet_timestamp, datetime):
+            self._packet_timestamp = packet_timestamp
+        elif isinstance(packet_timestamp, str):
+            self._packet_timestamp = dtparse(packet_timestamp)
+        elif packet_timestamp is None:
+            self._packet_timestamp = None
         else:
-            self.date = None
+            raise PacketInvalidData(f'Invalid type for timestamp: {packet_timestamp} is ',
+                                    f'{type(packet_timestamp)}, must be parsable str or datetime object')
 
         if in_reply_to is None or isinstance(in_reply_to, int):
             # If we're given a string, or None, just use that.
@@ -173,6 +179,10 @@ class Packet(object, metaclass=MetaPacket):
                     setattr(self, key, value)
             else:
                 self.additional_data[key] = value
+
+    @property
+    def packet_timestamp(self):
+        return self._packet_timestamp
 
     @property
     def client_json(self):
@@ -233,6 +243,7 @@ class Packet(object, metaclass=MetaPacket):
                         outgoing_flag=data['header']['outgoing_flag'],
                         transaction_state=data['header']['transaction_state'],
                         packet_state=data['header']['packet_state'],
+                        packet_timestamp=data['header']['packet_timestamp'],
                         in_reply_to=data['header'].get('in_reply_to'),
                         client_state=data['header'].get('client_state'),
                         client_json=data['header'].get('client_json'),
@@ -304,7 +315,7 @@ class Packet(object, metaclass=MetaPacket):
         # if neccessary
         for d in [self._required_data, self._allowed_data, self.additional_data]:
             for k, v in d.items():
-                if type(v) == datetime:
+                if isinstance(v, datetime):
                     data_body[k] = v.isoformat()
                 elif v is not None:
                     data_body[k] = v
@@ -321,6 +332,7 @@ class Packet(object, metaclass=MetaPacket):
             'outgoing_flag': self.outgoing_flag,
             'transaction_state': self.transaction_state,
             'packet_state': self.packet_state,
+            'packet_timestamp': self.packet_timestamp,
         }
         if self.date is not None:
             header['date'] = self.date.isoformat()
