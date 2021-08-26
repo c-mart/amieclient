@@ -3,6 +3,7 @@ import pytest
 from datetime import datetime
 
 from dateutil.tz import tzutc
+from dateutil.parser import parse as dtparse
 
 from ..packet import (Packet, RequestAccountCreate, Packet, PacketInvalidData,
                       NotifyAccountCreate, NotifyPersonDuplicate,
@@ -206,6 +207,8 @@ class TestClient:
         packet_1 = Packet.from_dict(DEMO_JSON_PKT_1)
         packet_2 = Packet.from_dict(DEMO_JSON_PKT_2)
 
+        DATETIME_HEADER_FIELDS = ['packet_timestamp']
+
         # Check that the _original_data field matches
         assert packet_1._original_data == DEMO_JSON_PKT_1
         assert packet_2._original_data == DEMO_JSON_PKT_2
@@ -216,7 +219,10 @@ class TestClient:
                 # skip header fields we handle elsewhere
                 if k in ['expected_reply_list']:
                     continue
-                assert getattr(pkt, k) == v
+                elif k in DATETIME_HEADER_FIELDS:
+                    assert getattr(pkt, k) == dtparse(v)
+                else:
+                    assert getattr(pkt, k) == v
             for k, v in pkt._original_data['body'].items():
                 try:
                     pkt_v = getattr(pkt, k)
