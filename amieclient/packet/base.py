@@ -327,7 +327,7 @@ class Packet(object, metaclass=MetaPacket):
             'packet_id': self.packet_id,
             'transaction_id': self.transaction_id,
             'trans_rec_id': self.trans_rec_id,
-            'expected_reply_list': self._expected_reply,
+            'expected_reply_list': self.expected_reply,
             'local_site_name': self.local_site_name,
             'remote_site_name': self.remote_site_name,
             'originating_site_name': self.originating_site_name,
