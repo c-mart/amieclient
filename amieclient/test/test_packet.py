@@ -1,4 +1,5 @@
 import pytest
+import json
 
 from datetime import datetime
 
@@ -206,12 +207,17 @@ class TestClient:
         """
         packet_1 = Packet.from_dict(DEMO_JSON_PKT_1)
         packet_2 = Packet.from_dict(DEMO_JSON_PKT_2)
-
         DATETIME_HEADER_FIELDS = ['packet_timestamp']
 
         # Check that the _original_data field matches
         assert packet_1._original_data == DEMO_JSON_PKT_1
         assert packet_2._original_data == DEMO_JSON_PKT_2
+
+        # Test that json is parsed back correclty
+        packet_dict_1 = json.loads(packet_1.json())
+        packet_dict_2 = json.loads(packet_2.json())
+        assert packet_dict_1 == DEMO_JSON_PKT_1
+        assert packet_dict_2 == DEMO_JSON_PKT_2
 
         # Check that we process the data properly
         for pkt in [packet_1, packet_2]:
