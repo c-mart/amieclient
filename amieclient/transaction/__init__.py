@@ -37,7 +37,7 @@ class Transaction(object):
 
     def as_dict(self):
         data_dict = {
-            'DATA_TYPE': 'transaction',
+            'DATA_TYPE': 'Transaction',
             'transaction_ID': self.id,
             'originating_site_name':  self.originating_site,
             'local_site_name': self.local_site,
@@ -85,7 +85,7 @@ class TransactionList(object):
 
     def as_dict(self):
         data_dict = {
-            'DATA_TYPE': 'transaction_list',
+            'DATA_TYPE': 'Transaction_list',
             'length':  self.legth,
             'limit': self.limit,
             'offset': self.offset,

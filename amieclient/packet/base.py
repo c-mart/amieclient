@@ -343,7 +343,7 @@ class Packet(object, metaclass=MetaPacket):
         if self.client_json:
             header['client_json'] = self.client_json
         data_dict = {
-            'DATA_TYPE': 'packet',
+            'DATA_TYPE': 'Packet',
             'type': self.packet_type,
             'body': data_body,
             'header': header
