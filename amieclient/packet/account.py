@@ -60,6 +60,7 @@ class NotifyAccountCreate(Packet):
         'UserStreetAddress',
         'UserStreetAddress2',
         'UserTitle',
+        'UserZip'
     ]
 
     def validate_data(self, raise_on_invalid=False):
