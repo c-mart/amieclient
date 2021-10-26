@@ -119,13 +119,14 @@ class Packet(object, metaclass=MetaPacket):
                  client_state=None, client_json=None,
                  remote_site_name=None, local_site_name=None,
                  originating_site_name=None, outgoing_flag=None,
-                 transaction_state=None, packet_state=None,
+                 transaction_state=None, packet_state=None, type_id=None,
                  _original_data=None,
                  **kwargs):
         # Set up empty data dicts
         self._required_data = dict()
         self._allowed_data = dict()
 
+        self.type_id = int(type_id) if type_id is not None else None
         self.packet_rec_id = int(packet_rec_id) if packet_rec_id is not None else None
         self.packet_id = int(packet_id) if packet_id is not None else None
         self.trans_rec_id = int(trans_rec_id) if trans_rec_id is not None else None
@@ -249,6 +250,7 @@ class Packet(object, metaclass=MetaPacket):
                         in_reply_to=data['header'].get('in_reply_to'),
                         client_state=data['header'].get('client_state'),
                         client_json=data['header'].get('client_json'),
+                        type_id=data.get('type_id'),
                         _original_data=data,
                         **data['body'])
 
@@ -348,6 +350,8 @@ class Packet(object, metaclass=MetaPacket):
             'body': data_body,
             'header': header
         }
+        if self.type_id is not None:
+            data_dict['type_id'] = self.type_id
 
         return data_dict
 
