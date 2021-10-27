@@ -82,7 +82,7 @@ class AMIEClient(object):
             time_str = "{},{}".format(start_str, end_str)
         return time_str
 
-    def get_transaction(self, *, transaction_or_id):
+    def get_transaction(self, transaction_or_id):
         """
         Given a single transaction record id, fetches the related transaction.
 
@@ -108,7 +108,7 @@ class AMIEClient(object):
             raise AMIERequestError(message, response=r)
         return Transaction.from_dict(response['result'])
 
-    def set_transaction_failed(self, *, transaction_or_id):
+    def set_transaction_failed(self, transaction_or_id):
         """
         Given a single transaction or transaction record id, marks it faield.
 
@@ -131,7 +131,7 @@ class AMIEClient(object):
         return r
 
 
-    def get_packet(self, *, packet_rec_id):
+    def get_packet(self, packet_rec_id):
         """
         Given a single packet record id, fetches the packet.
 
