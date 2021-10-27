@@ -310,6 +310,20 @@ class Packet(object, metaclass=MetaPacket):
             pkt_class = self._find_packet_type(packet_type)
         return pkt_class(packet_rec_id=packet_rec_id, in_reply_to=self.packet_rec_id)
 
+    def reply_with_failure(self, detail_code='2', message='fail transaction'):
+        """
+        Returns a special InformTransactionComplete packet with status 'Failed',
+        to signal to the server that the transaction should be restarted
+
+        Example:
+            >>> my_failure = received_packet.reply_with_failure()
+            >>> client.send_packet(my_failure)
+        """
+
+        itc = self._find_packet_type('inform_transaction_complete')
+        return itc(DetailCode=detail_code, Message=message, StatusCode='Failed',
+                   in_reply_to=self.packet_rec_id)
+
     def as_dict(self):
         """
         This packet, as a dictionary.

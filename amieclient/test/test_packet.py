@@ -8,7 +8,8 @@ from dateutil.parser import parse as dtparse
 
 from ..packet import (Packet, RequestAccountCreate, Packet, PacketInvalidData,
                       NotifyAccountCreate, NotifyPersonDuplicate,
-                      NotifyUserModify, RequestUserModify)
+                      NotifyUserModify, RequestUserModify,
+                      InformTransactionComplete)
 from .fixtures import DEMO_JSON_PKT_1, DEMO_JSON_PKT_2
 
 
@@ -87,6 +88,18 @@ class TestClient:
             assert reply_packet.validate_data()
             # Replace the data so we're not double-testing
             setattr(reply_packet, k, v)
+
+    def test_reply_with_failure_packet_validation(self):
+        """
+        The in_reply_to field and the packet type are properly set on a packet
+        generated via the reply_with_failure method.
+        """
+        parent_packet = Packet.from_dict(DEMO_JSON_PKT_1)
+        reply_packet = parent_packet.reply_with_failure()
+        assert reply_packet.in_reply_to_id == parent_packet.packet_rec_id
+        assert reply_packet.packet_type == 'inform_transaction_complete'
+        assert isinstance(reply_packet, InformTransactionComplete)
+        assert reply_packet.validate_data()
 
     def test_reply_packet_missing(self):
         """
