@@ -268,3 +268,16 @@ class TestClient:
         # Test the timestamp is parsed correctly
         timestamp = datetime(2021, 8, 24, 14, 47, 51, 507000, tzinfo=tzutc())
         assert getattr(packet, 'packet_timestamp') == timestamp
+
+    def test_packet_null_timestamp(self):
+        """
+        Test that a packet whose timestamp is null/None is processed properly
+        """
+        # Modify packet data to have no timestamp
+        packet_data_null_timestamp = DEMO_JSON_PKT_2
+        del packet_data_null_timestamp['header']['packet_timestamp']
+        packet = Packet.from_dict(packet_data_null_timestamp)
+        # Test the timestamp is parsed correctly
+        assert getattr(packet, 'packet_timestamp') is None
+        # Test that the resulting JSON does not have timestamp set
+        assert json.loads(packet.json())['header'].get('packet_timestamp') is None
