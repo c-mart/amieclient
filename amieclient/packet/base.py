@@ -390,11 +390,14 @@ class Packet(object, metaclass=MetaPacket):
         # We need to format the datetime object before the JSON serializer can handle it
         d = self.as_dict()
         # 2021-08-24T14:47:51.507Z
-        formatted_time = (d['header']['packet_timestamp']
-                          .astimezone(tzutc())
-                          .isoformat()
-                          .split('+', 1)[0][:-3] + 'Z')
-        d['header']['packet_timestamp'] = formatted_time
+        if d['header']['packet_timestamp'] is not None:
+            formatted_time = (d['header']['packet_timestamp']
+                              .astimezone(tzutc())
+                              .isoformat()
+                              .split('+', 1)[0][:-3] + 'Z')
+            d['header']['packet_timestamp'] = formatted_time
+        else:
+            del d['header']['packet_timestamp']
         return json.dumps(d, **json_kwargs)
 
     def pretty_print(self):
