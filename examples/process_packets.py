@@ -152,7 +152,7 @@ for packet in packets:
         amie_client.send_packet(itc)
 
     if packet_type == 'request_user_modify':
-        person_id = packet.person_id
+        person_id = packet.PersonID
         if packet.Actiontype == 'delete':
             inactive_dn_list = packet.DnList
             # SP: inactivate the specified DNs for the user
