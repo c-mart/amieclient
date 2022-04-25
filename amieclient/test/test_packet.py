@@ -91,13 +91,14 @@ class TestClient:
 
     def test_reply_with_failure_packet_validation(self):
         """
-        The in_reply_to field and the packet type are properly set on a packet
+        The in_reply_to field, packet type, and status code are properly set on a packet
         generated via the reply_with_failure method.
         """
         parent_packet = Packet.from_dict(DEMO_JSON_PKT_1)
         reply_packet = parent_packet.reply_with_failure()
         assert reply_packet.in_reply_to_id == parent_packet.packet_rec_id
         assert reply_packet.packet_type == 'inform_transaction_complete'
+        assert reply_packet.StatusCode == 'Failure'
         assert isinstance(reply_packet, InformTransactionComplete)
         assert reply_packet.validate_data()
 
