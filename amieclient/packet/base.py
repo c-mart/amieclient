@@ -321,7 +321,7 @@ class Packet(object, metaclass=MetaPacket):
         """
 
         itc = self._find_packet_type('inform_transaction_complete')
-        return itc(DetailCode=detail_code, Message=message, StatusCode='Failed',
+        return itc(DetailCode=detail_code, Message=message, StatusCode='Failure',
                    in_reply_to=self.packet_rec_id)
 
     def as_dict(self):
