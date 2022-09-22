@@ -15,7 +15,7 @@ class UsageResponse:
     @classmethod
     def from_dict(cls, input_dict):
         records = [UsageRecordError.from_dict(d) for d in
-                   input_dict.get('ValidationFailedRecords', [])]
+                   input_dict.get('FailedRecords', [])]
         message = input_dict['Message']
         return cls(message=message, failed_records=records)
 
@@ -27,7 +27,7 @@ class UsageResponse:
     def as_dict(self):
         d = {
             'Message': self.message,
-            'ValidationFailedRecords': [r.as_dict() for r in self.failed_records]
+            'FailedRecords': [r.as_dict() for r in self.failed_records]
         }
         return d
 
@@ -51,7 +51,7 @@ class FailedUsageResponse:
     @classmethod
     def from_dict(cls, input_dict):
         records = [UsageRecordError.from_dict(d) for d in
-                   input_dict.get('ValidationFailedRecords', [])]
+                   input_dict.get('FailedRecords', [])]
         return cls(failed_records=records)
 
     @classmethod
