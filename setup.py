@@ -17,7 +17,7 @@ setup(
     },
     author='G. Ryan Sablosky',
     author_email='sablosky@psc.edu',
-    python_requires='>=3.5,<3.10',
+    python_requires='>=3.5',
     description='Library for the XSEDE AMIE REST API.',
     long_description=long_description,
     long_description_content_type="text/markdown",
